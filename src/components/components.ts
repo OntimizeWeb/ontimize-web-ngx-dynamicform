@@ -33,7 +33,11 @@ export class DFComponents {
     compTemplate.module = compTemplate.module || {};
     compTemplate.component.selector = compTemplate.component.selector || 'odf-' + name;
     compTemplate.component.inputs = compTemplate.component.inputs || ['component', 'form'];
-    const decoratedCmp = Component(compTemplate.component)(element);
+    // ORIGINAL const decoratedCmp = Component(compTemplate.component)(element);
+
+    let decoratedCmp = this.createCustomComponent(compTemplate.component);
+
+    // Dynamic module
     if (!compTemplate.module.declarations) {
       compTemplate.module.declarations = [];
     }
@@ -44,7 +48,7 @@ export class DFComponents {
     // compTemplate.module.imports.push(CommonModule);
     // compTemplate.module.imports.push(ReactiveFormsModule);
     // compTemplate.module.imports.push(DynamicFormModule);
-    // compTemplate.module.imports.push(ONTIMIZE_MODULES);
+    compTemplate.module.imports.push(ONTIMIZE_MODULES);
 
     @NgModule(compTemplate.module)
     class DynamicComponentModule { }
@@ -57,21 +61,28 @@ export class DFComponents {
       factory: null
     };
   }
-  // public static createComponent(name: string, form: FormGroup, component: any, events: ODynamicFormEvents, data: any): any {
-  //   if (!DFComponents.components.hasOwnProperty(name)) {
-  //     name = 'custom';
-  //   }
-  //   let comp: DFComponentWrapper = DFComponents.components[name];
-  //   return new comp.component(form, component, events, data);
-  // }
 
-  public static createComponent(name: string, form: OFormComponent, component: any, events: ODynamicFormEvents, injector: any): any {
+  protected static createCustomComponent(compDefinition: any): any {
+    @Component(compDefinition)
+    class CustomDynamicComponent { }
+    return CustomDynamicComponent;
+  }
+
+  public static createComponent(name: string, form: FormGroup, component: any, events: ODynamicFormEvents, data: any): any {
     if (!DFComponents.components.hasOwnProperty(name)) {
       name = 'custom';
     }
     let comp: DFComponentWrapper = DFComponents.components[name];
-    return new comp.component(form, component, injector);
+    return new comp.component(form, component, events, data);
   }
+
+  // public static createComponent(name: string, form: OFormComponent, component: any, events: ODynamicFormEvents, injector: any): any {
+  //   if (!DFComponents.components.hasOwnProperty(name)) {
+  //     name = 'custom';
+  //   }
+  //   let comp: DFComponentWrapper = DFComponents.components[name];
+  //   return new comp.component(form, component, injector);
+  // }
 
   public static element(
     name: string,

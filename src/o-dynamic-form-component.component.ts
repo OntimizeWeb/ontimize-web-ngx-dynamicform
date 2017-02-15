@@ -66,7 +66,7 @@ export class ODFComponentComponent<T> implements OnInit {
   addComponent() {
     let component = DFComponents.createComponent(
       this.component.type,
-      this.oForm,
+      this.form,
       this.component,
       this.events,
       this.injector

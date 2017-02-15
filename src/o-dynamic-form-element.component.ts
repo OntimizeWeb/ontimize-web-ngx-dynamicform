@@ -30,11 +30,11 @@ export class ODFElementComponent implements OnInit {
 
     ngOnInit() {
         // Get the element.
-        /*this.component.settings.type*/
-        DFComponents.element('o-text-input', this.compiler).then(factory => {
+        DFComponents.element(this.component.settings.type, this.compiler).then(factory => {
             if (!this.element) {
                 return;
             }
+            this.element.clear();
             let cmpRef = this.element.createComponent(factory);
             // <ODFElementComponent>
             // this.component.label = this.label;
@@ -57,6 +57,9 @@ export class ODFElementComponent implements OnInit {
             // cmpRef.instance.submission = this.submission;
             // cmpRef.instance.data = this.data;
             // cmpRef.instance.render = this.render;
+
+            cmpRef.instance.oattr = this.component.settings['attr'];//'Testing_attr';
+            cmpRef.instance.olabel = this.component.settings['label'];//'Una pruebesita';
         });
     }
 }

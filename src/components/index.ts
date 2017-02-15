@@ -29,10 +29,10 @@ import { DFTemplate } from '../o-dynamic-form.template';
 // import { SignatureField } from './signature/signature';
 // import { DayField } from './day/day';
 
-import { InputText } from './input/input-text/input-text';
+import { TextInput } from './input/text-input/text-input';
 
 export function RegisterComponents(template: DFTemplate) {
-    InputText(template);
+    TextInput(template);
     // ButtonField(template);
     // ColumnsField(template);
     // ContainerField(template);

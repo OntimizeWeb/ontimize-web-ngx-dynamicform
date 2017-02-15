@@ -14,6 +14,6 @@ let getTemplate = function(selector: string, template: string, styles: Array<str
 };
 export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
     components: {
-        'o-text-input': getTemplate( 'o-text-input', { gulp_inject: './bootstrap/components/o-text-input.component.html' })
+        'o-text-input': getTemplate( 'odf-text-input', { gulp_inject: './bootstrap/components/o-text-input.component.html' })
     }
 };

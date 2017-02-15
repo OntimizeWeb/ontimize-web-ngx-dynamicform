@@ -15,6 +15,6 @@ let getTemplate = function(selector: string, template: string, styles: Array<str
 };
 export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
     components: {
-        'o-text-input': getTemplate( 'o-text-input', "<o-text-input attr=\"prueba_attr\" label=\"Label de prueba\" layout-padding></o-text-input>")
+        'o-text-input': getTemplate( 'odf-text-input', "<o-text-input attr=\"prueba_attr\" label=\"Label de prueba\" layout-padding></o-text-input>")
     }
 };
