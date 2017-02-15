@@ -3,6 +3,8 @@
 /out
 /src/**/*.css
 
+# Typings
+typings/*
 
 # Node
 node_modules/*
@@ -11,7 +13,7 @@ npm-debug.log
 # TypeScript
 *.js
 *.map
-*.d.ts
+/src/**/**.d.ts
 
 # JetBrains
 .idea
