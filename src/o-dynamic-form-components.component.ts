@@ -1,20 +1,42 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  ViewEncapsulation
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseOptions } from './components/base';
 
 @Component({
   moduleId: module.id,
   selector: 'odf-components',
-  templateUrl: 'o-dynamic-form-components.component.html'
+  templateUrl: 'o-dynamic-form-components.component.html',
+  inputs: [
+    'components',
+    'form',
+    'submission',
+    'data',
+    'editMode : edit-mode',
+    'addComponentEmitter : add-component-emitter',
+    'editComponentSettingsEmitter : edit-component-settings-emitter',
+    'deleteComponentEmitter : delete-component-emitter'
+  ],
+  outputs: [
+    'render'
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class ODFComponentsComponent {
 
-  @Input() components: Array<BaseOptions<any>>;
-  @Input() form: FormGroup;
-  @Input() submission: FormGroup;
-  @Input() data: any;
+  components: Array<BaseOptions<any>>;
+  form: FormGroup;
+  submission: FormGroup;
+  data: any;
+  editMode: boolean = false;
+  addComponentEmitter: EventEmitter<any>;
+  editComponentSettingsEmitter: EventEmitter<any>;
+  deleteComponentEmitter: EventEmitter<any>;
 
-  @Output() render: EventEmitter<any> = new EventEmitter();
+  render: EventEmitter<any> = new EventEmitter();
 
   private renderCount: number = 0;
 

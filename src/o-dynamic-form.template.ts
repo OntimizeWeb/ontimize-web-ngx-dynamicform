@@ -41,7 +41,20 @@ export interface DFComponentsTemplate {
     // phoneNumber: DFComponentTemplate;
     // signature: DFComponentTemplate;
     // day: DFComponentTemplate;
+
+    'o-currency-input': DFComponentTemplate;
+    'o-date-input': DFComponentTemplate;
+    'o-email-input': DFComponentTemplate;
+    'o-integer-input': DFComponentTemplate;
+    'o-nif-input': DFComponentTemplate;
+    'o-password-input': DFComponentTemplate;
+    'o-percent-input': DFComponentTemplate;
+    'o-real-input': DFComponentTemplate;
     'o-text-input': DFComponentTemplate;
+    'o-textarea-input': DFComponentTemplate;
+
+    'o-row': DFComponentTemplate;
+    'o-column': DFComponentTemplate;
 }
 
 /**

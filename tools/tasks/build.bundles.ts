@@ -3,7 +3,7 @@ import {join} from 'path';
 import * as browserify from 'browserify';
 import {
   BOOTSTRAP_MODULE,
-  JS_PROD_SHIMS_BUNDLE,
+  // JS_PROD_SHIMS_BUNDLE,
   JS_PROD_APP_BUNDLE,
   JS_DEST,
   TMP_DIR

@@ -1,0 +1,32 @@
+.dynamic-form-drop-zone {
+  width: 100%;
+  height: 12px;
+  &.dnd-drag-enter {
+    &.full-height-drop-zone {
+      height: 120px;
+    }
+    height: 36px;
+  }
+}
+
+.odf-element-drop-zone {
+  width: 100%;
+  height: 5px;
+  &.dnd-drag-enter {
+    height: 35px;
+  }
+}
+
+.odf-element-options-container {
+  position: absolute;
+  right: 0;
+  top: 0px;
+  z-index: 1;
+
+  md-icon {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+}

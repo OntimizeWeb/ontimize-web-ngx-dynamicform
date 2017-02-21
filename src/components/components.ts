@@ -1,16 +1,19 @@
 import { NgModule, Compiler, Component, ComponentFactory } from '@angular/core';
-import { CommonModule } from '@angular/common';
+// import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+// import { ReactiveFormsModule } from '@angular/forms';
 
 let find = require('lodash/find');
 let cloneDeep = require('lodash/cloneDeep');
 
-import { DynamicFormModule } from '../../index';
+// import { DynamicFormModule } from '../../index';
 import { DFComponentMetaData, DFComponentTemplate } from '../o-dynamic-form.template';
 import { ODynamicFormEvents } from '../o-dynamic-form.events';
 
-import { OFormComponent, ONTIMIZE_MODULES } from 'ontimize-web-ng2/ontimize';
+import {
+  // OFormComponent,
+  ONTIMIZE_MODULES
+} from 'ontimize-web-ng2/ontimize';
 
 export interface DFComponentWrapper {
   component?: any;
@@ -24,14 +27,14 @@ export class DFComponents {
   public static components: DFComponentWrapper = {};
 
   public static register(
-    name: string,
+    ontimizeDirective: string,
     component: any,
-    element: any,
+    // element: any,
     template: DFComponentTemplate
   ) {
     let compTemplate = cloneDeep(template);
     compTemplate.module = compTemplate.module || {};
-    compTemplate.component.selector = compTemplate.component.selector || 'odf-' + name;
+    compTemplate.component.selector = compTemplate.component.selector || 'odf-' + ontimizeDirective;
     compTemplate.component.inputs = compTemplate.component.inputs || ['component', 'form'];
     // ORIGINAL const decoratedCmp = Component(compTemplate.component)(element);
 
@@ -53,9 +56,9 @@ export class DFComponents {
     @NgModule(compTemplate.module)
     class DynamicComponentModule { }
 
-    DFComponents.components[name] = {
+    DFComponents.components[ontimizeDirective] = {
       component: component,
-      element: element,
+      // element: element,
       metadata: compTemplate.component,
       module: DynamicComponentModule,
       factory: null
@@ -68,37 +71,29 @@ export class DFComponents {
     return CustomDynamicComponent;
   }
 
-  public static createComponent(name: string, form: FormGroup, component: any, events: ODynamicFormEvents, data: any): any {
-    if (!DFComponents.components.hasOwnProperty(name)) {
-      name = 'custom';
+  public static createComponent(ontimizeDirective: string, form: FormGroup, component: any, events: ODynamicFormEvents, data: any): any {
+    if (!DFComponents.components.hasOwnProperty(ontimizeDirective)) {
+      ontimizeDirective = 'custom';
     }
-    let comp: DFComponentWrapper = DFComponents.components[name];
+    let comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
     return new comp.component(form, component, events, data);
   }
 
-  // public static createComponent(name: string, form: OFormComponent, component: any, events: ODynamicFormEvents, injector: any): any {
-  //   if (!DFComponents.components.hasOwnProperty(name)) {
-  //     name = 'custom';
-  //   }
-  //   let comp: DFComponentWrapper = DFComponents.components[name];
-  //   return new comp.component(form, component, injector);
-  // }
-
   public static element(
-    name: string,
+    ontimizeDirective: string,
     compiler: Compiler
   ): Promise<ComponentFactory<any>> {
-    if (!DFComponents.components.hasOwnProperty(name)) {
-      name = 'custom';
+    if (!DFComponents.components.hasOwnProperty(ontimizeDirective)) {
+      ontimizeDirective = 'custom';
     }
-    if (DFComponents.components[name].factoryPromise) {
-      return DFComponents.components[name].factoryPromise;
+    if (DFComponents.components[ontimizeDirective].factoryPromise) {
+      return DFComponents.components[ontimizeDirective].factoryPromise;
     }
-    DFComponents.components[name].factoryPromise = compiler.compileModuleAndAllComponentsAsync(DFComponents.components[name].module)
+    DFComponents.components[ontimizeDirective].factoryPromise = compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module)
       .then((moduleWithFactories) => {
-        let factory = find(moduleWithFactories.componentFactories, { selector: name });
+        let factory = find(moduleWithFactories.componentFactories, { selector: ontimizeDirective });
         return factory;
       });
-    return DFComponents.components[name].factoryPromise;
+    return DFComponents.components[ontimizeDirective].factoryPromise;
   }
 }

@@ -1,5 +1,19 @@
 <div flex layout-fill>
+
+  <div dnd-droppable (onDropSuccess)="onDropEnd($event)" class="dynamic-form-drop-zone"
+    [class.full-height-drop-zone]="!dFormDef.components.length">
+  </div>
   <!-- [form]="formGroup" [submission]="formGroup" [data]="submission.data" -->
-  <odf-components *ngIf="ready" [components]="dFormDef.components"
-    (render)="onRender()"></odf-components>
+  <odf-components
+    *ngIf="ready"
+    [components]="dFormDef.components"
+    [edit-mode]="editMode"
+    (render)="onRender()"
+    [add-component-emitter]="onAddComponent"
+    [edit-component-settings-emitter]="onEditComponentSettings"
+    [delete-component-emitter]="onDeleteComponent">
+  </odf-components>
+
+  <div *ngIf="dFormDef.components.length" dnd-droppable (onDropSuccess)="onDropEnd($event)" class="dynamic-form-drop-zone">
+  </div>
 </div>

@@ -29,10 +29,35 @@ import { DFTemplate } from '../o-dynamic-form.template';
 // import { SignatureField } from './signature/signature';
 // import { DayField } from './day/day';
 
-import { TextInput } from './input/text-input/text-input';
+import { OCurrencyInput } from './input/currency-input/o-currency-input';
+import { ODateInput } from './input/date-input/o-date-input';
+import { OEmailInput } from './input/email-input/o-email-input';
+import { OIntegerInput } from './input/integer-input/o-integer-input';
+import { ONifInput } from './input/nif-input/o-nif-input';
+import { OPasswordInput } from './input/password-input/o-password-input';
+import { OPercentInput } from './input/percent-input/o-percent-input';
+import { ORealInput } from './input/real-input/o-real-input';
+import { OTextInput } from './input/text-input/o-text-input';
+import { OTextareaInput } from './input/textarea-input/o-textarea-input';
+
+import { OColumn } from './container/o-column';
+import { ORow } from './container/o-row';
+
 
 export function RegisterComponents(template: DFTemplate) {
-    TextInput(template);
+    OCurrencyInput(template);
+    ODateInput(template);
+    OEmailInput(template);
+    OIntegerInput(template);
+    ONifInput(template);
+    OPasswordInput(template);
+    OPercentInput(template);
+    ORealInput(template);
+    OTextInput(template);
+    OTextareaInput(template);
+
+    OColumn(template);
+    ORow(template);
     // ButtonField(template);
     // ColumnsField(template);
     // ContainerField(template);

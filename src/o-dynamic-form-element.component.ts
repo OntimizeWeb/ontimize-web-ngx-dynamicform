@@ -1,41 +1,54 @@
 import {
     Component,
-    Input,
     EventEmitter,
     OnInit,
     Compiler,
     ViewContainerRef,
-    ViewChild
+    ViewChild,
+    ComponentRef
 } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import {
+    FormGroup
+    // ,
+    // FormControl
+} from '@angular/forms';
 import { DFComponents } from './components/components';
 import { BaseComponent } from './components/base';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
 
 @Component({
     selector: 'odf-element',
-    template: '<div #odfElement></div>'
+    template: '<div #odfElement></div>',
+    inputs: [
+        'component',
+        'form',
+        'submission',
+        'data',
+        'label',
+        'render'
+    ]
 })
 export class ODFElementComponent implements OnInit {
 
-    @Input() component: BaseComponent<any>;
-    @Input() form: FormGroup;
-    @Input() submission: FormGroup;
-    @Input() data: any;
-    @Input() label: string | boolean;
-    @Input() render: EventEmitter<any>;
+    component: BaseComponent<any>;
+    form: FormGroup;
+    submission: FormGroup;
+    data: any;
+    label: string | boolean;
+    render: EventEmitter<any>;
+
     @ViewChild('odfElement', { read: ViewContainerRef }) element: ViewContainerRef;
 
-    constructor(private compiler: Compiler, private events: ODynamicFormEvents) {}
+    constructor(private compiler: Compiler, private events: ODynamicFormEvents) { }
 
     ngOnInit() {
         // Get the element.
-        DFComponents.element(this.component.settings.type, this.compiler).then(factory => {
+        DFComponents.element(this.component.settings['ontimize-directive'], this.compiler).then(factory => {
             if (!this.element) {
                 return;
             }
             this.element.clear();
-            let cmpRef = this.element.createComponent(factory);
+            let cmpRef: ComponentRef<any> = this.element.createComponent(factory);
             // <ODFElementComponent>
             // this.component.label = this.label;
 
@@ -58,8 +71,7 @@ export class ODFElementComponent implements OnInit {
             // cmpRef.instance.data = this.data;
             // cmpRef.instance.render = this.render;
 
-            cmpRef.instance.oattr = this.component.settings['attr'];//'Testing_attr';
-            cmpRef.instance.olabel = this.component.settings['label'];//'Una pruebesita';
+            this.component.setInstanceProperties(cmpRef);
         });
     }
 }

@@ -1,11 +1,21 @@
 // import 'core-js/es7/reflect';
 import {
-  Component, Input, Output, EventEmitter, OnInit,
-  Optional, Inject, forwardRef
+  Component,
+  EventEmitter,
+  OnInit,
+  Optional,
+  Inject,
+  forwardRef,
+  ViewEncapsulation
 } from '@angular/core';
+
 import { FormGroup } from '@angular/forms';
 // import { FormioService } from './formio.service';
-import { DynamicFormDefinition/*, FormioOptions*/ } from './o-dynamic-form.common';
+import {
+  DynamicFormDefinition
+  /*, FormioOptions*/
+} from './o-dynamic-form.common';
+
 // import { FormioEvents } from './formio.events';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -17,29 +27,56 @@ import { OFormComponent } from 'ontimize-web-ng2/ontimize';
 @Component({
   moduleId: module.id,
   selector: 'o-dynamic-form',
-  templateUrl: 'o-dynamic-form.component.html'
+  templateUrl: 'o-dynamic-form.component.html',
+  styleUrls: ['o-dynamic-form.component.css'],
+  inputs: [
+    'dFormDef: form-definition',
+    'submission',
+    'src',
+    'readOnly',
+    'editMode : edit-mode'
+  ],
+  outputs: [
+    'render',
+    'submit',
+    'change',
+    'onAddComponent',
+    'onEditComponentSettings',
+    'onDeleteComponent'
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class ODynamicFormComponent implements OnInit {
 
   public formGroup: FormGroup = new FormGroup({});
   public ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  @Input('form-definition') dFormDef: DynamicFormDefinition = null;
-  @Input() submission: any = {};
-  @Input() src: string;
-  // @Input() service: FormioService;
-  // @Input() options: FormioOptions;
-  @Input() readOnly: boolean = false;
-  @Output() render: EventEmitter<any> = new EventEmitter();
-  @Output() submit: EventEmitter<any> = new EventEmitter();
-  @Output() change: EventEmitter<any> = new EventEmitter();
+
+  dFormDef: DynamicFormDefinition = null;
+  readOnly: boolean = false;
+  submission: any = {};
+  src: string;
+  editMode: boolean = false;
+
+  render: EventEmitter<any> = new EventEmitter();
+  submit: EventEmitter<any> = new EventEmitter();
+  change: EventEmitter<any> = new EventEmitter();
+
+  onAddComponent: EventEmitter<any> = new EventEmitter();
+  onEditComponentSettings: EventEmitter<any> = new EventEmitter();
+  onDeleteComponent: EventEmitter<any> = new EventEmitter();
+
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent
       /*private events: FormioEvents*/) {
     // Nothing to do
-      }
+  }
 
   ngOnInit() {
+    if (typeof this.editMode === 'string') {
+      let val = (<string>this.editMode).toLowerCase();
+      this.editMode = (val === 'true' || val === 'yes');
+    }
     // this.options = Object.assign({
     //     errors: {
     //         message: 'Please fix the following errors before submitting.'
@@ -50,7 +87,7 @@ export class ODynamicFormComponent implements OnInit {
     // }, this.options);
 
     if (this.dFormDef) {
-        this.ready.next(true);
+      this.ready.next(true);
     }
     // else if (this.src && !this.service) {
     //     this.service = new FormioService(this.src);
@@ -90,4 +127,7 @@ export class ODynamicFormComponent implements OnInit {
     this.render.emit(true);
   }
 
+  onDropEnd(event) {
+    this.onAddComponent.emit(event.dragData);
+  }
 }

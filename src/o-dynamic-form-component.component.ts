@@ -1,31 +1,70 @@
 import {
-  Component, Input, Output, OnInit, EventEmitter,
-  Optional, Inject, Injector, forwardRef, ElementRef} from '@angular/core';
+  Component,
+  OnInit,
+  EventEmitter,
+  Optional,
+  Inject,
+  Injector,
+  forwardRef,
+  ElementRef,
+  ViewEncapsulation
+} from '@angular/core';
+
 import { FormGroup, FormArray } from '@angular/forms';
 
 import { DFComponents } from './components/components';
-import { BaseOptions, BaseComponent } from './components/base';
+
+import {
+  BaseOptions,
+  BaseComponent
+} from './components/base';
+
 // import { FormioError } from './o-dynamic-form.common';
-import { DynamicFormEvent, ODynamicFormEvents } from './o-dynamic-form.events';
+import {
+  // DynamicFormEvent,
+  ODynamicFormEvents
+} from './o-dynamic-form.events';
 // var FormioUtils = require('formio-utils');
 
 import { OFormComponent } from 'ontimize-web-ng2/ontimize';
 
 @Component({
   selector: 'odf-component',
-  templateUrl: 'o-dynamic-form-component.component.html'
+  templateUrl: 'o-dynamic-form-component.component.html',
+  inputs: [
+    'component',
+    'form',
+    'submission',
+    'data',
+    'label',
+    'editMode : edit-mode',
+
+    'addComponentEmitter : add-component-emitter',
+    'editComponentSettingsEmitter : edit-component-settings-emitter',
+    'deleteComponentEmitter : delete-component-emitter'
+  ],
+  outputs: [
+    'render'
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class ODFComponentComponent<T> implements OnInit {
   show: Boolean = true;
   components: Array<BaseComponent<any>> = [];
   container: FormArray = new FormArray([]);
-  @Input() component: BaseOptions<T>;
-  @Input() form: FormGroup;
-  @Input() data: any;
-  @Input() submission: FormGroup;
-  @Input() label: string | boolean;
-  @Output() render: EventEmitter<any> = new EventEmitter();
 
+  component: BaseOptions<T>;
+  form: FormGroup;
+  data: any;
+  submission: FormGroup;
+  label: string | boolean;
+  editMode: boolean = false;
+
+  addComponentEmitter: EventEmitter<any>;
+  editComponentSettingsEmitter: EventEmitter<any>;
+  deleteComponentEmitter: EventEmitter<any>;
+
+  render: EventEmitter<any> = new EventEmitter();
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
@@ -51,6 +90,7 @@ export class ODFComponentComponent<T> implements OnInit {
     // this.checkConditions();
     this.events.onChange.subscribe(() => this.checkConditions());
   }
+
   getData(key: number | string): any {
     if (this.data.hasOwnProperty(key)) {
       return this.data[key];
@@ -58,14 +98,17 @@ export class ODFComponentComponent<T> implements OnInit {
       return {};
     }
   }
+
   checkConditions() {
-    var subData = this.submission ? this.submission.value : {};
-    var compData = Object.assign({}, subData, this.form.value);
-    this.show = true;/*FormioUtils.checkCondition(this.component, compData);*/
+    // var subData = this.submission ? this.submission.value : {};
+    //var compData = Object.assign({}, subData, this.form.value);
+    this.show = true;
+    // FormioUtils.checkCondition(this.component, compData);
   }
+
   addComponent() {
     let component = DFComponents.createComponent(
-      this.component.type,
+      this.component['ontimize-directive'],
       this.form,
       this.component,
       this.events,
@@ -121,5 +164,9 @@ export class ODFComponentComponent<T> implements OnInit {
     // });
     // return errors;
     return [];
+  }
+
+  isContainerComponent(component: BaseComponent<any>) {
+    return component.isContainerComponent();
   }
 }

@@ -1,13 +1,14 @@
 import * as merge from 'merge-stream';
-import {join} from 'path';
+import { join } from 'path';
 import {
   APP_SRC,
-  TMP_DIR,
-  CSS_PROD_BUNDLE,
-  CSS_DEST
+  TMP_DIR
+  // ,
+  // CSS_PROD_BUNDLE,
+  // CSS_DEST
 } from '../config';
 
-export = function buildHTML_CSS(gulp:any, plugins:any) :any {
+export = function buildHTML_CSS(gulp: any, plugins: any): any {
   return function () {
 
     return merge(minifyComponentCss(), prepareTemplates());
@@ -19,8 +20,8 @@ export = function buildHTML_CSS(gulp:any, plugins:any) :any {
 
     function minifyComponentCss() {
       return gulp.src([
-          join(APP_SRC, '**', '*.css')
-        ])
+        join(APP_SRC, '**', '*.css')
+      ])
         .pipe(plugins.cssnano())
         .pipe(gulp.dest(TMP_DIR));
     }
