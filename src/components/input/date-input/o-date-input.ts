@@ -1,12 +1,12 @@
 import { DFComponents } from '../../components';
 import { DFTemplate } from '../../../o-dynamic-form.template';
+import { ODynamicFormEvents } from '../../../o-dynamic-form.events';
 import { InputComponent, InputOptions } from '../input';
-import { FormGroup } from '@angular/forms';
 import { DEFAULT_INPUTS_O_DATE_INPUT } from 'ontimize-web-ng2/ontimize';
 
 export class DateFieldComponent extends InputComponent<InputOptions> {
-  constructor(form: FormGroup, settings: any, data?: any) {
-    super(form, settings, data);
+  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
+    super(settings, events, data);
   }
 
   getInputsProperties(): Array<any> {
@@ -14,6 +14,6 @@ export class DateFieldComponent extends InputComponent<InputOptions> {
   }
 }
 
-export function ODateInput(template: DFTemplate) {
+export function OdfODateInput(template: DFTemplate) {
   DFComponents.register('o-date-input', DateFieldComponent, template.components['o-date-input']);
 };

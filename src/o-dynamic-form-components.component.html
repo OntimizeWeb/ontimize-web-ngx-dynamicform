@@ -1,13 +1,10 @@
 <odf-component *ngFor="let component of components"
   [component]="component"
   (render)="onRender()"
-  class="form-row" (change)="$event.stopPropagation()"
+  class="form-row"
+  (change)="$event.stopPropagation()"
   [edit-mode]="editMode"
   [add-component-emitter]="addComponentEmitter"
   [edit-component-settings-emitter]="editComponentSettingsEmitter"
   [delete-component-emitter]="deleteComponentEmitter">
-
-  >
 </odf-component>
-
-  <!--[form]="form" [submission]="submission" [data]="data"-->

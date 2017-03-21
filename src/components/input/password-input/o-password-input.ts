@@ -1,12 +1,12 @@
 import { DFComponents } from '../../components';
 import { DFTemplate } from '../../../o-dynamic-form.template';
+import { ODynamicFormEvents } from '../../../o-dynamic-form.events';
 import { InputComponent, InputOptions } from '../input';
-import { FormGroup } from '@angular/forms';
 import { DEFAULT_INPUTS_O_PASSWORD_INPUT } from 'ontimize-web-ng2/ontimize';
 
 export class PasswordFieldComponent extends InputComponent<InputOptions> {
-  constructor(form: FormGroup, settings: any, data?: any) {
-    super(form, settings, data);
+  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
+    super(settings, events, data);
   }
 
   getInputsProperties(): Array<any> {
@@ -14,6 +14,6 @@ export class PasswordFieldComponent extends InputComponent<InputOptions> {
   }
 }
 
-export function OPasswordInput(template: DFTemplate) {
+export function OdfOPasswordInput(template: DFTemplate) {
   DFComponents.register('o-password-input', PasswordFieldComponent, template.components['o-password-input']);
 };

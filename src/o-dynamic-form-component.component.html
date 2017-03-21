@@ -1,10 +1,30 @@
-<div *ngFor="let comp of components; let i = index;" style="position:relative;">
-  <odf-element-options *ngIf="editMode" [component]="comp"
-    [edit-component-settings-emitter]="editComponentSettingsEmitter"
-    [delete-component-emitter]="deleteComponentEmitter">
-  </odf-element-options>
-  <odf-element [form]="form" [component]="comp" [submission]="submission" [data]="data" [label]="label" [render]="render"></odf-element>
-  <odf-element-drop-zone *ngIf="editMode && isContainerComponent(comp)" [component]="comp"
+<div *ngFor="let comp of components; let i = index;" class="odf-element-container">
+
+
+  <div [class.component-container]="isContainerComponent(comp)">
+
+    <odf-element-options
+      *ngIf="editMode"
+      [component]="comp"
+      [edit-component-settings-emitter]="editComponentSettingsEmitter"
+      [delete-component-emitter]="deleteComponentEmitter">
+    </odf-element-options>
+
+    <odf-element
+      [component]="comp"
+      [render]="render"
+
+      [edit-mode]="editMode"
+      [add-component-emitter]="addComponentEmitter"
+      [edit-component-settings-emitter]="editComponentSettingsEmitter"
+      [delete-component-emitter]="deleteComponentEmitter"
+    ></odf-element>
+
+  </div>
+
+  <odf-element-drop-zone
+    *ngIf="editMode"
+    [component]="comp"
     [add-component-emitter]="addComponentEmitter">
   </odf-element-drop-zone>
 </div>

@@ -10,8 +10,6 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 
-import { FormGroup, FormArray } from '@angular/forms';
-
 import { DFComponents } from './components/components';
 
 import {
@@ -33,10 +31,6 @@ import { OFormComponent } from 'ontimize-web-ng2/ontimize';
   templateUrl: 'o-dynamic-form-component.component.html',
   inputs: [
     'component',
-    'form',
-    'submission',
-    'data',
-    'label',
     'editMode : edit-mode',
 
     'addComponentEmitter : add-component-emitter',
@@ -51,12 +45,9 @@ import { OFormComponent } from 'ontimize-web-ng2/ontimize';
 export class ODFComponentComponent<T> implements OnInit {
   show: Boolean = true;
   components: Array<BaseComponent<any>> = [];
-  container: FormArray = new FormArray([]);
 
   component: BaseOptions<T>;
-  form: FormGroup;
-  data: any;
-  submission: FormGroup;
+
   label: string | boolean;
   editMode: boolean = false;
 
@@ -70,33 +61,32 @@ export class ODFComponentComponent<T> implements OnInit {
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
-    private events: ODynamicFormEvents) { }
+    private events: ODynamicFormEvents
+  ) {
+    this.render = this.events.onRender;
+  }
 
   ngOnInit() {
     // Add the initial component.
     this.addComponent();
-    if (
-      this.data &&
-      this.component.multiple &&
-      this.data.hasOwnProperty(this.component.key) &&
-      (this.data[this.component.key] instanceof Array) &&
-      (this.data[this.component.key].length > 1)
-    ) {
-      // Add other components if this is an array...
-      for (var i = 1; i < this.data[this.component.key].length; i++) {
-        this.addComponent();
-      }
-    }
+    // if (
+    //   this.data &&
+    //   this.component.multiple &&
+    //   this.data.hasOwnProperty(this.component.key) &&
+    //   (this.data[this.component.key] instanceof Array) &&
+    //   (this.data[this.component.key].length > 1)
+    // ) {
+    //   // Add other components if this is an array...
+    //   for (var i = 1; i < this.data[this.component.key].length; i++) {
+    //     this.addComponent();
+    //   }
+    // }
     // this.checkConditions();
     this.events.onChange.subscribe(() => this.checkConditions());
   }
 
-  getData(key: number | string): any {
-    if (this.data.hasOwnProperty(key)) {
-      return this.data[key];
-    } else {
-      return {};
-    }
+  onRender() {
+    this.events.onRender.emit(true);
   }
 
   checkConditions() {
@@ -108,38 +98,21 @@ export class ODFComponentComponent<T> implements OnInit {
 
   addComponent() {
     let component = DFComponents.createComponent(
-      this.component['ontimize-directive'],
-      this.form,
       this.component,
       this.events,
       this.injector
     );
+    if (component) {
+      // Set the index and readOnly flag.
+      component.index = this.components.length;
 
-    // Set the index and readOnly flag.
-    component.index = this.components.length;
-
-    // Add the form controls.
-    if (this.form && this.component.input && this.component.key) {
-      let control = component.getControl();
-      if (control) {
-        if (this.component.multiple && !component.allowMultiple()) {
-          control.setValue([]);
-          this.form.addControl(this.component.key, control);
-        } else if (this.component.multiple) {
-          this.container.push(control);
-          this.form.addControl(this.component.key, this.container);
-        } else {
-          this.form.addControl(this.component.key, control);
-        }
-      }
+      // Add this to the instances.
+      this.components.push(component);
     }
-
-    // Add this to the instances.
-    this.components.push(component);
     return component;
   }
   removeAt(index: number) {
-    this.container.removeAt(index);
+    // this.container.removeAt(index);
     this.components.splice(index, 1);
   }
   get errors(): Array<string> {

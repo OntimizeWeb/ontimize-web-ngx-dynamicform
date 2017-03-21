@@ -1,6 +1,10 @@
-import { FormGroup, Validators } from '@angular/forms';
+// import {
+//   // FormGroup,
+//   Validators
+// } from '@angular/forms';
 import { BaseComponent, ComponentOptions, ValidateOptions } from '../base';
 
+import { ODynamicFormEvents } from '../../o-dynamic-form.events';
 /**
  * The InputValidation interface.
  */
@@ -19,43 +23,43 @@ export interface InputOptions extends ComponentOptions<string, InputValidateOpti
 }
 
 export class InputComponent<T> extends BaseComponent<T> {
-  constructor(form: FormGroup, settings: any, data?: any) {
-    super(form, settings, data);
+  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
+    super(settings, events, data);
   }
 
-  getError(type: string, error: any): string {
-    let message = super.getError(type, error);
-    if (!message) {
-      switch (type) {
-        case 'minlength':
-          message = this.label + ' must be at least ' + error.requiredLength + ' characters';
-          break;
-        case 'maxlength':
-          message = this.label + ' cannot be more than ' + error.requiredLength + ' characters';
-          break;
-        case 'pattern':
-          message = this.label + ' must match the pattern ' + error.requiredPattern;
-          break;
-      }
-    }
-    return message;
-  }
+  // getError(type: string, error: any): string {
+  //   let message = super.getError(type, error);
+  //   if (!message) {
+  //     switch (type) {
+  //       case 'minlength':
+  //         message = this.label + ' must be at least ' + error.requiredLength + ' characters';
+  //         break;
+  //       case 'maxlength':
+  //         message = this.label + ' cannot be more than ' + error.requiredLength + ' characters';
+  //         break;
+  //       case 'pattern':
+  //         message = this.label + ' must match the pattern ' + error.requiredPattern;
+  //         break;
+  //     }
+  //   }
+  //   return message;
+  // }
 
-  addValidators() {
-    super.addValidators();
-    if (!this.settings.validate) {
-      return;
-    }
-    if (this.settings.validate.minLength) {
-      //noinspection TypeScriptValidateTypes
-      this.validators.push(Validators.minLength(parseInt(this.settings.validate.minLength, 10)));
-    }
-    if (this.settings.validate.maxLength) {
-      //noinspection TypeScriptValidateTypes
-      this.validators.push(Validators.maxLength(parseInt(this.settings.validate.maxLength, 10)));
-    }
-    if (this.settings.validate.pattern) {
-      this.validators.push(Validators.pattern(this.settings.validate.pattern));
-    }
-  }
+  // addValidators() {
+  //   super.addValidators();
+  //   if (!this.settings.validate) {
+  //     return;
+  //   }
+  //   if (this.settings.validate.minLength) {
+  //     //noinspection TypeScriptValidateTypes
+  //     this.validators.push(Validators.minLength(parseInt(this.settings.validate.minLength, 10)));
+  //   }
+  //   if (this.settings.validate.maxLength) {
+  //     //noinspection TypeScriptValidateTypes
+  //     this.validators.push(Validators.maxLength(parseInt(this.settings.validate.maxLength, 10)));
+  //   }
+  //   if (this.settings.validate.pattern) {
+  //     this.validators.push(Validators.pattern(this.settings.validate.pattern));
+  //   }
+  // }
 }

@@ -1,0 +1,7 @@
+<div #odfElement>
+</div>
+
+<div *ngIf="component.isContainerComponent()"
+  class="odf-element-container-dropzone"
+  dnd-droppable (onDropSuccess)="onContainerDropEnd($event)">
+</div>

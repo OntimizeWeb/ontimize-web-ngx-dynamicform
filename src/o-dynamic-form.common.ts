@@ -4,21 +4,21 @@ import { BaseOptions } from './components/base';
  * The form structure.
  */
 export interface DynamicFormDefinition {
-    title?: string;
-    name?: string;
-    path?: string;
-    project?: string;
-    template?: string;
-    components?: Array<BaseOptions<any>>;
+  title?: string;
+  name?: string;
+  path?: string;
+  project?: string;
+  template?: string;
+  components?: Array<BaseOptions<any>>;
 }
 
 export interface AlertsOptions {
-    submitMessage: string;
+  submitMessage: string;
 }
 
 export interface FormioAlert {
-    type: string;
-    message: string;
+  type: string;
+  message: string;
 }
 
 // export class FormioError {
@@ -26,10 +26,10 @@ export interface FormioAlert {
 // }
 
 export interface ErrorsOptions {
-    message: string;
+  message: string;
 }
 
 export interface FormioOptions {
-    errors: ErrorsOptions;
-    alerts: AlertsOptions;
+  errors: ErrorsOptions;
+  alerts: AlertsOptions;
 }

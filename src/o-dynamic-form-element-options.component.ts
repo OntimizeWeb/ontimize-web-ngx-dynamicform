@@ -23,10 +23,14 @@ export class ODFElementOptionsComponent {
   deleteComponentEmitter: EventEmitter<any>;
 
   onEditOdfElement() {
-    this.editComponentSettingsEmitter.emit(this.component);
+    this.editComponentSettingsEmitter.emit({
+      component: this.component
+    });
   }
 
   onDeleteOdfElement() {
-    this.deleteComponentEmitter.emit(this.component);
+    this.deleteComponentEmitter.emit({
+      component: this.component
+    });
   }
 }

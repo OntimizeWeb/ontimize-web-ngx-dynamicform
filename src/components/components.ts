@@ -1,19 +1,22 @@
-import { NgModule, Compiler, Component, ComponentFactory } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-import { FormGroup } from '@angular/forms';
-// import { ReactiveFormsModule } from '@angular/forms';
-
 let find = require('lodash/find');
 let cloneDeep = require('lodash/cloneDeep');
 
-// import { DynamicFormModule } from '../../index';
+import {
+  NgModule,
+  Compiler,
+  Component,
+  ComponentFactory,
+  ViewChild,
+  EventEmitter
+} from '@angular/core';
+
+import { DndModule } from 'ng2-dnd';
+import { ONTIMIZE_MODULES } from 'ontimize-web-ng2/ontimize';
+
+import { BaseComponent } from './base';
+import { DynamicFormModule } from '../../index';
 import { DFComponentMetaData, DFComponentTemplate } from '../o-dynamic-form.template';
 import { ODynamicFormEvents } from '../o-dynamic-form.events';
-
-import {
-  // OFormComponent,
-  ONTIMIZE_MODULES
-} from 'ontimize-web-ng2/ontimize';
 
 export interface DFComponentWrapper {
   component?: any;
@@ -23,20 +26,21 @@ export interface DFComponentWrapper {
   factoryPromise?: Promise<ComponentFactory<any>>;
 }
 
+// export class BaseElement<T> {
+// }
+
 export class DFComponents {
   public static components: DFComponentWrapper = {};
 
   public static register(
     ontimizeDirective: string,
     component: any,
-    // element: any,
     template: DFComponentTemplate
   ) {
     let compTemplate = cloneDeep(template);
     compTemplate.module = compTemplate.module || {};
     compTemplate.component.selector = compTemplate.component.selector || 'odf-' + ontimizeDirective;
-    compTemplate.component.inputs = compTemplate.component.inputs || ['component', 'form'];
-    // ORIGINAL const decoratedCmp = Component(compTemplate.component)(element);
+    compTemplate.component.inputs = compTemplate.component.inputs || ['component', 'data'];
 
     let decoratedCmp = this.createCustomComponent(compTemplate.component);
 
@@ -50,7 +54,8 @@ export class DFComponents {
     }
     // compTemplate.module.imports.push(CommonModule);
     // compTemplate.module.imports.push(ReactiveFormsModule);
-    // compTemplate.module.imports.push(DynamicFormModule);
+    compTemplate.module.imports.push(DynamicFormModule);
+    compTemplate.module.imports.push(DndModule);
     compTemplate.module.imports.push(ONTIMIZE_MODULES);
 
     @NgModule(compTemplate.module)
@@ -58,25 +63,19 @@ export class DFComponents {
 
     DFComponents.components[ontimizeDirective] = {
       component: component,
-      // element: element,
       metadata: compTemplate.component,
       module: DynamicComponentModule,
       factory: null
     };
   }
 
-  protected static createCustomComponent(compDefinition: any): any {
-    @Component(compDefinition)
-    class CustomDynamicComponent { }
-    return CustomDynamicComponent;
-  }
-
-  public static createComponent(ontimizeDirective: string, form: FormGroup, component: any, events: ODynamicFormEvents, data: any): any {
-    if (!DFComponents.components.hasOwnProperty(ontimizeDirective)) {
-      ontimizeDirective = 'custom';
-    }
+  public static createComponent(component: any, events: ODynamicFormEvents, data: any): any {
+    let ontimizeDirective: string = component['ontimize-directive'];
     let comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
-    return new comp.component(form, component, events, data);
+    if (!comp) {
+      return undefined;
+    }
+    return new comp.component(component, events, data);
   }
 
   public static element(
@@ -91,9 +90,61 @@ export class DFComponents {
     }
     DFComponents.components[ontimizeDirective].factoryPromise = compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module)
       .then((moduleWithFactories) => {
-        let factory = find(moduleWithFactories.componentFactories, { selector: ontimizeDirective });
+        let factory = find(moduleWithFactories.componentFactories, { selector: 'odf-' + ontimizeDirective });
         return factory;
       });
     return DFComponents.components[ontimizeDirective].factoryPromise;
+  }
+
+  protected static createCustomComponent(compDefinition: any): any {
+    @Component(compDefinition)
+    class CustomDynamicComponent {
+
+      @ViewChild('ontimizeComponent')
+      ontimizeComponent: any;
+      component: BaseComponent<any>;
+      render: EventEmitter<any>;
+
+      renderCount: number = 0;
+
+      get numComponents(): number {
+        return this.component.getNumComponents();
+      }
+
+      // constructor() {
+      //   console.log('CustomDynamicComponent constructor');
+      // }
+
+      ngOnInit() {
+        this.setOntimizeComponentInputs();
+        this.onRender();
+      }
+
+      onRender() {
+        if (!this.render) {
+          return;
+        }
+        if (this.renderCount > this.numComponents) {
+          return;
+        }
+        this.renderCount++;
+        if (this.renderCount > this.numComponents) {
+          this.render.emit(true);
+        }
+      }
+
+      setOntimizeComponentInputs() {
+        if (this.component && this.ontimizeComponent) {
+          let inputsMapping = this.component.getInputsMapping();
+          for (var i = 0; i < inputsMapping.length; i++) {
+            let curr = inputsMapping[i];
+            if (this.component.settings.hasOwnProperty(curr.input)) {
+              this.ontimizeComponent[curr.propName] = this.component.settings[curr.input];
+            }
+          }
+        }
+      }
+    }
+    return CustomDynamicComponent;
   }
 }

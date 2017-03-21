@@ -3,7 +3,6 @@ import {
   EventEmitter,
   ViewEncapsulation
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { BaseOptions } from './components/base';
 
 @Component({
@@ -12,9 +11,7 @@ import { BaseOptions } from './components/base';
   templateUrl: 'o-dynamic-form-components.component.html',
   inputs: [
     'components',
-    'form',
-    'submission',
-    'data',
+
     'editMode : edit-mode',
     'addComponentEmitter : add-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
@@ -28,9 +25,7 @@ import { BaseOptions } from './components/base';
 export class ODFComponentsComponent {
 
   components: Array<BaseOptions<any>>;
-  form: FormGroup;
-  submission: FormGroup;
-  data: any;
+
   editMode: boolean = false;
   addComponentEmitter: EventEmitter<any>;
   editComponentSettingsEmitter: EventEmitter<any>;

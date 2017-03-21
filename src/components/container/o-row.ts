@@ -1,12 +1,12 @@
 import { DFComponents } from '../components';
 import { DFTemplate } from '../../o-dynamic-form.template';
+import { ODynamicFormEvents } from '../../o-dynamic-form.events';
 import { BaseComponent, ComponentOptions } from '../base';
-import { FormGroup } from '@angular/forms';
 import { DEFAULT_INPUTS_O_ROW } from 'ontimize-web-ng2/ontimize';
 
 export class ORowComponent extends BaseComponent<ComponentOptions<string, any>> {
-  constructor(form: FormGroup, settings: any, data?: any) {
-    super(form, settings, data);
+  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
+    super(settings, events, data);
   }
 
   getInputsProperties(): Array<any> {
@@ -18,6 +18,6 @@ export class ORowComponent extends BaseComponent<ComponentOptions<string, any>> 
   }
 }
 
-export function ORow(template: DFTemplate) {
+export function OdfORow(template: DFTemplate) {
   DFComponents.register('o-row', ORowComponent, template.components['o-row']);
 };

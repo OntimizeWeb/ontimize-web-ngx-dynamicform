@@ -30,3 +30,29 @@
     box-sizing: border-box;
   }
 }
+
+odf-element {
+  o-column,
+  o-row {
+    .container-content {
+      padding:0;
+    }
+  }
+
+  .odf-element-container-dropzone {
+    height: 20px;
+  }
+}
+
+.odf-element-container {
+  position: relative;
+
+  .component-container {
+    border: 1px solid #dadada;
+
+    .odf-element-container {
+      // padding: 0 32px;
+      // width: calc(100% - 64px);
+    }
+  }
+}

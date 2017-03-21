@@ -1,18 +1,11 @@
-<div flex layout-fill>
-
-  <div dnd-droppable (onDropSuccess)="onDropEnd($event)"
-    class="dynamic-form-drop-zone"
-    [class.full-height-drop-zone]="!getComponetsDef().length">
-  </div>
-
+<o-row #ontimizeComponent>
   <odf-components
-    *ngIf="ready"
-    [components]="getComponetsDef()"
+    *ngIf="component.isContainerComponent()"
+    [components]="component.getChildren()"
     [edit-mode]="editMode"
     (render)="onRender()"
     [add-component-emitter]="onAddComponent"
     [edit-component-settings-emitter]="onEditComponentSettings"
     [delete-component-emitter]="onDeleteComponent">
   </odf-components>
-
-</div>
+</o-row>
