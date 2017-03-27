@@ -1,4 +1,4 @@
-## 0.0.3 (2017-03-27)
+## 0.0.31 (2017-03-27)
 
 ### Features
 * **o-dynamic-form**: Registering in parent '*o-form*' component.

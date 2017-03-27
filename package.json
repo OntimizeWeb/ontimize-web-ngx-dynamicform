@@ -1,6 +1,6 @@
 {
   "name": "ontimize-web-ng2-dynamicform",
-  "version": "0.0.3",
+  "version": "0.0.31",
   "description": "Dynamic form",
   "scripts": {
     "test": "tsc",
