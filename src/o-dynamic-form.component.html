@@ -1,6 +1,6 @@
 <div flex layout-fill>
 
-  <div dnd-droppable (onDropSuccess)="onDropEnd($event)"
+  <div *ngIf="editMode" dnd-droppable (onDropSuccess)="onDropEnd($event)"
     class="dynamic-form-drop-zone"
     [class.full-height-drop-zone]="!getComponetsDef().length">
   </div>

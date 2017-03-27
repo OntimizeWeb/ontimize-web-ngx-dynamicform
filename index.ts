@@ -17,6 +17,8 @@ import { DFTemplate } from './src/o-dynamic-form.template';
 import { ODFElementOptionsComponent } from './src/o-dynamic-form-element-options.component';
 import { ODFElementDropZoneComponent } from './src/o-dynamic-form-element-drop-zone.component';
 
+export { ODynamicFormComponent } from './src/o-dynamic-form.component';
+
 @NgModule({
   imports: [
     MaterialModule.forRoot(),

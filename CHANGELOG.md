@@ -1,17 +1,25 @@
-## 1.0.0
+## 0.0.3 (2017-03-27)
+
+### Features
+* **o-dynamic-form**: Registering in parent '*o-form*' component.
+* **DynamicFormModule**: exporting '*ODynamicFormComponent*'.
+
+### PEER-DEPENDENCY UPDATES ###
+* **Updated**:   ontimize-web-ng2@1.2.1
+
+### BREAKING CHANGES
+
+### Bug Fixes
+* **Mode bugs**: disabling drag and drop when '*edit-mode*' is false.
+* **o-form**: '*form-definition*' input bugs fixed ([#1](https://github.com/OntimizeWeb/ontimize-web-ng2/issues/1)) ([18865eb](https://github.com/OntimizeWeb/ontimize-web-ng2/commit/18865eb))
+
+
+
+## 0.0.2 (2017-03-21)
 
 ### Features
 
-* **angular2:** version 2.1.2.
-* **angular2 router:** version 3.0.0-rc.2.
-* **angular2 material:** version v2.0.0-alpha.10.
+build: first commit
 
----
-
-## 1.0.0-rc.0
-
-### Features
-
-* **build:** first release candidate
 
 
