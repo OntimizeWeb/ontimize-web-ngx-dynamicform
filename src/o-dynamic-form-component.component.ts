@@ -63,7 +63,7 @@ export class ODFComponentComponent<T> implements OnInit {
     protected injector: Injector,
     private events: ODynamicFormEvents
   ) {
-    this.render = this.events.onRender;
+    // this.render = this.events.onRender;
   }
 
   ngOnInit() {
@@ -85,10 +85,6 @@ export class ODFComponentComponent<T> implements OnInit {
     this.events.onChange.subscribe(() => this.checkConditions());
   }
 
-  onRender() {
-    this.events.onRender.emit(true);
-  }
-
   checkConditions() {
     // var subData = this.submission ? this.submission.value : {};
     //var compData = Object.assign({}, subData, this.form.value);
@@ -105,38 +101,18 @@ export class ODFComponentComponent<T> implements OnInit {
     if (component) {
       // Set the index and readOnly flag.
       component.index = this.components.length;
-
       // Add this to the instances.
       this.components.push(component);
+    } else {
+      // component wasnt created (triggering render so the dynamic-form would trigger render event correctly)
+      this.render.emit(true);
     }
     return component;
   }
+
   removeAt(index: number) {
     // this.container.removeAt(index);
     this.components.splice(index, 1);
-  }
-  get errors(): Array<string> {
-    // if (!this.component.input) {
-    //   return [];
-    // }
-    // if (!this.form.controls.hasOwnProperty(this.component.key)) {
-    //   return [];
-    // }
-    // if (this.form.controls[this.component.key].pristine) {
-    //   return [];
-    // }
-    // if (this.form.controls[this.component.key].valid) {
-    //   return [];
-    // }
-    // let errors: Array<string> = [];
-    // this.components.forEach((component: BaseComponent<any>) => {
-    //   let compErrs: Array<FormioError> = component.errors;
-    //   compErrs.forEach((compError) => {
-    //     errors.push(compError.message);
-    //   });
-    // });
-    // return errors;
-    return [];
   }
 
   isContainerComponent(component: BaseComponent<any>) {

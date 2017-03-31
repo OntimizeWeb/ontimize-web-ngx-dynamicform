@@ -35,7 +35,7 @@ export class ODFComponentsComponent {
 
   private renderCount: number = 0;
 
-  onRender() {
+  onComponentRendered() {
     if (this.renderCount >= this.components.length) {
       return;
     }

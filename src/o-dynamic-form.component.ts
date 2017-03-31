@@ -287,7 +287,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
     this.unregisterFormListeners();
   }
 
-  onRender() {
+  onComponentsRendered() {
     // The form is done rendering.
     if (this.render) {
       this.render.emit(true);
