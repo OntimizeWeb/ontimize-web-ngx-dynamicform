@@ -41,15 +41,7 @@ export class BaseComponent<T> {
     public events: ODynamicFormEvents,
     public data: any = {}
   ) {
-    console.log('BaseComponent constructor');
-  }
 
-  ngOnInit() {
-    console.log('BaseComponent ngOnInit');
-  }
-
-  ngAfterViewInit() {
-    console.log('BaseComponent ngAfterViewInit');
   }
 
   getNumComponents() {

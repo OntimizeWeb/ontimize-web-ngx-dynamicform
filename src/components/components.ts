@@ -73,6 +73,7 @@ export class DFComponents {
     let ontimizeDirective: string = component['ontimize-directive'];
     let comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
     if (!comp) {
+      console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O',ontimizeDirective, component);
       return undefined;
     }
     return new comp.component(component, events, data);
@@ -102,6 +103,9 @@ export class DFComponents {
 
       @ViewChild('ontimizeComponent')
       ontimizeComponent: any;
+
+      formGroupSubs: any;
+
       component: BaseComponent<any>;
       render: EventEmitter<any>;
 
@@ -111,13 +115,24 @@ export class DFComponents {
         return this.component.getNumComponents();
       }
 
-      // constructor() {
-      //   console.log('CustomDynamicComponent constructor');
-      // }
-
       ngOnInit() {
         this.setOntimizeComponentInputs();
+      }
+
+      ngAfterViewInit() {
         this.onRender();
+      }
+
+      setOntimizeComponentInputs() {
+        if (this.component && this.ontimizeComponent) {
+          let inputsMapping = this.component.getInputsMapping();
+          for (var i = 0; i < inputsMapping.length; i++) {
+            let curr = inputsMapping[i];
+            if (this.component.settings.hasOwnProperty(curr.input)) {
+              this.ontimizeComponent[curr.propName] = this.component.settings[curr.input];
+            }
+          }
+        }
       }
 
       onRender() {
@@ -130,18 +145,6 @@ export class DFComponents {
         this.renderCount++;
         if (this.renderCount > this.numComponents) {
           this.render.emit(true);
-        }
-      }
-
-      setOntimizeComponentInputs() {
-        if (this.component && this.ontimizeComponent) {
-          let inputsMapping = this.component.getInputsMapping();
-          for (var i = 0; i < inputsMapping.length; i++) {
-            let curr = inputsMapping[i];
-            if (this.component.settings.hasOwnProperty(curr.input)) {
-              this.ontimizeComponent[curr.propName] = this.component.settings[curr.input];
-            }
-          }
         }
       }
     }

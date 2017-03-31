@@ -47,9 +47,9 @@ export class ODFElementComponent implements OnInit {
 
   onContainerDropEnd(event) {
     if (this.editMode) {
-    this.addComponentEmitter.emit({
-      component: event.dragData,
-      parent: this.component
+      this.addComponentEmitter.emit({
+        component: event.dragData,
+        parent: this.component
       });
     }
   }

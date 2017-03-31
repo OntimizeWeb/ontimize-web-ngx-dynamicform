@@ -9,7 +9,7 @@
     *ngIf="ready"
     [components]="getComponetsDef()"
     [edit-mode]="editMode"
-    (render)="onRender()"
+    (render)="onComponentsRendered()"
     [add-component-emitter]="onAddComponent"
     [edit-component-settings-emitter]="onEditComponentSettings"
     [delete-component-emitter]="onDeleteComponent">
