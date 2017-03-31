@@ -1,3 +1,17 @@
+## 0.0.4 (2017-03-31)
+
+### Features
+
+### PEER-DEPENDENCY UPDATES ###
+* **Updated**:   ontimize-web-ng2@1.2.2
+
+### BREAKING CHANGES
+
+### Bug Fixes
+* **o-dynamic-form**: fixing render event triggering bugs.
+* **o-dynamic-form**: fixing non existing components json bugs.
+
+
 ## 0.0.31 (2017-03-27)
 
 ### Features
