@@ -115,7 +115,7 @@
     "datatables.net-select": "^1.2.0",
     "colresizable": "1.6.0",
     "pdfmake": "^0.1.18",
-    "ontimize-web-ng2" : "1.2.2"
+    "ontimize-web-ng2" : "1.2.3"
   },
   "engines": {
     "node": ">=0.8.0"

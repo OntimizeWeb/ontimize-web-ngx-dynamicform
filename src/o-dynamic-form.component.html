@@ -5,7 +5,7 @@
     [class.full-height-drop-zone]="!getComponetsDef().length">
   </div>
 
-  <odf-components
+  <odf-components #odfComponents
     *ngIf="ready"
     [components]="getComponetsDef()"
     [edit-mode]="editMode"

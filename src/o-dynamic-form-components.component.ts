@@ -3,6 +3,7 @@ import {
   EventEmitter,
   ViewEncapsulation
 } from '@angular/core';
+
 import { BaseOptions } from './components/base';
 
 @Component({
@@ -24,7 +25,7 @@ import { BaseOptions } from './components/base';
 })
 export class ODFComponentsComponent {
 
-  components: Array<BaseOptions<any>>;
+  _components: Array<BaseOptions<any>>;
 
   editMode: boolean = false;
   addComponentEmitter: EventEmitter<any>;
@@ -35,6 +36,15 @@ export class ODFComponentsComponent {
 
   private renderCount: number = 0;
 
+  set components(componentsDef) {
+    this.resetCount();
+    this._components = componentsDef;
+  }
+
+  get components() {
+    return this._components;
+  }
+
   onComponentRendered() {
     if (this.renderCount >= this.components.length) {
       return;
@@ -43,5 +53,9 @@ export class ODFComponentsComponent {
     if (this.renderCount >= this.components.length) {
       this.render.emit(true);
     }
+  }
+
+  private resetCount() {
+    this.renderCount = 0;
   }
 }
