@@ -2,12 +2,12 @@
 
   <div *ngIf="editMode" dnd-droppable (onDropSuccess)="onDropEnd($event)"
     class="dynamic-form-drop-zone"
-    [class.full-height-drop-zone]="!getComponetsDef().length">
+    [class.full-height-drop-zone]="!areEmptyComponents">
   </div>
 
   <odf-components #odfComponents
     *ngIf="ready"
-    [components]="getComponetsDef()"
+    [components]="formDefinition"
     [edit-mode]="editMode"
     (render)="onComponentsRendered()"
     [add-component-emitter]="onAddComponent"

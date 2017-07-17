@@ -21,12 +21,14 @@ import {
   OntimizeService,
   IFormDataTypeComponent,
   SQLTypes,
-  InputConverter
+  InputConverter,
+  IFormDataComponent,
+  OFormValue
 } from 'ontimize-web-ng2/ontimize';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
-import { BaseOptions } from './components/base';
+// import { BaseOptions } from './components/base';
 
 @Component({
   moduleId: module.id,
@@ -39,11 +41,13 @@ import { BaseOptions } from './components/base';
     'editMode : edit-mode',
     'entity',
     'keys',
+    'parentKeys: parent-keys',
     'columns',
     'service',
     'serviceType : service-type',
     'queryOnInit : query-on-init',
-    'registerInParentForm : register-in-parent-form'
+    'registerInParentForm : register-in-parent-form',
+    'autoBinding: automatic-binding'
   ],
   outputs: [
     'render',
@@ -51,11 +55,12 @@ import { BaseOptions } from './components/base';
     'change',
     'onAddComponent',
     'onEditComponentSettings',
-    'onDeleteComponent'
+    'onDeleteComponent',
+    'onDynamicFormDataLoaded'
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
+export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 
   public ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -65,6 +70,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
   editMode: boolean = false;
   entity: string;
   keys: string = '';
+  parentKeys: string = '';
   columns: string = '';
   service: string;
   serviceType: string;
@@ -72,12 +78,15 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
   queryOnInit: boolean = true;
   @InputConverter()
   registerInParentForm: boolean = true;
+  @InputConverter()
+  autoBinding: boolean = true;
   /* end of inputs */
 
   /*parsed inputs */
   innerFormDefinition: DynamicFormDefinition = null;
   keysArray: string[] = [];
   colsArray: string[] = [];
+  _pKeysEquiv = {};
   dataService: any;
   /* end of parsed inputs */
 
@@ -89,6 +98,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
   onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   onDeleteComponent: EventEmitter<any> = new EventEmitter();
 
+  onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
@@ -131,6 +141,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
 
     this.keysArray = Util.parseArray(this.keys);
     this.colsArray = Util.parseArray(this.columns);
+    let pkArray = Util.parseArray(this.parentKeys);
+    this._pKeysEquiv = Util.parseParentKeysEquivalences(pkArray);
 
     this.configureService();
 
@@ -203,6 +215,21 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
     this.formDefinition = val;
   }
 
+  set data(value: any) {
+    let formDef = undefined;
+    if (value instanceof OFormValue) {
+      formDef = value.value;
+    }
+    if (!formDef) {
+      formDef = {};
+    }
+    this.formDefinition = formDef;
+  }
+
+  isAutomaticBinding(): Boolean {
+    return this.autoBinding;
+  }
+
   protected getCurrentKeysValues() {
     let filter = {};
     if (this.urlParams && this.keysArray) {
@@ -212,6 +239,16 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
         }
       });
     };
+
+    let keys = Object.keys(this._pKeysEquiv);
+    if (this.urlParams && keys && keys.length > 0) {
+      keys.forEach(item => {
+        let urlVal = this.urlParams[this._pKeysEquiv[item]];
+        if (urlVal) {
+          filter[item] = urlVal;
+        }
+      });
+    }
     return filter;
   }
 
@@ -238,8 +275,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
   _setData(data) {
     if (Util.isArray(data) && data.length === 1) {
       this.formData = data[0];
+      this._emitData(this.formData);
     } else if (Util.isObject(data)) {
       this.formData = data;
+      this._emitData(this.formData);
     } else {
       console.warn('DynamicForm has received not supported service data. Supported data are Array or Object');
     }
@@ -247,6 +286,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
       let dynamicData = this.formData[this.oattr];
       this.formDefinition = dynamicData;
     }
+  }
+
+  _emitData(data) {
+    this.onDynamicFormDataLoaded.emit(data);
   }
 
   queryData(filter) {
@@ -271,13 +314,20 @@ export class ODynamicFormComponent implements OnInit, IFormDataTypeComponent {
       });
   }
 
-  getComponetsDef() {
+  get areEmptyComponents() {
     if (this.formDefinition && this.formDefinition.components) {
-      return this.formDefinition.components;
+      return this.formDefinition.components.length === 0;
     }
-    let empty: Array<BaseOptions<any>> = [];
-    return empty;
+    return true;
   }
+
+  // getComponetsDef() {
+  //   if (this.formDefinition && this.formDefinition.components) {
+  //     return this.formDefinition.components;
+  //   }
+  //   let empty: Array<BaseOptions<any>> = [];
+  //   return empty;
+  // }
 
 
   ngOnDestroy() {
