@@ -36,9 +36,9 @@ export class ODFComponentsComponent {
 
   private renderCount: number = 0;
 
-  set components(componentsDef) {
+  set components(componentsDef: any) {
     this.resetCount();
-    this._components = componentsDef;
+    this._components = componentsDef && componentsDef.components ? componentsDef.components : [];
   }
 
   get components() {
