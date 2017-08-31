@@ -1,27 +1,12 @@
-.dynamic-form-drop-zone {
-  width: 100%;
-  height: 12px;
-  &.dnd-drag-enter {
-    &.full-height-drop-zone {
-      height: 120px;
-    }
-    height: 36px;
-  }
-}
-
-.odf-element-drop-zone {
-  width: 100%;
-  height: 5px;
-  &.dnd-drag-enter {
-    height: 35px;
-  }
-}
-
 .odf-element-options-container {
-  position: absolute;
-  right: 0;
-  top: 0px;
   z-index: 1;
+  background: #DADADA;
+
+  .odf-element-options-attr {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 8px;
+  }
 
   md-icon {
     font-size: 14px;
@@ -32,15 +17,10 @@
 }
 
 odf-element {
-  o-column,
-  o-row {
+  o-column, o-row {
     .container-content {
-      padding:0;
+      padding: 0;
     }
-  }
-
-  .odf-element-container-dropzone {
-    height: 20px;
   }
 }
 
@@ -48,11 +28,11 @@ odf-element {
   position: relative;
 
   .component-container {
-    border: 1px solid #dadada;
+    border: 1px solid #DADADA;
 
-    .odf-element-container {
-      // padding: 0 32px;
-      // width: calc(100% - 64px);
+    o-column.margin-top-bottom, o-row.margin-top-bottom {
+      margin: 0;
+      padding: 8px 0px;
     }
   }
 }

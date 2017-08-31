@@ -1,22 +1,22 @@
 import {
   Component,
-  OnInit,
+  ElementRef,
   EventEmitter,
-  Optional,
+  forwardRef,
   Inject,
   Injector,
-  forwardRef,
-  ElementRef,
+  OnInit,
+  Optional,
   ViewEncapsulation
 } from '@angular/core';
 
+import { OFormComponent } from 'ontimize-web-ng2';
+
 import { DFComponents } from './components/components';
-
 import {
-  BaseOptions,
-  BaseComponent
+  BaseComponent,
+  BaseOptions
 } from './components/base';
-
 // import { FormioError } from './o-dynamic-form.common';
 import {
   // DynamicFormEvent,
@@ -24,15 +24,12 @@ import {
 } from './o-dynamic-form.events';
 // var FormioUtils = require('formio-utils');
 
-import { OFormComponent } from 'ontimize-web-ng2/ontimize';
-
 @Component({
   selector: 'odf-component',
-  templateUrl: 'o-dynamic-form-component.component.html',
+  template: require('./o-dynamic-form-component.component.html'),
   inputs: [
     'component',
     'editMode : edit-mode',
-
     'addComponentEmitter : add-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
     'deleteComponentEmitter : delete-component-emitter'
@@ -118,4 +115,5 @@ export class ODFComponentComponent<T> implements OnInit {
   isContainerComponent(component: BaseComponent<any>) {
     return component.isContainerComponent();
   }
+
 }

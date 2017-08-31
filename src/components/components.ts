@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { DndModule } from 'ng2-dnd';
-import { ONTIMIZE_MODULES } from 'ontimize-web-ng2/ontimize';
+import { OntimizeWebModule } from 'ontimize-web-ng2';
 
 import { BaseComponent } from './base';
 import { DynamicFormModule } from '../../index';
@@ -26,10 +26,8 @@ export interface DFComponentWrapper {
   factoryPromise?: Promise<ComponentFactory<any>>;
 }
 
-// export class BaseElement<T> {
-// }
-
 export class DFComponents {
+
   public static components: DFComponentWrapper = {};
 
   public static register(
@@ -56,7 +54,7 @@ export class DFComponents {
     // compTemplate.module.imports.push(ReactiveFormsModule);
     compTemplate.module.imports.push(DynamicFormModule);
     compTemplate.module.imports.push(DndModule);
-    compTemplate.module.imports.push(ONTIMIZE_MODULES);
+    compTemplate.module.imports.push(OntimizeWebModule);
 
     @NgModule(compTemplate.module)
     class DynamicComponentModule { }
@@ -73,7 +71,7 @@ export class DFComponents {
     let ontimizeDirective: string = component['ontimize-directive'];
     let comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
     if (!comp) {
-      console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O',ontimizeDirective, component);
+      console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O', ontimizeDirective, component);
       return undefined;
     }
     return new comp.component(component, events, data);
@@ -150,4 +148,5 @@ export class DFComponents {
     }
     return CustomDynamicComponent;
   }
+
 }

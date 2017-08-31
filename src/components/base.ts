@@ -40,9 +40,7 @@ export class BaseComponent<T> {
     public settings: any,
     public events: ODynamicFormEvents,
     public data: any = {}
-  ) {
-
-  }
+  ) { }
 
   getNumComponents() {
     return this.isContainerComponent() ? this.getChildren().length : 0;
@@ -81,4 +79,5 @@ export class BaseComponent<T> {
   getComponentAttr() {
     return this.settings.attr;
   }
+
 }

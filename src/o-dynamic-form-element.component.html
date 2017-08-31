@@ -1,7 +1,9 @@
-<div #odfElement>
-</div>
+<ng-template #odfElement></ng-template>
 
-<div *ngIf="component.isContainerComponent()"
-  class="odf-element-container-dropzone"
-  dnd-droppable (onDropSuccess)="onContainerDropEnd($event)">
-</div>
+<o-drop-zone
+  fxFlex
+  *ngIf="editMode && component.isContainerComponent()"
+  [component]="component"
+  for-children="true"
+  [add-component-emitter]="addComponentEmitter">
+</o-drop-zone>

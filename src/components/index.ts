@@ -16,17 +16,17 @@ import { OdfORow } from './container/o-row';
 
 
 export function RegisterComponents(template: DFTemplate) {
-    OdfOColumn(template);
-    OdfORow(template);
+  OdfOColumn(template);
+  OdfORow(template);
 
-    OdfOCurrencyInput(template);
-    OdfODateInput(template);
-    OdfOEmailInput(template);
-    OdfOIntegerInput(template);
-    OdfONifInput(template);
-    OdfOPasswordInput(template);
-    OdfOPercentInput(template);
-    OdfORealInput(template);
-    OdfOTextInput(template);
-    OdfOTextareaInput(template);
+  OdfOCurrencyInput(template);
+  OdfODateInput(template);
+  OdfOEmailInput(template);
+  OdfOIntegerInput(template);
+  OdfONifInput(template);
+  OdfOPasswordInput(template);
+  OdfOPercentInput(template);
+  OdfORealInput(template);
+  OdfOTextInput(template);
+  OdfOTextareaInput(template);
 }

@@ -1,24 +1,22 @@
 import {
+  Compiler,
   Component,
+  ComponentRef,
   EventEmitter,
   OnInit,
-  Compiler,
-  ViewContainerRef,
   ViewChild,
-  ComponentRef
+  ViewContainerRef
 } from '@angular/core';
 
-import { DFComponents } from './components/components';
 import { BaseComponent } from './components/base';
-import { ODynamicFormEvents } from './o-dynamic-form.events';
+import { DFComponents } from './components/components';
 
 @Component({
   selector: 'odf-element',
-  templateUrl: 'o-dynamic-form-element.component.html',
+  template: require('./o-dynamic-form-element.component.html'),
   inputs: [
     'component',
     'render',
-
     'editMode : edit-mode',
     'addComponentEmitter : add-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
@@ -39,20 +37,8 @@ export class ODFElementComponent implements OnInit {
   element: ViewContainerRef;
 
   constructor(
-    private compiler: Compiler,
-    private events: ODynamicFormEvents
-  ) {
-
-  }
-
-  onContainerDropEnd(event) {
-    if (this.editMode) {
-      this.addComponentEmitter.emit({
-        component: event.dragData,
-        parent: this.component
-      });
-    }
-  }
+    private compiler: Compiler
+  ) { }
 
   ngOnInit() {
     var self = this;
@@ -71,4 +57,5 @@ export class ODFElementComponent implements OnInit {
       cmpRef.instance['render'] = self.render;
     });
   }
+
 }
