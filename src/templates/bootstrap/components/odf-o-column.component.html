@@ -1,11 +1,15 @@
-<o-column #ontimizeComponent>
-  <odf-components
-    *ngIf="component.isContainerComponent()"
-    [components]="component.getChildren()"
-    [edit-mode]="editMode"
-    (render)="onRender()"
-    [add-component-emitter]="onAddComponent"
-    [edit-component-settings-emitter]="onEditComponentSettings"
-    [delete-component-emitter]="onDeleteComponent">
-  </odf-components>
+<o-column #ontimizeComponent fxLayout="column">
+
+  <ng-template ngFor let-cmp [ngForOf]="component.getChildren()">
+    <odf-component fxFlex layout-padding
+      *ngIf="component.isContainerComponent()"
+      [component]="cmp"
+      [edit-mode]="editMode"
+      (render)="onRender()"
+      [add-component-emitter]="onAddComponent"
+      [edit-component-settings-emitter]="onEditComponentSettings"
+      [delete-component-emitter]="onDeleteComponent">
+    </odf-component>
+  </ng-template>
+
 </o-column>

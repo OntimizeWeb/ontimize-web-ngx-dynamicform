@@ -8,7 +8,7 @@ import { BaseComponent } from './components/base';
 
 @Component({
   selector: 'odf-element-options',
-  templateUrl: 'o-dynamic-form-element-options.component.html',
+  template: require('./o-dynamic-form-element-options.component.html'),
   inputs: [
     'component',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
@@ -33,4 +33,5 @@ export class ODFElementOptionsComponent {
       component: this.component
     });
   }
+
 }

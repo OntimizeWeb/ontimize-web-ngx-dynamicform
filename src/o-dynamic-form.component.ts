@@ -1,13 +1,13 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
+  forwardRef,
+  Inject,
+  Injector,
   OnInit,
   Optional,
-  Inject,
-  forwardRef,
   ViewEncapsulation,
-  Injector,
-  ElementRef
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -16,25 +16,24 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import {
-  OFormComponent,
-  Util,
-  OntimizeService,
-  IFormDataTypeComponent,
-  SQLTypes,
-  InputConverter,
   IFormDataComponent,
-  OFormValue
-} from 'ontimize-web-ng2/ontimize';
+  IFormDataTypeComponent,
+  InputConverter,
+  OFormComponent,
+  OFormValue,
+  OntimizeService,
+  SQLTypes,
+  Util
+} from 'ontimize-web-ng2';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
 // import { BaseOptions } from './components/base';
 
 @Component({
-  moduleId: module.id,
   selector: 'o-dynamic-form',
-  templateUrl: 'o-dynamic-form.component.html',
-  styleUrls: ['o-dynamic-form.component.css'],
+  template: require('./o-dynamic-form.component.html'),
+  styles: [require('./o-dynamic-form.component.scss')],
   inputs: [
     'oattr : attr',
     'formDefinition: form-definition',
@@ -117,7 +116,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     protected elRef: ElementRef,
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected parentForm: OFormComponent
   ) {
-
     this.reloadStream = Observable.combineLatest(
       this.onFormInitStream.asObservable(),
       this.onUrlParamChangedStream.asObservable()
@@ -238,7 +236,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
           filter[key] = this.urlParams[key];
         }
       });
-    };
+    }
 
     let keys = Object.keys(this._pKeysEquiv);
     if (this.urlParams && keys && keys.length > 0) {
@@ -329,7 +327,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   //   return empty;
   // }
 
-
   ngOnDestroy() {
     if (this.urlParamSub) {
       this.urlParamSub.unsubscribe();
@@ -337,18 +334,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.unregisterFormListeners();
   }
 
-  onComponentsRendered() {
+  onComponentRendered() {
     // The form is done rendering.
     if (this.render) {
       this.render.emit(true);
-    }
-  }
-
-  onDropEnd(event) {
-    if (this.editMode) {
-      this.onAddComponent.emit({
-        component: event.dragData
-      });
     }
   }
 
@@ -386,4 +375,5 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   get formDefinition() {
     return this.innerFormDefinition;
   }
+
 }

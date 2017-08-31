@@ -1,18 +1,21 @@
-<div flex layout-fill>
+<div fxFlex fxFlexFill fxLayout="column">
 
-  <div *ngIf="editMode" dnd-droppable (onDropSuccess)="onDropEnd($event)"
-    class="dynamic-form-drop-zone"
-    [class.full-height-drop-zone]="!areEmptyComponents">
-  </div>
+  <o-drop-zone fxFlex
+    *ngIf="editMode"
+    [add-component-emitter]="onAddComponent">
+  </o-drop-zone>
 
-  <odf-components #odfComponents
-    *ngIf="ready"
-    [components]="formDefinition"
-    [edit-mode]="editMode"
-    (render)="onComponentsRendered()"
-    [add-component-emitter]="onAddComponent"
-    [edit-component-settings-emitter]="onEditComponentSettings"
-    [delete-component-emitter]="onDeleteComponent">
-  </odf-components>
+  <ng-template ngFor let-component [ngForOf]="formDefinition?.components">
+    <odf-component fxFlex layout-padding
+      *ngIf="ready"
+      [component]="component"
+      [edit-mode]="editMode"
+      (render)="onComponentRendered()"
+      (change)="$event.stopPropagation()"
+      [add-component-emitter]="onAddComponent"
+      [edit-component-settings-emitter]="onEditComponentSettings"
+      [delete-component-emitter]="onDeleteComponent">
+    </odf-component>
+  </ng-template>
 
 </div>

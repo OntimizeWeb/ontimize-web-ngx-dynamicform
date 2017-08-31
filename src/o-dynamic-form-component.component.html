@@ -1,7 +1,6 @@
-<div *ngFor="let comp of components; let i = index;" class="odf-element-container">
+<div *ngFor="let comp of components; let i = index;" class="odf-element-container" fxLayout="column">
 
-
-  <div [class.component-container]="isContainerComponent(comp)">
+  <div [ngClass]="{'component-container': isContainerComponent(comp), 'component': !isContainerComponent(comp)}">
 
     <odf-element-options
       *ngIf="editMode"
@@ -11,20 +10,22 @@
     </odf-element-options>
 
     <odf-element
+      fxLayout="column"
       [component]="comp"
       [render]="render"
-
       [edit-mode]="editMode"
       [add-component-emitter]="addComponentEmitter"
       [edit-component-settings-emitter]="editComponentSettingsEmitter"
-      [delete-component-emitter]="deleteComponentEmitter"
-    ></odf-element>
+      [delete-component-emitter]="deleteComponentEmitter">
+    </odf-element>
 
   </div>
 
-  <odf-element-drop-zone
+  <o-drop-zone fxFlex
     *ngIf="editMode"
+    for-children="false"
     [component]="comp"
     [add-component-emitter]="addComponentEmitter">
-  </odf-element-drop-zone>
+  </o-drop-zone>
+
 </div>
