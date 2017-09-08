@@ -26,8 +26,8 @@ export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
     'o-real-input': getTemplate('odf-o-real-input', require('./bootstrap/components/odf-o-real-input.component.html')),
     'o-text-input': getTemplate('odf-o-text-input', require('./bootstrap/components/odf-o-text-input.component.html')),
     'o-textarea-input': getTemplate('odf-o-textarea-input', require('./bootstrap/components/odf-o-textarea-input.component.html')),
-
     'o-row': getTemplate('odf-o-row', require('./bootstrap/components/odf-o-row.component.html')),
-    'o-column': getTemplate('odf-o-column', require('./bootstrap/components/odf-o-column.component.html'), [], containerInputs)
+    'o-column': getTemplate('odf-o-column', require('./bootstrap/components/odf-o-column.component.html'), [], containerInputs),
+    'o-combo': getTemplate('odf-o-combo', require('./bootstrap/components/odf-o-combo.component.html'))
   }
 };
