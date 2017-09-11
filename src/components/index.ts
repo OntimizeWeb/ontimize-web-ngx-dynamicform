@@ -13,6 +13,7 @@ import { OdfOTextareaInput } from './input/textarea-input/o-textarea-input';
 import { OdfOColumn } from './container/o-column';
 import { OdfORow } from './container/o-row';
 import { OdfOCombo } from './service/o-combo';
+import { OdfOListPicker } from './service/o-list-picker';
 
 export function RegisterComponents(template: DFTemplate) {
   OdfOCurrencyInput(template);
@@ -28,4 +29,5 @@ export function RegisterComponents(template: DFTemplate) {
   OdfOColumn(template);
   OdfORow(template);
   OdfOCombo(template);
+  OdfOListPicker(template);
 }
