@@ -28,6 +28,7 @@ export interface DFComponentsTemplate {
   'o-column': DFComponentTemplate;
   'o-combo': DFComponentTemplate;
   'o-list-picker': DFComponentTemplate;
+  'o-checkbox': DFComponentTemplate;
 }
 
 /**
