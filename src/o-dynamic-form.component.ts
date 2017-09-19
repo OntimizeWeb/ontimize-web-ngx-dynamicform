@@ -53,6 +53,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'submit',
     'change',
     'onAddComponent',
+    'onMoveComponent',
     'onEditComponentSettings',
     'onDeleteComponent',
     'onDynamicFormDataLoaded'
@@ -94,6 +95,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   change: EventEmitter<any> = new EventEmitter();
 
   onAddComponent: EventEmitter<any> = new EventEmitter();
+  onMoveComponent: EventEmitter<any> = new EventEmitter();
   onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   onDeleteComponent: EventEmitter<any> = new EventEmitter();
 

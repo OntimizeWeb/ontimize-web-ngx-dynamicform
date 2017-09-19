@@ -1,8 +1,13 @@
-<div *ngFor="let comp of components; let i = index;" class="odf-element-container" fxLayout="column">
+<div *ngFor="let comp of components; let i = index;" class="odf-element-container" fxLayout="column"
+  dnd-draggable [dragData]="getDraggableData()" [dragEnabled]="isDragEnabled">
 
   <div [ngClass]="{'component-container': isContainerComponent(comp), 'component': !isContainerComponent(comp)}">
 
+    <!-- dnd-draggable-handle -->
     <odf-element-options
+      (mouseenter)="isDragEnabled=true"
+      (mouseleave)="isDragEnabled=false"
+      fxLayout
       *ngIf="editMode"
       [component]="comp"
       [edit-component-settings-emitter]="editComponentSettingsEmitter"
@@ -10,11 +15,13 @@
     </odf-element-options>
 
     <odf-element
+      #odfElement
       fxLayout="column"
       [component]="comp"
       [render]="render"
       [edit-mode]="editMode"
       [add-component-emitter]="addComponentEmitter"
+      [move-component-emitter]="moveComponentEmitter"
       [edit-component-settings-emitter]="editComponentSettingsEmitter"
       [delete-component-emitter]="deleteComponentEmitter">
     </odf-element>
@@ -25,7 +32,9 @@
     *ngIf="editMode"
     for-children="false"
     [component]="comp"
-    [add-component-emitter]="addComponentEmitter">
+    [add-component-emitter]="addComponentEmitter"
+    [move-component-emitter]="moveComponentEmitter">
   </o-drop-zone>
 
 </div>
+ 
