@@ -15,8 +15,13 @@ import { RegisterComponents } from './src/components/index';
 
 import { ODFElementOptionsComponent } from './src/o-dynamic-form-element-options.component';
 import { ODropZoneComponent } from './src/dropzone/o-drop-zone.component';
+import { ODropZoneService } from './src/dropzone/o-drop-zone.service';
 
 export { ODynamicFormComponent } from './src/o-dynamic-form.component';
+
+export function getODropZoneServiceProvider() {
+  return new ODropZoneService();
+}
 
 @NgModule({
   imports: [
@@ -42,7 +47,11 @@ export { ODynamicFormComponent } from './src/o-dynamic-form.component';
   ],
   providers: [
     MdIconRegistry,
-    ODynamicFormEvents
+    ODynamicFormEvents,
+    {
+      provide: ODropZoneService,
+      useFactory: getODropZoneServiceProvider
+    }
   ]
 })
 export class DynamicFormModule {

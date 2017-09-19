@@ -1,1 +1,2 @@
-<div id="{{id}}" dnd-droppable [allowDrop]="allowDropFunction()" (onDropSuccess)="onDropEnd($event)" class="o-drop-zone"></div>
+<div id="{{id}}" dnd-droppable [dropZones]="getDropZones()" (onDropSuccess)="onDropEnd($event)" class="o-drop-zone"></div>
+<!-- [allowDrop]="allowDropFunction()" -->
