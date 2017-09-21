@@ -15,6 +15,7 @@ import { OdfORow } from './container/o-row';
 import { OdfOCombo } from './service/o-combo';
 import { OdfOListPicker } from './service/o-list-picker';
 import { OdfOCheckbox } from './checkbox/o-checkbox';
+import { OdfOTable } from './data/o-table';
 
 export function RegisterComponents(template: DFTemplate) {
   OdfOCurrencyInput(template);
@@ -32,4 +33,5 @@ export function RegisterComponents(template: DFTemplate) {
   OdfOCombo(template);
   OdfOListPicker(template);
   OdfOCheckbox(template);
+  OdfOTable(template);
 }
