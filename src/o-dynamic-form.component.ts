@@ -28,7 +28,6 @@ import {
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
-// import { BaseOptions } from './components/base';
 
 @Component({
   selector: 'o-dynamic-form',
@@ -45,6 +44,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'service',
     'serviceType : service-type',
     'queryOnInit : query-on-init',
+    'queryOnRender : query-on-render',
     'registerInParentForm : register-in-parent-form',
     'autoBinding: automatic-binding'
   ],
@@ -76,6 +76,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   serviceType: string;
   @InputConverter()
   queryOnInit: boolean = true;
+  @InputConverter()
+  queryOnRender: boolean = true;
   @InputConverter()
   registerInParentForm: boolean = true;
   @InputConverter()
@@ -321,14 +323,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return true;
   }
 
-  // getComponetsDef() {
-  //   if (this.formDefinition && this.formDefinition.components) {
-  //     return this.formDefinition.components;
-  //   }
-  //   let empty: Array<BaseOptions<any>> = [];
-  //   return empty;
-  // }
-
   ngOnDestroy() {
     if (this.urlParamSub) {
       this.urlParamSub.unsubscribe();
@@ -339,7 +333,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   onComponentRendered() {
     // The form is done rendering.
     if (this.render) {
-      this.render.emit(true);
+      this.render.emit(this.queryOnRender);
     }
   }
 
