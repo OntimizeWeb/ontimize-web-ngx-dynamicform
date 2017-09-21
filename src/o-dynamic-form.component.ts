@@ -26,7 +26,6 @@ import {
   Util
 } from 'ontimize-web-ng2';
 
-import { ODropZoneService } from './dropzone/o-drop-zone.service';
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
 // import { BaseOptions } from './components/base';
@@ -59,8 +58,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'onDeleteComponent',
     'onDynamicFormDataLoaded'
   ],
-  encapsulation: ViewEncapsulation.None,
-  providers: [ODropZoneService]
+  encapsulation: ViewEncapsulation.None
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 

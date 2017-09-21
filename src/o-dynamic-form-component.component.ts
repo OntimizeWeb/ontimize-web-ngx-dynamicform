@@ -20,7 +20,6 @@ import {
 } from './components/base';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
 import { ODFElementComponent } from './o-dynamic-form-element.component';
-import { ODropZoneService } from './dropzone/o-drop-zone.service';
 
 @Component({
   selector: 'odf-component',
@@ -59,14 +58,12 @@ export class ODFComponentComponent<T> implements OnInit {
   render: EventEmitter<any> = new EventEmitter();
 
   isDragEnabled: boolean = false;
-  allowedDropZones: Array<string> = [];
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
-    private events: ODynamicFormEvents,
-    private dropZoneService: ODropZoneService
+    private events: ODynamicFormEvents
   ) { }
 
   ngOnInit() {
@@ -90,8 +87,6 @@ export class ODFComponentComponent<T> implements OnInit {
       component.index = this.components.length;
       // Add this to the instances.
       this.components.push(component);
-      // Get allowed drop zones for the component
-      this.allowedDropZones = this.dropZoneService.getAllowedDropZonesFormComponent(component);
     } else {
       // component wasnt created (triggering render so the dynamic-form would trigger render event correctly)
       this.render.emit(true);

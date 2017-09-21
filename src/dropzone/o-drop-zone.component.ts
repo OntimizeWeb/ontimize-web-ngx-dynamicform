@@ -1,7 +1,6 @@
 import { Component, OnInit, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { InputConverter } from 'ontimize-web-ng2';
 
-import { ODropZoneService } from './o-drop-zone.service';
 import { BaseComponent } from '../components/base';
 
 @Component({
@@ -18,6 +17,9 @@ import { BaseComponent } from '../components/base';
 })
 export class ODropZoneComponent implements OnInit {
 
+  protected DEFAULT_ID: string = 'o-drop-zone';
+  protected CHILDREN_ID_PATH: string = '-children';
+
   id: string;
   @InputConverter()
   forChildren: boolean = false;
@@ -25,25 +27,17 @@ export class ODropZoneComponent implements OnInit {
   addComponentEmitter: EventEmitter<any>;
   moveComponentEmitter: EventEmitter<any>;
 
-  constructor(
-    protected oDropZoneService: ODropZoneService
-  ) { }
-
   ngOnInit() {
-    this.id = this.oDropZoneService.DEFAULT_ID;
+    this.id = this.DEFAULT_ID;
     let attr: string;
     if (this.component) {
       attr = this.component.getComponentAttr();
       this.id += '-' + attr;
     }
     if (this.forChildren) {
-      this.id += this.oDropZoneService.CHILDREN_ID_ENDING;
+      this.id += this.CHILDREN_ID_PATH;
     }
-    this.oDropZoneService.registerDropZone(this.id);
-  }
 
-  getDropZones() {
-    return [this.id];
   }
 
   onDropEnd(event: any) {
@@ -67,26 +61,26 @@ export class ODropZoneComponent implements OnInit {
     }
   }
 
-  // allowDropFunction() {
-  //   let self = this;
-  //   return function (dragData: BaseComponent<any>) {
-  //     if (dragData) {
-  //       let fakeDZAttr: string = self.oDropZoneService.DEFAULT_ID + '-' + dragData.getComponentAttr();
-  //       let checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.oDropZoneService.CHILDREN_ID_ENDING;
+  allowDropFunction() {
+    let self = this;
+    return function (dragData: BaseComponent<any>) {
+      if (dragData) {
+        let fakeDZAttr: string = self.DEFAULT_ID + '-' + dragData.getComponentAttr();
+        let checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.CHILDREN_ID_PATH;
 
-  //       let checkChildren: boolean = true;
-  //       if (dragData instanceof BaseComponent && dragData.isContainerComponent()) {
-  //         let childrenAttrs = [];
-  //         // TODO: look for a faster way not to allow drop a component on their children drop zones
-  //         childrenAttrs = dragData.getChildrenAttrs();
-  //         if (self.component) {
-  //           checkChildren = childrenAttrs.indexOf(self.component.getComponentAttr()) === -1;
-  //         }
-  //       }
-  //       return dragData && checkSelf && checkChildren;
-  //     }
-  //     return false;
-  //   };
-  // }
+        let checkChildren: boolean = true;
+        if (dragData instanceof BaseComponent && dragData.isContainerComponent()) {
+          let childrenAttrs = [];
+          // TODO: look for a faster way not to allow drop a component on their children drop zones
+          childrenAttrs = dragData.getChildrenAttrs();
+          if (self.component) {
+            checkChildren = childrenAttrs.indexOf(self.component.getComponentAttr()) === -1;
+          }
+        }
+        return dragData && checkSelf && checkChildren;
+      }
+      return false;
+    };
+  }
 
 }
