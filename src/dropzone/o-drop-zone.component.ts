@@ -5,8 +5,8 @@ import { BaseComponent } from '../components/base';
 
 @Component({
   selector: 'o-drop-zone',
-  template: require('./o-drop-zone.component.html'),
-  styles: [require('./o-drop-zone.component.scss')],
+  templateUrl: './o-drop-zone.component.html',
+  styleUrls: ['./o-drop-zone.component.scss'],
   inputs: [
     'component',
     'forChildren : for-children',

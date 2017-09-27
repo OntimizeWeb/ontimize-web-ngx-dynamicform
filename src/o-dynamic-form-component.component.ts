@@ -23,7 +23,7 @@ import { ODFElementComponent } from './o-dynamic-form-element.component';
 
 @Component({
   selector: 'odf-component',
-  template: require('./o-dynamic-form-component.component.html'),
+  templateUrl: './o-dynamic-form-component.component.html',
   inputs: [
     'component',
     'editMode : edit-mode',

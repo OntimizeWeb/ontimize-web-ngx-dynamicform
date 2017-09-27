@@ -13,7 +13,7 @@ import { DFComponents } from './components/components';
 
 @Component({
   selector: 'odf-element',
-  template: require('./o-dynamic-form-element.component.html'),
+  templateUrl: './o-dynamic-form-element.component.html',
   inputs: [
     'component',
     'render',

@@ -2,6 +2,7 @@
 /dist
 /out
 /src/**/*.css
+/tmp
 
 # Typings
 typings/*

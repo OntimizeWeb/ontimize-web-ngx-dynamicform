@@ -31,8 +31,8 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
 
 @Component({
   selector: 'o-dynamic-form',
-  template: require('./o-dynamic-form.component.html'),
-  styles: [require('./o-dynamic-form.component.scss')],
+  templateUrl: './o-dynamic-form.component.html',
+  styleUrls: ['./o-dynamic-form.component.scss'],
   inputs: [
     'oattr : attr',
     'formDefinition: form-definition',

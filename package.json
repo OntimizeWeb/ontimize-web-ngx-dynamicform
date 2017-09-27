@@ -1,18 +1,23 @@
 {
   "name": "ontimize-web-ngx-dynamicform",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0",
   "description": "Dynamic form",
   "scripts": {
     "rimraf": "rimraf",
     "webpack": "webpack",
     "test": "karma start",
-    "clean": "rimraf dist",
-    "webpack:dev": "npm run clean && webpack --config config/webpack.dev.js --progress",
-    "webpack:prod": "npm run clean && webpack --config config/webpack.prod.js --progress"
+    "clean": "rimraf dist tmp",
+    "init-common": "npm run clean && gulp inline-templates",
+    "end-common": "gulp copy-files && gulp dynamicform.styles",
+    "webpack:dev": "npm run init-common &&&& webpack --config config/webpack.dev.js --progress && npm run end-common",
+    "webpack:prod": "npm run init-common && && webpack --config config/webpack.prod.js --progress && npm run end-common",
+    "aot:compile": "node_modules/.bin/ngc -p tsconfig.aot.json",
+    "aot": "npm run init-common && npm run aot:compile && npm run end-common",
+    "pack" : "npm run aot && cd dist && npm pack && cd .."
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OntimizeWeb/ontimize-web-ng2-dynamicform"
+    "url": "https://github.com/OntimizeWeb/ontimize-web-ngx-dynamicform"
   },
   "author": {
     "name": "Imatia S.L.",
@@ -27,7 +32,7 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "bugs": {
-    "url": "https://github.com/OntimizeWeb/ontimize-web-ng2-dynamicform/issues"
+    "url": "https://github.com/OntimizeWeb/ontimize-web-ngx-dynamicform/issues"
   },
   "main": "index.js",
   "dependencies": {
@@ -132,6 +137,11 @@
     "url-loader": "^0.5.8",
     "webpack": "2.3.1",
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5",
-    "webpack-merge": "~4.1.0"
+    "webpack-merge": "~4.1.0",
+    "gulp": "^3.9.1",
+    "gulp-cssimport": "6.0.0",
+    "gulp-inline-ng2-template": "^4.0.0",
+    "gulp-replace": "^0.6.1",
+    "copyfiles": "^1.2.0"
   }
 }
