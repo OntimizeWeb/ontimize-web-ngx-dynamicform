@@ -10,15 +10,14 @@ import { OdfOPercentInput } from './input/percent-input/o-percent-input';
 import { OdfORealInput } from './input/real-input/o-real-input';
 import { OdfOTextInput } from './input/text-input/o-text-input';
 import { OdfOTextareaInput } from './input/textarea-input/o-textarea-input';
-
 import { OdfOColumn } from './container/o-column';
 import { OdfORow } from './container/o-row';
-
+import { OdfOCombo } from './service/o-combo';
+import { OdfOListPicker } from './service/o-list-picker';
+import { OdfOCheckbox } from './checkbox/o-checkbox';
+import { OdfODataTable } from './data/o-datatable';
 
 export function RegisterComponents(template: DFTemplate) {
-  OdfOColumn(template);
-  OdfORow(template);
-
   OdfOCurrencyInput(template);
   OdfODateInput(template);
   OdfOEmailInput(template);
@@ -29,4 +28,10 @@ export function RegisterComponents(template: DFTemplate) {
   OdfORealInput(template);
   OdfOTextInput(template);
   OdfOTextareaInput(template);
+  OdfOColumn(template);
+  OdfORow(template);
+  OdfOCombo(template);
+  OdfOListPicker(template);
+  OdfOCheckbox(template);
+  OdfODataTable(template);
 }

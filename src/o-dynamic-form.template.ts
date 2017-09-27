@@ -24,9 +24,12 @@ export interface DFComponentsTemplate {
   'o-real-input': DFComponentTemplate;
   'o-text-input': DFComponentTemplate;
   'o-textarea-input': DFComponentTemplate;
-
   'o-row': DFComponentTemplate;
   'o-column': DFComponentTemplate;
+  'o-combo': DFComponentTemplate;
+  'o-list-picker': DFComponentTemplate;
+  'o-checkbox': DFComponentTemplate;
+  'o-datatable': DFComponentTemplate;
 }
 
 /**

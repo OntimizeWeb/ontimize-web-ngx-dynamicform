@@ -1,8 +1,10 @@
 <div fxFlex fxFlexFill fxLayout="column">
 
   <o-drop-zone fxFlex
+    id="main"
     *ngIf="editMode"
-    [add-component-emitter]="onAddComponent">
+    [add-component-emitter]="onAddComponent"
+    [move-component-emitter]="onMoveComponent">
   </o-drop-zone>
 
   <ng-template ngFor let-component [ngForOf]="formDefinition?.components">
@@ -13,6 +15,7 @@
       (render)="onComponentRendered()"
       (change)="$event.stopPropagation()"
       [add-component-emitter]="onAddComponent"
+      [move-component-emitter]="onMoveComponent"
       [edit-component-settings-emitter]="onEditComponentSettings"
       [delete-component-emitter]="onDeleteComponent">
     </odf-component>

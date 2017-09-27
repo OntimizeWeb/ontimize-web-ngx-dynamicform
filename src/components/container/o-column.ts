@@ -2,7 +2,7 @@ import { DFComponents } from '../components';
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { ODynamicFormEvents } from '../../o-dynamic-form.events';
 import { BaseComponent, ComponentOptions } from '../base';
-import { DEFAULT_INPUTS_O_COLUMN } from 'ontimize-web-ng2';
+import { DEFAULT_INPUTS_O_COLUMN } from 'ontimize-web-ngx';
 
 export class OColumnComponent extends BaseComponent<ComponentOptions<string, any>> {
 
