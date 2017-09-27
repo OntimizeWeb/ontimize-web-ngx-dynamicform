@@ -1,7 +1,7 @@
 import { DFComponents } from '../../components';
 import { DFTemplate } from '../../../o-dynamic-form.template';
 import { InputComponent, InputOptions } from '../input';
-import { DEFAULT_INPUTS_O_TEXT_INPUT, OTextInputComponent } from 'ontimize-web-ng2';
+import { DEFAULT_INPUTS_O_TEXT_INPUT, OTextInputComponent } from 'ontimize-web-ngx';
 
 export class TextFieldComponent extends InputComponent<InputOptions> {
 

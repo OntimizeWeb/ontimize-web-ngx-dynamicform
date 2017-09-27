@@ -1,7 +1,7 @@
 import { DFComponents } from '../../components';
 import { DFTemplate } from '../../../o-dynamic-form.template';
 import { InputComponent, InputOptions } from '../input';
-import { DEFAULT_INPUTS_O_REAL_INPUT } from 'ontimize-web-ng2';
+import { DEFAULT_INPUTS_O_REAL_INPUT } from 'ontimize-web-ngx';
 
 export class RealFieldComponent extends InputComponent<InputOptions> {
 

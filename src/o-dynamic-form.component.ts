@@ -24,7 +24,7 @@ import {
   OntimizeService,
   SQLTypes,
   Util
-} from 'ontimize-web-ng2';
+} from 'ontimize-web-ngx';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';

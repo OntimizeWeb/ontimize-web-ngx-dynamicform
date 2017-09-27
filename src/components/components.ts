@@ -11,7 +11,8 @@ import {
 } from '@angular/core';
 
 import { DndModule } from 'ng2-dnd';
-import { OntimizeWebModule } from 'ontimize-web-ng2';
+import { ODataTableModule } from 'ontimize-web-ngx-datatable';
+import { OntimizeWebModule } from 'ontimize-web-ngx';
 
 import { BaseComponent } from './base';
 import { DynamicFormModule } from '../../index';
@@ -54,6 +55,7 @@ export class DFComponents {
     // compTemplate.module.imports.push(ReactiveFormsModule);
     compTemplate.module.imports.push(DynamicFormModule);
     compTemplate.module.imports.push(DndModule);
+    compTemplate.module.imports.push(ODataTableModule);
     compTemplate.module.imports.push(OntimizeWebModule);
 
     @NgModule(compTemplate.module)

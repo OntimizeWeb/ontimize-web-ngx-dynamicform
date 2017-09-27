@@ -11,7 +11,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 
-import { OFormComponent } from 'ontimize-web-ng2';
+import { OFormComponent } from 'ontimize-web-ngx';
 
 import { DFComponents } from './components/components';
 import {

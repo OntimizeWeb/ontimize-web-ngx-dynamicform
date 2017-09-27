@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { InputConverter } from 'ontimize-web-ng2';
+import { InputConverter } from 'ontimize-web-ngx';
 
 import { BaseComponent } from '../components/base';
 

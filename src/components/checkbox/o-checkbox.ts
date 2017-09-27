@@ -1,7 +1,7 @@
 import { DFComponents } from '../components';
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent, ComponentOptions } from '../base';
-import { DEFAULT_INPUTS_O_CHECKBOX, OCheckboxComponent } from 'ontimize-web-ng2';
+import { DEFAULT_INPUTS_O_CHECKBOX, OCheckboxComponent } from 'ontimize-web-ngx';
 
 export class CheckboxComponent extends BaseComponent<ComponentOptions<string, any>> {
 
