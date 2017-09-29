@@ -2,46 +2,29 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MaterialModule, MdIconRegistry } from '@angular/material';
 import { DndModule } from 'ng2-dnd';
 
-import { DYNAMIC_FORM_BOOTSTRAP } from './src/templates/bootstrap.templates';
-
-import { ODynamicFormComponent } from './src/o-dynamic-form.component';
-import { ODFComponentComponent } from './src/o-dynamic-form-component.component';
-import { ODFElementComponent } from './src/o-dynamic-form-element.component';
+import { ODynamicFormCustomMaterialModule } from './src/shared/custom.material.module';
 import { ODynamicFormEvents } from './src/o-dynamic-form.events';
-import { RegisterComponents } from './src/components/index';
-
-import { ODFElementOptionsComponent } from './src/o-dynamic-form-element-options.component';
-import { ODropZoneComponent } from './src/dropzone/o-drop-zone.component';
+import { RegisterComponents } from './src/components';
+import { DYNAMIC_FORM_BOOTSTRAP } from './src/templates/bootstrap.templates';
+import { O_DYNAMICFORM_COMPONENTS } from './src/dynamic-form.index';
 
 export { ODynamicFormComponent } from './src/o-dynamic-form.component';
+import { ODataTableModule } from 'ontimize-web-ngx-datatable';
 
 @NgModule({
   imports: [
-    MaterialModule,
+    ODataTableModule,
     FlexLayoutModule,
-    DndModule.forRoot(),
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ODynamicFormCustomMaterialModule,
+    DndModule.forRoot()
   ],
-  declarations: [
-    ODynamicFormComponent,
-    ODFComponentComponent,
-    ODFElementComponent,
-    ODFElementOptionsComponent,
-    ODropZoneComponent
-  ],
-  exports: [
-    ODynamicFormComponent,
-    ODFComponentComponent,
-    ODFElementComponent,
-    ODFElementOptionsComponent,
-    ODropZoneComponent
-  ],
+  declarations: O_DYNAMICFORM_COMPONENTS,
+  exports: O_DYNAMICFORM_COMPONENTS,
   providers: [
-    MdIconRegistry,
     ODynamicFormEvents
   ]
 })

@@ -2,7 +2,7 @@ import { DFComponents } from '../../components';
 import { DFTemplate } from '../../../o-dynamic-form.template';
 import { ODynamicFormEvents } from '../../../o-dynamic-form.events';
 import { InputComponent, InputOptions } from '../input';
-import { DEFAULT_INPUTS_O_PASSWORD_INPUT } from 'ontimize-web-ng2';
+import { DEFAULT_INPUTS_O_PASSWORD_INPUT } from 'ontimize-web-ngx';
 
 export class PasswordFieldComponent extends InputComponent<InputOptions> {
 

@@ -1,42 +1,49 @@
 import { Component, OnInit, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { Util } from 'ontimize-web-ng2';
+import { InputConverter } from 'ontimize-web-ngx';
 
 import { BaseComponent } from '../components/base';
 
 @Component({
   selector: 'o-drop-zone',
-  template: require('./o-drop-zone.component.html'),
-  styles: [require('./o-drop-zone.component.scss')],
+  templateUrl: './o-drop-zone.component.html',
+  styleUrls: ['./o-drop-zone.component.scss'],
   inputs: [
-    '_forChildren : for-children',
     'component',
-    'addComponentEmitter : add-component-emitter'
+    'forChildren : for-children',
+    'addComponentEmitter : add-component-emitter',
+    'moveComponentEmitter : move-component-emitter'
   ],
   encapsulation: ViewEncapsulation.None
 })
 export class ODropZoneComponent implements OnInit {
 
+  protected DEFAULT_ID: string = 'o-drop-zone';
+  protected CHILDREN_ID_PATH: string = '-children';
+
   id: string;
+  @InputConverter()
   forChildren: boolean = false;
   component: BaseComponent<any>;
   addComponentEmitter: EventEmitter<any>;
-
-  private _forChildren: string;
+  moveComponentEmitter: EventEmitter<any>;
 
   ngOnInit() {
-    this.forChildren = Util.parseBoolean(this._forChildren);
-    this.id = 'o-drop-zone';
+    this.id = this.DEFAULT_ID;
+    let attr: string;
     if (this.component) {
-      this.id += '-' + this.component.getComponentAttr();
+      attr = this.component.getComponentAttr();
+      this.id += '-' + attr;
     }
     if (this.forChildren) {
-      this.id += '-children';
+      this.id += this.CHILDREN_ID_PATH;
     }
+
   }
 
   onDropEnd(event: any) {
+    let comp = event.dragData;
     let params = {
-      component: event.dragData
+      component: comp
     };
     if (this.component) {
       if (this.forChildren) {
@@ -47,7 +54,33 @@ export class ODropZoneComponent implements OnInit {
         params['previousSibling'] = this.component;
       }
     }
-    this.addComponentEmitter.emit(params);
+    if (comp instanceof BaseComponent) {
+      this.moveComponentEmitter.emit(params);
+    } else {
+      this.addComponentEmitter.emit(params);
+    }
+  }
+
+  allowDropFunction() {
+    let self = this;
+    return function (dragData: BaseComponent<any>) {
+      if (dragData) {
+        let fakeDZAttr: string = self.DEFAULT_ID + '-' + dragData.getComponentAttr();
+        let checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.CHILDREN_ID_PATH;
+
+        let checkChildren: boolean = true;
+        if (dragData instanceof BaseComponent && dragData.isContainerComponent()) {
+          let childrenAttrs = [];
+          // TODO: look for a faster way not to allow drop a component on their children drop zones
+          childrenAttrs = dragData.getChildrenAttrs();
+          if (self.component) {
+            checkChildren = childrenAttrs.indexOf(self.component.getComponentAttr()) === -1;
+          }
+        }
+        return dragData && checkSelf && checkChildren;
+      }
+      return false;
+    };
   }
 
 }

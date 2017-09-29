@@ -80,4 +80,20 @@ export class BaseComponent<T> {
     return this.settings.attr;
   }
 
+  getChildrenAttrs(): Array<string> {
+    let attrs = [];
+    this._getChildrenAttrsFromSettings(this.settings, attrs);
+    return attrs;
+  }
+
+  protected _getChildrenAttrsFromSettings(element: Object, attrs: Array<string>): Array<string> {
+    attrs.push(element['attr']);
+    if (element['children']) {
+      element['children'].forEach(e => {
+        this._getChildrenAttrsFromSettings(e, attrs);
+      });
+    }
+    return attrs;
+  }
+
 }

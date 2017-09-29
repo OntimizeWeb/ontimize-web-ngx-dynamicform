@@ -7,30 +7,28 @@ import {
   Injector,
   OnInit,
   Optional,
+  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 
-import { OFormComponent } from 'ontimize-web-ng2';
+import { OFormComponent } from 'ontimize-web-ngx';
 
 import { DFComponents } from './components/components';
 import {
   BaseComponent,
   BaseOptions
 } from './components/base';
-// import { FormioError } from './o-dynamic-form.common';
-import {
-  // DynamicFormEvent,
-  ODynamicFormEvents
-} from './o-dynamic-form.events';
-// var FormioUtils = require('formio-utils');
+import { ODynamicFormEvents } from './o-dynamic-form.events';
+import { ODFElementComponent } from './o-dynamic-form-element.component';
 
 @Component({
   selector: 'odf-component',
-  template: require('./o-dynamic-form-component.component.html'),
+  templateUrl: './o-dynamic-form-component.component.html',
   inputs: [
     'component',
     'editMode : edit-mode',
     'addComponentEmitter : add-component-emitter',
+    'moveComponentEmitter : move-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
     'deleteComponentEmitter : delete-component-emitter'
   ],
@@ -40,6 +38,10 @@ import {
   encapsulation: ViewEncapsulation.None
 })
 export class ODFComponentComponent<T> implements OnInit {
+
+  @ViewChild('odfElement')
+  protected odfElement: ODFElementComponent;
+
   show: Boolean = true;
   components: Array<BaseComponent<any>> = [];
 
@@ -49,44 +51,29 @@ export class ODFComponentComponent<T> implements OnInit {
   editMode: boolean = false;
 
   addComponentEmitter: EventEmitter<any>;
+  moveComponentEmitter: EventEmitter<any>;
   editComponentSettingsEmitter: EventEmitter<any>;
   deleteComponentEmitter: EventEmitter<any>;
 
   render: EventEmitter<any> = new EventEmitter();
+
+  isDragEnabled: boolean = false;
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
     private events: ODynamicFormEvents
-  ) {
-    // this.render = this.events.onRender;
-  }
+  ) { }
 
   ngOnInit() {
     // Add the initial component.
     this.addComponent();
-    // if (
-    //   this.data &&
-    //   this.component.multiple &&
-    //   this.data.hasOwnProperty(this.component.key) &&
-    //   (this.data[this.component.key] instanceof Array) &&
-    //   (this.data[this.component.key].length > 1)
-    // ) {
-    //   // Add other components if this is an array...
-    //   for (var i = 1; i < this.data[this.component.key].length; i++) {
-    //     this.addComponent();
-    //   }
-    // }
-    // this.checkConditions();
     this.events.onChange.subscribe(() => this.checkConditions());
   }
 
   checkConditions() {
-    // var subData = this.submission ? this.submission.value : {};
-    //var compData = Object.assign({}, subData, this.form.value);
     this.show = true;
-    // FormioUtils.checkCondition(this.component, compData);
   }
 
   addComponent() {
@@ -108,12 +95,15 @@ export class ODFComponentComponent<T> implements OnInit {
   }
 
   removeAt(index: number) {
-    // this.container.removeAt(index);
     this.components.splice(index, 1);
   }
 
   isContainerComponent(component: BaseComponent<any>) {
     return component.isContainerComponent();
+  }
+
+  getDraggableData() {
+    return this.odfElement ? this.odfElement.component : null;
   }
 
 }

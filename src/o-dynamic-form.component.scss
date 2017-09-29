@@ -1,6 +1,7 @@
 .odf-element-options-container {
   z-index: 1;
   background: #DADADA;
+  cursor: pointer;
 
   .odf-element-options-attr {
     display: inline-flex;
@@ -26,6 +27,7 @@ odf-element {
 
 .odf-element-container {
   position: relative;
+  cursor: inherit !important;
 
   .component-container {
     border: 1px solid #DADADA;

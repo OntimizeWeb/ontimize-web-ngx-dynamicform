@@ -24,16 +24,15 @@ import {
   OntimizeService,
   SQLTypes,
   Util
-} from 'ontimize-web-ng2';
+} from 'ontimize-web-ngx';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
-// import { BaseOptions } from './components/base';
 
 @Component({
   selector: 'o-dynamic-form',
-  template: require('./o-dynamic-form.component.html'),
-  styles: [require('./o-dynamic-form.component.scss')],
+  templateUrl: './o-dynamic-form.component.html',
+  styleUrls: ['./o-dynamic-form.component.scss'],
   inputs: [
     'oattr : attr',
     'formDefinition: form-definition',
@@ -45,6 +44,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'service',
     'serviceType : service-type',
     'queryOnInit : query-on-init',
+    'queryOnRender : query-on-render',
     'registerInParentForm : register-in-parent-form',
     'autoBinding: automatic-binding'
   ],
@@ -53,6 +53,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'submit',
     'change',
     'onAddComponent',
+    'onMoveComponent',
     'onEditComponentSettings',
     'onDeleteComponent',
     'onDynamicFormDataLoaded'
@@ -76,6 +77,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   @InputConverter()
   queryOnInit: boolean = true;
   @InputConverter()
+  queryOnRender: boolean = true;
+  @InputConverter()
   registerInParentForm: boolean = true;
   @InputConverter()
   autoBinding: boolean = true;
@@ -94,6 +97,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   change: EventEmitter<any> = new EventEmitter();
 
   onAddComponent: EventEmitter<any> = new EventEmitter();
+  onMoveComponent: EventEmitter<any> = new EventEmitter();
   onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   onDeleteComponent: EventEmitter<any> = new EventEmitter();
 
@@ -319,14 +323,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return true;
   }
 
-  // getComponetsDef() {
-  //   if (this.formDefinition && this.formDefinition.components) {
-  //     return this.formDefinition.components;
-  //   }
-  //   let empty: Array<BaseOptions<any>> = [];
-  //   return empty;
-  // }
-
   ngOnDestroy() {
     if (this.urlParamSub) {
       this.urlParamSub.unsubscribe();
@@ -337,7 +333,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   onComponentRendered() {
     // The form is done rendering.
     if (this.render) {
-      this.render.emit(true);
+      this.render.emit(this.queryOnRender);
     }
   }
 

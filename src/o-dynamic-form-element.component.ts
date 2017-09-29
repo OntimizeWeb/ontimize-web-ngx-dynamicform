@@ -13,12 +13,13 @@ import { DFComponents } from './components/components';
 
 @Component({
   selector: 'odf-element',
-  template: require('./o-dynamic-form-element.component.html'),
+  templateUrl: './o-dynamic-form-element.component.html',
   inputs: [
     'component',
     'render',
     'editMode : edit-mode',
     'addComponentEmitter : add-component-emitter',
+    'moveComponentEmitter : move-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
     'deleteComponentEmitter : delete-component-emitter'
   ]
@@ -27,9 +28,9 @@ export class ODFElementComponent implements OnInit {
 
   component: BaseComponent<any>;
   render: EventEmitter<any>;
-
   editMode: boolean = false;
   addComponentEmitter: EventEmitter<any>;
+  moveComponentEmitter: EventEmitter<any>;
   editComponentSettingsEmitter: EventEmitter<any>;
   deleteComponentEmitter: EventEmitter<any>;
 
@@ -52,6 +53,7 @@ export class ODFElementComponent implements OnInit {
       cmpRef.instance['component'] = self.component;
       cmpRef.instance['editMode'] = self.editMode;
       cmpRef.instance['onAddComponent'] = self.addComponentEmitter;
+      cmpRef.instance['onMoveComponent'] = self.moveComponentEmitter;
       cmpRef.instance['onEditComponentSettings'] = self.editComponentSettingsEmitter;
       cmpRef.instance['onDeleteComponent'] = self.deleteComponentEmitter;
       cmpRef.instance['render'] = self.render;
