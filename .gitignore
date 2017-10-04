@@ -12,7 +12,6 @@ node_modules/*
 npm-debug.log
 
 # TypeScript
-*.js
 *.map
 /src/**/**.d.ts
 
