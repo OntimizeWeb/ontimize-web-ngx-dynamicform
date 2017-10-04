@@ -5,6 +5,8 @@
 
 ### Features
 * **ontimize-web-ngx-dynamicform**: '*DynamicFormModule*' is now AoT compatible.
+* **o-dynamic-form**: adding '*query-on-render*' input which will set if the container '*o-form*' is making a query when the dynamic form rendering is complete (true by default).
+
 
 ### PEER-DEPENDENCY UPDATES ###
 * **Added**:   ontimize-web-ngx@^2.4.1
