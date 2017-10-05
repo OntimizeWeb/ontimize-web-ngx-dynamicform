@@ -1,3 +1,8 @@
+## 2.0.1
+
+### Bug Fixes
+* **templates**: updating components templates for adapting to AoT requirements.
+
 ## 2.0.0
 
 ### BREAKING CHANGES
