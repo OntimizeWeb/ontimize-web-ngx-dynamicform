@@ -31,6 +31,7 @@ export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
     'o-combo': getTemplate('odf-o-combo', require('./bootstrap/components/odf-o-combo.component.html')),
     'o-list-picker': getTemplate('odf-o-list-picker', require('./bootstrap/components/odf-o-list-picker.component.html')),
     'o-checkbox': getTemplate('odf-o-checkbox', require('./bootstrap/components/odf-o-checkbox.component.html')),
-    'o-datatable': getTemplate('odf-o-datatable', require('./bootstrap/components/odf-o-datatable.component.html'))
+    'o-datatable': getTemplate('odf-o-datatable', require('./bootstrap/components/odf-o-datatable.component.html')),
+    'o-list': getTemplate('odf-o-list', require('./bootstrap/components/odf-o-list.component.html'))
   }
 };

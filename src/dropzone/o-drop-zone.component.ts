@@ -65,6 +65,19 @@ export class ODropZoneComponent implements OnInit {
     let self = this;
     return function (dragData: BaseComponent<any>) {
       if (dragData) {
+
+        if (typeof dragData['getDirective'] === 'function') {
+          // Trying to drop a list element from menu
+          if (dragData['getDirective']().startsWith('o-list-')) {
+            return self.id.endsWith(self.CHILDREN_ID_PATH) && self.component.getNumComponents() === 0;
+          } else {
+            return !self.id.endsWith(self.CHILDREN_ID_PATH);
+          }
+        } else if (self.component && self.component.settings['ontimize-directive'] === 'o-list') {
+          // Moving o-list component
+          return dragData.settings['ontimize-directive'] === 'o-list' && !self.id.endsWith(self.CHILDREN_ID_PATH) && !dragData.getComponentAttr().includes(self.component.getComponentAttr());
+        }
+
         let fakeDZAttr: string = self.DEFAULT_ID + '-' + dragData.getComponentAttr();
         let checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.CHILDREN_ID_PATH;
 

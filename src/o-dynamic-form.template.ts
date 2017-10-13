@@ -30,6 +30,7 @@ export interface DFComponentsTemplate {
   'o-list-picker': DFComponentTemplate;
   'o-checkbox': DFComponentTemplate;
   'o-datatable': DFComponentTemplate;
+  'o-list': DFComponentTemplate;
 }
 
 /**

@@ -1,0 +1,32 @@
+<o-list #ontimizeComponent>
+
+  <ng-template ngFor let-cmp [ngForOf]="component.getChildren()">
+
+    <ng-container *ngFor="let elem of ontimizeComponent.dataArray">
+
+      <o-list-item *ngIf="cmp['ontimize-directive']==='o-list-item-text'">
+        <o-list-item-text [title]="elem[cmp['title']]" [primary-text]="elem[cmp['primary-text']]" [secondary-text]="elem[cmp['secondary-text']]"
+          [icon]="cmp['icon']" [icon-position]="cmp['icon-position']"></o-list-item-text>
+      </o-list-item>
+
+      <o-list-item *ngIf="cmp['ontimize-directive']==='o-list-item-avatar'">
+        <o-list-item-avatar [title]="elem[cmp['title']]" [primary-text]="elem[cmp['primary-text']]" [secondary-text]="elem[cmp['secondary-text']]"
+          [icon]="cmp['icon']" [avatar]="elem[cmp['avatar']]" [empty-avatar]="cmp['empty-avatar']" [avatar-type]="elem[cmp['avatar-type']]"></o-list-item-avatar>
+      </o-list-item>
+
+      <o-list-item *ngIf="cmp['ontimize-directive']==='o-list-item-card'">
+        <o-list-item-card [title]="elem[cmp['title']]" [subtitle]="elem[cmp['subtitle']]" [image]="elem[cmp['image']]" [action-1-text]="cmp['action-1-text']"
+          [action-2-text]="cmp['action-2-text']"></o-list-item-card>
+      </o-list-item>
+
+      <o-list-item *ngIf="cmp['ontimize-directive']==='o-list-item-card-image'">
+        <o-list-item-card-image [title]="elem[cmp['title']]" [subtitle]="elem[cmp['subtitle']]" [image]="elem[cmp['image']]" [action-1-text]="cmp['action-1-text']"
+          [action-2-text]="cmp['action-2-text']" [avatar]="elem[cmp['avatar']]" [icon]="cmp['icon']" [content]="elem[cmp['content']]"
+          [collapsible]="elem[cmp['collapsible']]" [collapsed]="elem[cmp['collapsed']]"></o-list-item-card-image>
+      </o-list-item>
+
+    </ng-container>
+
+  </ng-template>
+
+</o-list>
