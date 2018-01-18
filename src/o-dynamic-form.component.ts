@@ -1,19 +1,10 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  Inject,
-  Injector,
-  OnInit,
-  Optional,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewEncapsulation, } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
-import 'rxjs/add/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/observable/combineLatest';
 
 import {
   IFormDataComponent,
@@ -46,7 +37,8 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'queryOnInit : query-on-init',
     'queryOnRender : query-on-render',
     'registerInParentForm : register-in-parent-form',
-    'autoBinding: automatic-binding'
+    'autoBinding: automatic-binding',
+    'autoRegistering: automatic-registering'
   ],
   outputs: [
     'render',
@@ -82,6 +74,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   registerInParentForm: boolean = true;
   @InputConverter()
   autoBinding: boolean = true;
+  @InputConverter()
+  autoRegistering: boolean = true;
   /* end of inputs */
 
   /*parsed inputs */
@@ -232,6 +226,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return this.autoBinding;
   }
 
+  isAutomaticRegistering(): Boolean {
+    return this.autoRegistering;
+  }
+
   protected getCurrentKeysValues() {
     let filter = {};
     if (this.urlParams && this.keysArray) {
@@ -372,4 +370,15 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return this.innerFormDefinition;
   }
 
+  getControl(): FormControl {
+    return undefined;
+  }
+
+  getFormControl(): FormControl {
+    return undefined;
+  }
+
+  hasError(error: string): boolean {
+    return false;
+  }
 }
