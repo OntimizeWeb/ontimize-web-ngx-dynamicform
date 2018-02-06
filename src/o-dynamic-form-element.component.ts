@@ -38,7 +38,7 @@ export class ODFElementComponent implements OnInit {
   element: ViewContainerRef;
 
   constructor(
-    private compiler: Compiler
+    protected compiler: Compiler
   ) { }
 
   ngOnInit() {
