@@ -1,9 +1,20 @@
-## 2.0.1
+## 2.0.2 (2017-01-18)
+### PEER-DEPENDENCY UPDATES ###
+* **Updated**:   ontimize-web-ngx@2.1.0-rc.3
+* **Updated**:   ontimize-web-ngx-datatable@1.0.6
+
+### Features
+* **o-dynamic-form:** new '*automatic-registering*' input for specifying that a component will not be not registered on its parent form ([bdcf271](https://github.com/OntimizeWeb/ontimize-web-ngx/commit/bdcf271]))
+* **o-dynamic-form:**: implementing '*IFormControlComponent*' methods ([bdcf271](https://github.com/OntimizeWeb/ontimize-web-ngx/commit/bdcf271]))
+
+IFormControlComponent
+
+## 2.0.1 (2017-10-05)
 
 ### Bug Fixes
 * **templates**: updating components templates for adapting to AoT requirements.
 
-## 2.0.0
+## 2.0.0 (2017-09-29)
 
 ### BREAKING CHANGES
 * **DynamicFormModule**: '*ontimize-web-ng2-dynamicform*' is now called '*ontimize-web-ngx-dynamicform*'.
@@ -14,11 +25,10 @@
 
 
 ### PEER-DEPENDENCY UPDATES ###
-* **Added**:   ontimize-web-ngx@^2.4.1
-* **Added**:   ontimize-web-ngx@^4.17.4
-* **Added**:   ontimize-web-ngx@^5.4.2
-* **Added**:   ontimize-web-ngx@^0.8.12
-
+* **Added**:   core-js@^2.4.1
+* **Added**:   lodash@^4.17.4
+* **Added**:   rxjs@^5.4.2
+* **Added**:   zone.js@^0.8.12
 
 ## 0.0.4 (2017-03-31)
 
