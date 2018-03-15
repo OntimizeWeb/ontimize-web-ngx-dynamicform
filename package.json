@@ -1,6 +1,6 @@
 {
   "name": "ontimize-web-ngx-dynamicform",
-  "version": "2.0.2",
+  "version": "3.0.0-rc.0",
   "description": "Dynamic form",
   "scripts": {
     "rimraf": "rimraf",
