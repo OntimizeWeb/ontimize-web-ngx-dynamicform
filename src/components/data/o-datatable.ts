@@ -1,7 +1,7 @@
 import { DFComponents } from '../components';
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent, ComponentOptions } from '../base';
-import { /*DEFAULT_INPUTS_O_DATATABLE,*/ ODataTableComponent } from 'ontimize-web-ngx-datatable';
+// import { /*DEFAULT_INPUTS_O_DATATABLE,*/ ODataTableComponent } from 'ontimize-web-ngx-datatable';
 
 export class DataTableComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -66,9 +66,9 @@ export class DataTableComponent extends BaseComponent<ComponentOptions<string, a
     ];
   }
 
-  getOntimizeComponentClass() {
-    return ODataTableComponent;
-  }
+  // getOntimizeComponentClass() {
+  //   return ODataTableComponent;
+  // }
 
 }
 

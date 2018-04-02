@@ -29,7 +29,7 @@ export interface DFComponentsTemplate {
   'o-combo': DFComponentTemplate;
   'o-list-picker': DFComponentTemplate;
   'o-checkbox': DFComponentTemplate;
-  'o-datatable': DFComponentTemplate;
+  // 'o-datatable': DFComponentTemplate;
 }
 
 /**
