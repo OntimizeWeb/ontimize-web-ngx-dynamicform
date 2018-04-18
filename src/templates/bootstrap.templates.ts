@@ -1,5 +1,5 @@
 import { DFTemplate } from '../o-dynamic-form.template';
-
+declare var require: any;
 let getTemplate = function (selector: string, template: any, styles: Array<string> = [], inputs: Array<string> = [], module: Object = {}) {
   return {
     component: {

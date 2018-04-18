@@ -1,3 +1,4 @@
+declare var require: any;
 let find = require('lodash/find');
 let cloneDeep = require('lodash/cloneDeep');
 

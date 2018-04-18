@@ -1,4 +1,5 @@
 import { Type, NgModule } from '@angular/core';
+declare var require: any;
 let Reflect = require('core-js/es7/reflect');
 
 export interface DFComponentMetaData {
