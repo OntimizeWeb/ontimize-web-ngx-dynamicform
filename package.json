@@ -3,8 +3,6 @@
   "version": "3.0.0-rc.1",
   "description": "Dynamic form",
   "scripts": {
-    "xxx": "rimraf node_modules/ontimize-web-ngx* && npm install",
-    "pack": "npm run build && cd dist && npm pack && cd ..",
     "clean": "o-ngx-lib-builder clean",
     "build": "npm run clean && o-ngx-lib-builder build --package ontimize-web-ngx-dynamicform --ng-library ng.ontimizeWebDynamicform"
   },
