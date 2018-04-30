@@ -1,4 +1,5 @@
 import { Type, NgModule } from '@angular/core';
+declare var require: any;
 let Reflect = require('core-js/es7/reflect');
 
 export interface DFComponentMetaData {
@@ -29,7 +30,7 @@ export interface DFComponentsTemplate {
   'o-combo': DFComponentTemplate;
   'o-list-picker': DFComponentTemplate;
   'o-checkbox': DFComponentTemplate;
-  'o-datatable': DFComponentTemplate;
+  'o-table': DFComponentTemplate;
 }
 
 /**
@@ -43,7 +44,7 @@ export interface DFTemplate {
   formio_component?: DFComponentTemplate;
   formio_components?: DFComponentTemplate;
   components: DFComponentsTemplate;
-};
+}
 
 /**
  * Allow dynamic altering of the component templates based on what template

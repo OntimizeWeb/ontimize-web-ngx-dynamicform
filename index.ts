@@ -11,11 +11,9 @@ import { DYNAMIC_FORM_BOOTSTRAP } from './src/templates/bootstrap.templates';
 import { O_DYNAMICFORM_COMPONENTS } from './src/dynamic-form.index';
 
 export { ODynamicFormComponent } from './src/o-dynamic-form.component';
-import { ODataTableModule } from 'ontimize-web-ngx-datatable';
 
 @NgModule({
   imports: [
-    ODataTableModule,
     FlexLayoutModule,
     CommonModule,
     ReactiveFormsModule,

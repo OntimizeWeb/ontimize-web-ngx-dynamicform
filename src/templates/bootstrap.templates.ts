@@ -1,5 +1,5 @@
 import { DFTemplate } from '../o-dynamic-form.template';
-
+declare var require: any;
 let getTemplate = function (selector: string, template: any, styles: Array<string> = [], inputs: Array<string> = [], module: Object = {}) {
   return {
     component: {
@@ -31,6 +31,6 @@ export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
     'o-combo': getTemplate('odf-o-combo', require('./bootstrap/components/odf-o-combo.component.html')),
     'o-list-picker': getTemplate('odf-o-list-picker', require('./bootstrap/components/odf-o-list-picker.component.html')),
     'o-checkbox': getTemplate('odf-o-checkbox', require('./bootstrap/components/odf-o-checkbox.component.html')),
-    'o-datatable': getTemplate('odf-o-datatable', require('./bootstrap/components/odf-o-datatable.component.html'))
+    'o-table': getTemplate('odf-o-table', require('./bootstrap/components/odf-o-table.component.html'))
   }
 };

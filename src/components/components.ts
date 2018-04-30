@@ -1,3 +1,4 @@
+declare var require: any;
 let find = require('lodash/find');
 let cloneDeep = require('lodash/cloneDeep');
 
@@ -11,7 +12,6 @@ import {
 } from '@angular/core';
 
 import { DndModule } from 'ng2-dnd';
-import { ODataTableModule } from 'ontimize-web-ngx-datatable';
 import { OntimizeWebModule } from 'ontimize-web-ngx';
 
 import { BaseComponent } from './base';
@@ -55,7 +55,6 @@ export class DFComponents {
     // compTemplate.module.imports.push(ReactiveFormsModule);
     compTemplate.module.imports.push(DynamicFormModule);
     compTemplate.module.imports.push(DndModule);
-    compTemplate.module.imports.push(ODataTableModule);
     compTemplate.module.imports.push(OntimizeWebModule);
 
     @NgModule(compTemplate.module)

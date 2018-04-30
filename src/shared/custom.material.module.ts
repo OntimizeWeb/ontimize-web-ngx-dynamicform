@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MdIconModule, MdIconRegistry } from '@angular/material';
+import { MatIconModule, MatIconRegistry } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   exports: [
-    MdIconModule
+    MatIconModule
   ],
   providers: [
-    MdIconRegistry
+    MatIconRegistry
   ]
 })
 export class ODynamicFormCustomMaterialModule { }
