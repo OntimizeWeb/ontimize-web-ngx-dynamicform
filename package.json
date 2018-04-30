@@ -5,7 +5,8 @@
   "scripts": {
     "xxx": "rimraf node_modules/ontimize-web-ngx* && npm install",
     "pack": "npm run build && cd dist && npm pack && cd ..",
-    "build": "o-ngx-lib-builder build --package ontimize-web-ngx-dynamicform --ng-library ng.ontimizeWebDynamicform"
+    "clean": "o-ngx-lib-builder clean",
+    "build": "npm run clean && o-ngx-lib-builder build --package ontimize-web-ngx-dynamicform --ng-library ng.ontimizeWebDynamicform"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,14 @@
   ],
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
+  "main": "./bundles/ontimize-web-ngx-dynamicform.js",
+  "metadata": "./index.metadata.json",
+  "module": "./index.js",
+  "es2015": "./esm2015/ontimize-web-ngx-dynamicform.js",
+  "typings": "./index.d.ts",
   "bugs": {
     "url": "https://github.com/OntimizeWeb/ontimize-web-ngx-dynamicform/issues"
   },
-  "main": "index.js",
   "dependencies": {
     "ng2-dnd": "5.0.2"
   },
@@ -54,9 +59,9 @@
     "@angular/upgrade": "5.2.10",
     "@ngx-translate/core": "9.1.1",
     "@ngx-translate/http-loader": "2.0.1",
-    "core-js": "2.5.1",
+    "core-js": "2.5.3",
     "rxjs": "5.5.6",
-    "zone.js": "0.8.18",
+    "zone.js": "0.8.20",
     "reflect-metadata": "0.1.12",
     "typescript": "2.4.2",
     "webpack": "3.11.0",
@@ -69,8 +74,8 @@
     "@types/uglify-js": "2.6.30",
     "@types/webpack": "4.1.1",
     "node-sass": "4.7.2",
-    "ontimize-web-ngx": "file:C:\\workspace\\github\\ontimize-web-ng2-VERSIONS\\3.0.0-rc.0\\ontimize-web-ngx\\dist\\ontimize-web-ngx-3.0.0-rc.0.tgz",
-    "ontimize-web-ngx-library-tools": "file:C:\\workspace\\github\\TOOLS\\ontimize-web-ngx-library-tools\\ontimize-web-ngx-library-tools-1.0.0.tgz",
+    "ontimize-web-ngx": "3.0.0-rc.0",
+    "ontimize-web-ngx-library-tools": "1.0.0",
     "rimraf": "2.6.2",
     "gulp": "3.9.1",
     "gulp-cssimport": "6.0.0",
