@@ -1,6 +1,6 @@
 {
   "name": "ontimize-web-ngx-dynamicform",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0-rc.1",
   "description": "Dynamic form",
   "scripts": {
     "xxx": "rimraf node_modules/ontimize-web-ngx* && npm install",
