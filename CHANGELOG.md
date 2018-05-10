@@ -1,3 +1,7 @@
+## 2.0.3
+### Features
+* **o-dynamic-form:** new '*query-on-bind*' input ([2166eec](https://github.com/OntimizeWeb/ontimize-web-ngx/commit/2166eec]))
+
 ## 2.0.2 (2017-01-18)
 ### PEER-DEPENDENCY UPDATES ###
 * **Updated**:   ontimize-web-ngx@2.1.0-rc.3
