@@ -1,4 +1,4 @@
-## 2.0.3
+## 2.0.3 (2017-05-15)
 ### Features
 * **o-dynamic-form:** new '*query-on-bind*' input ([2166eec](https://github.com/OntimizeWeb/ontimize-web-ngx/commit/2166eec]))
 
