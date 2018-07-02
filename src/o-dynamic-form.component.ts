@@ -14,7 +14,8 @@ import {
   OFormValue,
   OntimizeService,
   SQLTypes,
-  Util
+  Util,
+  ServiceUtils
 } from 'ontimize-web-ngx';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
@@ -35,6 +36,7 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'service',
     'serviceType : service-type',
     'queryOnInit : query-on-init',
+    'queryOnBind : query-on-bind',
     'queryOnRender : query-on-render',
     'registerInParentForm : register-in-parent-form',
     'autoBinding: automatic-binding',
@@ -68,6 +70,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   serviceType: string;
   @InputConverter()
   queryOnInit: boolean = true;
+  @InputConverter()
+  queryOnBind: boolean = true;
   @InputConverter()
   queryOnRender: boolean = true;
   @InputConverter()
@@ -106,6 +110,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   protected urlParamSub: any;
   protected urlParams: Object;
+  protected onFormDataSubscribe: any;
 
   constructor(
     protected actRoute: ActivatedRoute,
@@ -119,15 +124,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.onUrlParamChangedStream.asObservable()
     );
 
-    var self = this;
-    this.reloadStream.subscribe(
-      function (valArr) {
-        if (Util.isArray(valArr) && valArr.length === 2) {
-          if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
-            self.doQuery(true);
-          }
+    const self = this;
+    this.reloadStream.subscribe(function (valArr) {
+      if (Util.isArray(valArr) && valArr.length === 2) {
+        if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
+          self.doQuery(true);
         }
-      });
+      }
+    });
   }
 
   ngOnInit() {
@@ -144,16 +148,22 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
     this.registerFormListeners();
 
-    var self = this;
-    this.urlParamSub = this.actRoute
-      .params
-      .subscribe(params => {
-        self.urlParams = params;
+    const self = this;
+    this.urlParamSub = this.actRoute.params.subscribe(params => {
+      self.urlParams = params;
+      if (self.urlParams && Object.keys(self.urlParams).length > 0) {
+        self.onUrlParamChangedStream.emit(true);
+      }
+    });
 
-        if (self.urlParams && Object.keys(self.urlParams).length > 0) {
-          self.onUrlParamChangedStream.emit(true);
-        }
-      });
+    if (this.parentForm) {
+      if (self.queryOnBind) {
+        this.onFormDataSubscribe = this.parentForm.onFormDataLoaded.subscribe(data => {
+          const filter = ServiceUtils.getParentItemFromForm(undefined, self._pKeysEquiv, self.parentForm);
+          self.queryData(filter);
+        });
+      }
+    }
   }
 
   getSQLType(): number {
@@ -222,11 +232,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.formDefinition = formDef;
   }
 
-  isAutomaticBinding(): Boolean {
+  isAutomaticBinding(): boolean {
     return this.autoBinding;
   }
 
-  isAutomaticRegistering(): Boolean {
+  isAutomaticRegistering(): boolean {
     return this.autoRegistering;
   }
 
@@ -293,25 +303,27 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   queryData(filter) {
-    var self = this;
-    var loader = self.load();
+    if (!Util.isDefined(filter) || (Util.isObject(filter) && Object.keys(filter).length === 0)) {
+      return;
+    }
+    const self = this;
+    const loader = self.load();
     if (this.dataService === undefined) {
       console.warn('No service configured! aborting query');
       return;
     }
     // let sqlTypes = this.getAttributesSQLTypes();
-    this.dataService.query(filter, this.getAttributesToQuery(), this.entity)
-      .subscribe(resp => {
-        loader.unsubscribe();
-        if (resp.code === 0) {
-          self._setData(resp.data);
-        } else {
-          console.log('error ');
-        }
-      }, err => {
-        console.log(err);
-        loader.unsubscribe();
-      });
+    this.dataService.query(filter, this.getAttributesToQuery(), this.entity).subscribe(resp => {
+      loader.unsubscribe();
+      if (resp.code === 0) {
+        self._setData(resp.data);
+      } else {
+        console.log('error ');
+      }
+    }, err => {
+      console.log(err);
+      loader.unsubscribe();
+    });
   }
 
   get areEmptyComponents() {
@@ -326,6 +338,9 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.urlParamSub.unsubscribe();
     }
     this.unregisterFormListeners();
+    if (this.onFormDataSubscribe) {
+      this.onFormDataSubscribe.unsubscribe();
+    }
   }
 
   onComponentRendered() {
@@ -336,8 +351,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   load(): any {
-    var self = this;
-    var loadObservable = new Observable(observer => {
+    const self = this;
+    const loadObservable = new Observable(observer => {
       var timer = window.setTimeout(() => {
         observer.next(true);
       }, 250);
@@ -348,7 +363,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       };
 
     });
-    var subscription = loadObservable.subscribe(val => {
+    const subscription = loadObservable.subscribe(val => {
       self.loading = val as boolean;
     });
     return subscription;

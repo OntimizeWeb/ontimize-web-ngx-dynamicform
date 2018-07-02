@@ -88,8 +88,8 @@ export class DFComponents {
     if (DFComponents.components[ontimizeDirective].factoryPromise) {
       return DFComponents.components[ontimizeDirective].factoryPromise;
     }
-    DFComponents.components[ontimizeDirective].factoryPromise = compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module)
-      .then((moduleWithFactories) => {
+    DFComponents.components[ontimizeDirective].factoryPromise =
+      compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module).then((moduleWithFactories) => {
         let factory = find(moduleWithFactories.componentFactories, { selector: 'odf-' + ontimizeDirective });
         return factory;
       });
