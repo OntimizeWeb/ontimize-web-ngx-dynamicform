@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule, MatIconRegistry } from '@angular/material';
+import { OCustomMaterialModule } from 'ontimize-web-ngx';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    MatIconModule
-  ],
-  providers: [
-    MatIconRegistry
-  ]
+    imports: [
+        CommonModule,
+        OCustomMaterialModule
+    ],
+    exports: [
+        OCustomMaterialModule
+    ]
 })
 export class ODynamicFormCustomMaterialModule { }
