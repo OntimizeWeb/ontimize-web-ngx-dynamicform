@@ -1,6 +1,6 @@
 {
   "name": "ontimize-web-ngx-dynamicform",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0-rc.2",
   "description": "Dynamic form",
   "scripts": {
     "clean": "o-ngx-lib-builder clean",
