@@ -124,15 +124,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.onUrlParamChangedStream.asObservable()
     );
 
-    var self = this;
-    this.reloadStream.subscribe(
-      function (valArr) {
-        if (Util.isArray(valArr) && valArr.length === 2) {
-          if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
-            self.doQuery(true);
-          }
+    const self = this;
+    this.reloadStream.subscribe(function (valArr) {
+      if (Util.isArray(valArr) && valArr.length === 2) {
+        if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
+          self.doQuery(true);
         }
-      });
+      }
+    });
   }
 
   ngOnInit() {
@@ -233,11 +232,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.formDefinition = formDef;
   }
 
-  isAutomaticBinding(): Boolean {
+  isAutomaticBinding(): boolean {
     return this.autoBinding;
   }
 
-  isAutomaticRegistering(): Boolean {
+  isAutomaticRegistering(): boolean {
     return this.autoRegistering;
   }
 
@@ -304,8 +303,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   queryData(filter) {
-    var self = this;
-    var loader = self.load();
+    if (!Util.isDefined(filter) || (Util.isObject(filter) && Object.keys(filter).length === 0)) {
+      return;
+    }
+    const self = this;
+    const loader = self.load();
     if (this.dataService === undefined) {
       console.warn('No service configured! aborting query');
       return;
@@ -349,8 +351,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   load(): any {
-    var self = this;
-    var loadObservable = new Observable(observer => {
+    const self = this;
+    const loadObservable = new Observable(observer => {
       var timer = window.setTimeout(() => {
         observer.next(true);
       }, 250);
@@ -361,7 +363,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       };
 
     });
-    var subscription = loadObservable.subscribe(val => {
+    const subscription = loadObservable.subscribe(val => {
       self.loading = val as boolean;
     });
     return subscription;
