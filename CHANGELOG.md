@@ -1,3 +1,7 @@
+## 3.0.0-rc.1 (2018-07-02)
+### Bug Fixes
+* **ontimize-web-ngx**: fixing bugs for updating to '*ontimize-web-ngx@3.0.0-rc.1*'
+
 ## 2.0.3 (2017-05-15)
 ### Features
 * **o-dynamic-form:** new '*query-on-bind*' input ([2166eec](https://github.com/OntimizeWeb/ontimize-web-ngx/commit/2166eec]))
