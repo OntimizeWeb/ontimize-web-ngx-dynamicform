@@ -158,8 +158,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
     if (this.parentForm) {
       if (self.queryOnBind) {
-        this.onFormDataSubscribe = this.parentForm.onFormDataLoaded.subscribe(data => {
-          const filter = ServiceUtils.getParentItemFromForm(undefined, self._pKeysEquiv, self.parentForm);
+        this.onFormDataSubscribe = this.parentForm.onDataLoaded.subscribe(data => {
+          const filter = ServiceUtils.getParentKeysFromForm(self._pKeysEquiv, self.parentForm);
           self.queryData(filter);
         });
       }
