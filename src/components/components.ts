@@ -2,16 +2,8 @@ declare var require: any;
 let find = require('lodash/find');
 let cloneDeep = require('lodash/cloneDeep');
 
-import {
-  NgModule,
-  Compiler,
-  Component,
-  ComponentFactory,
-  ViewChild,
-  EventEmitter
-} from '@angular/core';
-
-import { DndModule } from 'ng2-dnd';
+import { NgModule, Compiler, Component, ComponentFactory, ViewChild, EventEmitter } from '@angular/core';
+import { DndModule } from '@churchs19/ng2-dnd';
 import { OntimizeWebModule } from 'ontimize-web-ngx';
 
 import { BaseComponent } from './base';

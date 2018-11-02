@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '@churchs19/ng2-dnd';
 
 import { ODynamicFormCustomMaterialModule } from './src/shared/custom.material.module';
 import { ODynamicFormEvents } from './src/o-dynamic-form.events';
@@ -18,7 +18,7 @@ export { ODynamicFormComponent } from './src/o-dynamic-form.component';
     CommonModule,
     ReactiveFormsModule,
     ODynamicFormCustomMaterialModule,
-    DndModule.forRoot()
+    DndModule
   ],
   declarations: O_DYNAMICFORM_COMPONENTS,
   exports: O_DYNAMICFORM_COMPONENTS,

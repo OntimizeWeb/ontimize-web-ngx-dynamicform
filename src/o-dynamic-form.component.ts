@@ -1,23 +1,9 @@
 import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewEncapsulation, } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/combineLatest';
-
-import {
-  IFormDataComponent,
-  IFormDataTypeComponent,
-  InputConverter,
-  OFormComponent,
-  OFormValue,
-  OntimizeService,
-  SQLTypes,
-  Util,
-  ServiceUtils
-} from 'ontimize-web-ngx';
-
+import { IFormDataComponent, IFormDataTypeComponent, InputConverter, OFormComponent, OFormValue, OntimizeService, SQLTypes, Util, ServiceUtils, OValueChangeEvent } from 'ontimize-web-ngx';
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
 
@@ -112,6 +98,9 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   protected urlParams: Object;
   protected onFormDataSubscribe: any;
 
+  onChange: EventEmitter<Object>;
+  onValueChange: EventEmitter<OValueChangeEvent>;
+
   constructor(
     protected actRoute: ActivatedRoute,
     protected injector: Injector,
@@ -119,7 +108,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     protected elRef: ElementRef,
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected parentForm: OFormComponent
   ) {
-    this.reloadStream = Observable.combineLatest(
+    this.reloadStream = combineLatest(
       this.onFormInitStream.asObservable(),
       this.onUrlParamChangedStream.asObservable()
     );
@@ -215,6 +204,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.parentForm.unregisterDynamicFormComponent(this);
       this.parentForm.unregisterSQLTypeFormComponent(this);
     }
+  }
+
+  getValue() {
+    // TO-DO
+  }
+
+  clearValue() {
+    // TO-DO
   }
 
   setValue(val: any) {
