@@ -2,6 +2,11 @@
 ### Features
 * **ontimize-web-ngx**: updating code for using '*ontimize-web-ngx@4.0.0-rc.0*'
 
+### PEER-DEPENDENCY UPDATES ###
+* **Updated**:   core-js@2.5.7
+* **Updated**:   rxjs@6.3.3
+* **Updated**:   zone.js@0.8.26
+
 ## 3.0.0 (2018-10-04)
 ### Bug Fixes
 * **ontimize-web-ngx**: fixing bugs for updating to '*ontimize-web-ngx@3.1.0*'
