@@ -52,7 +52,6 @@ export interface DFTemplate {
  *
  * @param cmp - The component class to alter.
  * @param template - The template to add to this component.
- * @constructor
  */
 export function RegisterTemplate(cmp: Type<any>, template: DFComponentTemplate) {
   //noinspection TypeScriptUnresolvedFunction
