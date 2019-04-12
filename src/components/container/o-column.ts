@@ -1,8 +1,9 @@
-import { DFComponents } from '../components';
-import { DFTemplate } from '../../o-dynamic-form.template';
-import { ODynamicFormEvents } from '../../o-dynamic-form.events';
-import { BaseComponent, ComponentOptions } from '../base';
 import { DEFAULT_INPUTS_O_COLUMN } from 'ontimize-web-ngx';
+
+import { ODynamicFormEvents } from '../../o-dynamic-form.events';
+import { DFTemplate } from '../../o-dynamic-form.template';
+import { BaseComponent, ComponentOptions } from '../base';
+import { DFComponents } from '../components';
 
 export class OColumnComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -10,16 +11,16 @@ export class OColumnComponent extends BaseComponent<ComponentOptions<string, any
     super(settings, events, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_COLUMN;
   }
 
-  isContainerComponent() {
+  public isContainerComponent(): boolean {
     return true;
   }
 
 }
 
-export function OdfOColumn(template: DFTemplate) {
+export function OdfOColumn(template: DFTemplate): void {
   DFComponents.register('o-column', OColumnComponent, template.components['o-column']);
 }

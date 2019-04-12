@@ -18,7 +18,8 @@
 }
 
 odf-element {
-  o-column, o-row {
+  o-column,
+  o-row {
     .container-content {
       padding: 0;
     }
@@ -29,12 +30,13 @@ odf-element {
   position: relative;
   cursor: inherit !important;
 
-  .component-container {
+  .component-container.editable {
     border: 1px solid #DADADA;
 
-    o-column.margin-top-bottom, o-row.margin-top-bottom {
+    o-column.margin-top-bottom,
+    o-row.margin-top-bottom {
       margin: 0;
-      padding: 8px 0px;
+      padding: 8px 0;
     }
   }
 }

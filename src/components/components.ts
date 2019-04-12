@@ -1,15 +1,11 @@
-declare var require: any;
-let find = require('lodash/find');
-let cloneDeep = require('lodash/cloneDeep');
-
-import { NgModule, Compiler, Component, ComponentFactory, ViewChild, EventEmitter } from '@angular/core';
+import { Compiler, Component, ComponentFactory, EventEmitter, NgModule, ViewChild } from '@angular/core';
 import { DndModule } from '@churchs19/ng2-dnd';
 import { OntimizeWebModule } from 'ontimize-web-ngx';
 
-import { BaseComponent } from './base';
 import { DynamicFormModule } from '../../index';
-import { DFComponentMetaData, DFComponentTemplate } from '../o-dynamic-form.template';
 import { ODynamicFormEvents } from '../o-dynamic-form.events';
+import { DFComponentMetaData, DFComponentTemplate } from '../o-dynamic-form.template';
+import { BaseComponent } from './base';
 
 export interface DFComponentWrapper {
   component?: any;
@@ -23,17 +19,13 @@ export class DFComponents {
 
   public static components: DFComponentWrapper = {};
 
-  public static register(
-    ontimizeDirective: string,
-    component: any,
-    template: DFComponentTemplate
-  ) {
-    let compTemplate = cloneDeep(template);
+  public static register(ontimizeDirective: string, component: any, template: DFComponentTemplate): void {
+    const compTemplate = JSON.parse(JSON.stringify(template));
     compTemplate.module = compTemplate.module || {};
     compTemplate.component.selector = compTemplate.component.selector || 'odf-' + ontimizeDirective;
     compTemplate.component.inputs = compTemplate.component.inputs || ['component', 'data'];
 
-    let decoratedCmp = this.createCustomComponent(compTemplate.component);
+    const decoratedCmp = this.createCustomComponent(compTemplate.component);
 
     // Dynamic module
     if (!compTemplate.module.declarations) {
@@ -61,8 +53,8 @@ export class DFComponents {
   }
 
   public static createComponent(component: any, events: ODynamicFormEvents, data: any): any {
-    let ontimizeDirective: string = component['ontimize-directive'];
-    let comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
+    const ontimizeDirective: string = component['ontimize-directive'];
+    const comp: DFComponentWrapper = DFComponents.components[ontimizeDirective];
     if (!comp) {
       console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O', ontimizeDirective, component);
       return undefined;
@@ -70,10 +62,7 @@ export class DFComponents {
     return new comp.component(component, events, data);
   }
 
-  public static element(
-    ontimizeDirective: string,
-    compiler: Compiler
-  ): Promise<ComponentFactory<any>> {
+  public static element(ontimizeDirective: string, compiler: Compiler): Promise<ComponentFactory<any>> {
     if (!DFComponents.components.hasOwnProperty(ontimizeDirective)) {
       ontimizeDirective = 'custom';
     }
@@ -81,8 +70,8 @@ export class DFComponents {
       return DFComponents.components[ontimizeDirective].factoryPromise;
     }
     DFComponents.components[ontimizeDirective].factoryPromise =
-      compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module).then((moduleWithFactories) => {
-        let factory = find(moduleWithFactories.componentFactories, { selector: 'odf-' + ontimizeDirective });
+      compiler.compileModuleAndAllComponentsAsync(DFComponents.components[ontimizeDirective].module).then(moduleWithFactories => {
+        const factory = moduleWithFactories.componentFactories.find(a => a.selector === 'odf-' + ontimizeDirective);
         return factory;
       });
     return DFComponents.components[ontimizeDirective].factoryPromise;
@@ -93,40 +82,39 @@ export class DFComponents {
     class CustomDynamicComponent {
 
       @ViewChild('ontimizeComponent')
-      ontimizeComponent: any;
+      public ontimizeComponent: any;
 
-      formGroupSubs: any;
+      public formGroupSubs: any;
 
-      component: BaseComponent<any>;
-      render: EventEmitter<any>;
+      public component: BaseComponent<any>;
+      public render: EventEmitter<any>;
 
-      renderCount: number = 0;
+      public renderCount: number = 0;
 
       get numComponents(): number {
         return this.component.getNumComponents();
       }
 
-      ngOnInit() {
+      public ngOnInit(): void {
         this.setOntimizeComponentInputs();
       }
 
-      ngAfterViewInit() {
+      public ngAfterViewInit(): void {
         this.onRender();
       }
 
-      setOntimizeComponentInputs() {
+      public setOntimizeComponentInputs(): void {
         if (this.component && this.ontimizeComponent) {
-          let inputsMapping = this.component.getInputsMapping();
-          for (var i = 0; i < inputsMapping.length; i++) {
-            let curr = inputsMapping[i];
+          const inputsMapping = this.component.getInputsMapping();
+          inputsMapping.forEach(curr => {
             if (this.component.settings.hasOwnProperty(curr.input)) {
               this.ontimizeComponent[curr.propName] = this.component.settings[curr.input];
             }
-          }
+          });
         }
       }
 
-      onRender() {
+      public onRender(): void {
         if (!this.render) {
           return;
         }

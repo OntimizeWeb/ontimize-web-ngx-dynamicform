@@ -1,7 +1,6 @@
 <ng-template #odfElement></ng-template>
 
 <o-drop-zone
-  fxFlex
   *ngIf="editMode && component.isContainerComponent()"
   [component]="component"
   for-children="true"

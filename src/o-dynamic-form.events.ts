@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { /*FormioError,*/ FormioAlert } from './o-dynamic-form.common';
+
+import { FormioAlert /*, FormioError*/ } from './o-dynamic-form.common';
 
 export interface DynamicFormEvent {
   type: string;
@@ -8,13 +9,14 @@ export interface DynamicFormEvent {
 
 @Injectable()
 export class ODynamicFormEvents {
+
   public beforeSubmit: EventEmitter<Object>;
   public onSubmit: EventEmitter<Object>;
   public onInvalid: EventEmitter<boolean>;
   public onChange: EventEmitter<Object>;
   public onRender: EventEmitter<any>;
   // public errors: Array<FormioError>;
-  public alerts: Array<FormioAlert>;
+  public alerts: FormioAlert[];
   // public addComponentEmitter: EventEmitter<Object>;
 
   constructor() {

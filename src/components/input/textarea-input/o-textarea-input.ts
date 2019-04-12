@@ -1,7 +1,8 @@
-import { DFComponents } from '../../components';
-import { DFTemplate } from '../../../o-dynamic-form.template';
-import { InputComponent, InputOptions } from '../input';
 import { DEFAULT_INPUTS_O_TEXTAREA_INPUT } from 'ontimize-web-ngx';
+
+import { DFTemplate } from '../../../o-dynamic-form.template';
+import { DFComponents } from '../../components';
+import { InputComponent, InputOptions } from '../input';
 
 export class TextareaFieldComponent extends InputComponent<InputOptions> {
 
@@ -9,12 +10,12 @@ export class TextareaFieldComponent extends InputComponent<InputOptions> {
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_TEXTAREA_INPUT;
   }
 
 }
 
-export function OdfOTextareaInput(template: DFTemplate) {
+export function OdfOTextareaInput(template: DFTemplate): void {
   DFComponents.register('o-textarea-input', TextareaFieldComponent, template.components['o-textarea-input']);
 }

@@ -1,12 +1,4 @@
-import {
-  Compiler,
-  Component,
-  ComponentRef,
-  EventEmitter,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { Compiler, Component, ComponentRef, EventEmitter, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { BaseComponent } from './components/base';
 import { DFComponents } from './components/components';
@@ -26,29 +18,29 @@ import { DFComponents } from './components/components';
 })
 export class ODFElementComponent implements OnInit {
 
-  component: BaseComponent<any>;
-  render: EventEmitter<any>;
-  editMode: boolean = false;
-  addComponentEmitter: EventEmitter<any>;
-  moveComponentEmitter: EventEmitter<any>;
-  editComponentSettingsEmitter: EventEmitter<any>;
-  deleteComponentEmitter: EventEmitter<any>;
+  public component: BaseComponent<any>;
+  public render: EventEmitter<any>;
+  public editMode: boolean = false;
+  public addComponentEmitter: EventEmitter<any>;
+  public moveComponentEmitter: EventEmitter<any>;
+  public editComponentSettingsEmitter: EventEmitter<any>;
+  public deleteComponentEmitter: EventEmitter<any>;
 
   @ViewChild('odfElement', { read: ViewContainerRef })
-  element: ViewContainerRef;
+  public element: ViewContainerRef;
 
   constructor(
     protected compiler: Compiler
   ) { }
 
-  ngOnInit() {
-    var self = this;
+  public ngOnInit(): void {
+    const self = this;
     DFComponents.element(this.component.settings['ontimize-directive'], this.compiler).then(factory => {
       if (!self.element) {
-        return;
+        return void 0;
       }
       self.element.clear();
-      let cmpRef: ComponentRef<any> = self.element.createComponent<ODFElementComponent>(factory);
+      const cmpRef: ComponentRef<any> = self.element.createComponent<ODFElementComponent>(factory);
       // cmpRef.instance is a CustomDynamicComponent
       cmpRef.instance['component'] = self.component;
       cmpRef.instance['editMode'] = self.editMode;

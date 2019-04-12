@@ -14,7 +14,7 @@ export interface ValidateOptions {
 
 export interface ComponentOptions<T, V> {
   'ontimize-directive': string;
-  defaultValue?: T | Array<T>;
+  defaultValue?: T | T[];
   type?: string;
   key?: string;
   label?: string;
@@ -34,7 +34,8 @@ export interface ComponentOptions<T, V> {
 export interface BaseOptions<T> extends ComponentOptions<T, ValidateOptions> { }
 
 export class BaseComponent<T> {
-  index: number = 0;
+
+  public index: number = 0;
 
   constructor(
     public settings: any,
@@ -42,51 +43,51 @@ export class BaseComponent<T> {
     public data: any = {}
   ) { }
 
-  getNumComponents() {
+  public getNumComponents(): number {
     return this.isContainerComponent() ? this.getChildren().length : 0;
   }
 
-  allowMultiple(): boolean {
+  public allowMultiple(): boolean {
     return this.settings.multiple;
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return [];
   }
 
-  getInputsMapping() {
-    let rawProperties = this.getInputsProperties();
-    let parsedProperties = [];
-    for (var i = 0; i < rawProperties.length; i++) {
-      let splitted = rawProperties[i].split(':');
-      let propObj = {
+  public getInputsMapping(): any[] {
+    const rawProperties = this.getInputsProperties();
+    const parsedProperties = [];
+    rawProperties.forEach(properties => {
+      const splitted = properties.split(':');
+      const propObj = {
         propName: splitted[0].trim(),
         input: splitted[splitted.length - 1].trim()
       };
       parsedProperties.push(propObj);
-    }
+    });
     return parsedProperties;
   }
 
-  isContainerComponent() {
+  public isContainerComponent(): boolean {
     return false;
   }
 
-  getChildren() {
+  public getChildren(): any {
     return this.settings.children;
   }
 
-  getComponentAttr() {
+  public getComponentAttr(): string {
     return this.settings.attr;
   }
 
-  getChildrenAttrs(): Array<string> {
-    let attrs = [];
+  public getChildrenAttrs(): string[] {
+    const attrs = [];
     this._getChildrenAttrsFromSettings(this.settings, attrs);
     return attrs;
   }
 
-  protected _getChildrenAttrsFromSettings(element: Object, attrs: Array<string>): Array<string> {
+  protected _getChildrenAttrsFromSettings(element: Object, attrs: string[]): string[] {
     attrs.push(element['attr']);
     if (element['children']) {
       element['children'].forEach(e => {

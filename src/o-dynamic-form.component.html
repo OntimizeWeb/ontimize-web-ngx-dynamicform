@@ -4,7 +4,7 @@
 
   <odf-component *ngFor="let component of formDefComponents$ | async" [component]="component" [edit-mode]="editMode"
     [add-component-emitter]="onAddComponent" [move-component-emitter]="onMoveComponent" [edit-component-settings-emitter]="onEditComponentSettings"
-    [delete-component-emitter]="onDeleteComponent" (render)="onComponentRendered()" (change)="$event.stopPropagation()" fxFlex layout-padding>
+    [delete-component-emitter]="onDeleteComponent" (render)="onComponentRendered()" (change)="$event.stopPropagation()" fxFlex>
   </odf-component>
 
 </div>

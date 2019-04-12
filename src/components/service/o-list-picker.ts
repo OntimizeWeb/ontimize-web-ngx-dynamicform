@@ -1,7 +1,8 @@
-import { DFComponents } from '../components';
+import { DEFAULT_INPUTS_O_LIST_PICKER, OListPickerComponent } from 'ontimize-web-ngx';
+
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent, ComponentOptions } from '../base';
-import { DEFAULT_INPUTS_O_LIST_PICKER, OListPickerComponent } from 'ontimize-web-ngx';
+import { DFComponents } from '../components';
 
 export class ListPickerComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -9,16 +10,16 @@ export class ListPickerComponent extends BaseComponent<ComponentOptions<string, 
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_LIST_PICKER;
   }
 
-  getOntimizeComponentClass() {
+  public getOntimizeComponentClass(): typeof OListPickerComponent {
     return OListPickerComponent;
   }
 
 }
 
-export function OdfOListPicker(template: DFTemplate) {
+export function OdfOListPicker(template: DFTemplate): void {
   DFComponents.register('o-list-picker', ListPickerComponent, template.components['o-list-picker']);
 }

@@ -1,6 +1,7 @@
 import { DFTemplate } from '../o-dynamic-form.template';
+
 declare var require: any;
-let getTemplate = function (selector: string, template: any, styles: Array<string> = [], inputs: Array<string> = [], module: Object = {}) {
+const getTemplate = (selector: string, template: any, styles: string[] = [], inputs: string[] = [], module: Object = {}) => {
   return {
     component: {
       selector: selector,
@@ -12,7 +13,7 @@ let getTemplate = function (selector: string, template: any, styles: Array<strin
   };
 };
 
-let containerInputs = ['component', 'data', 'addCompontentEmitter : add-component-emitter', 'editMode : edit-mode'];
+const containerInputs = ['component', 'data', 'addCompontentEmitter : add-component-emitter', 'editMode : edit-mode'];
 
 export const DYNAMIC_FORM_BOOTSTRAP: DFTemplate = {
   components: {

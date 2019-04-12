@@ -1,7 +1,18 @@
 import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IFormDataComponent, IFormDataTypeComponent, InputConverter, OFormComponent, OFormValue, OntimizeService, OValueChangeEvent, ServiceUtils, SQLTypes, Util } from 'ontimize-web-ngx';
+import {
+  IFormDataComponent,
+  IFormDataTypeComponent,
+  InputConverter,
+  OFormComponent,
+  OFormValue,
+  OntimizeService,
+  OValueChangeEvent,
+  ServiceUtils,
+  SQLTypes,
+  Util
+} from 'ontimize-web-ngx';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
@@ -42,7 +53,6 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 
-  // public formDefinition$: BehaviorSubject<any> = new BehaviorSubject(null);
   public formDefComponents$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   /* inputs */
@@ -73,36 +83,34 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public innerFormDefinition: DynamicFormDefinition = null;
   public keysArray: string[] = [];
   public colsArray: string[] = [];
-  protected _pKeysEquiv = {};
   public dataService: any;
   /* end of parsed inputs */
+
+  public loading: boolean = false;
+  public formData: Object = {};
 
   public render: EventEmitter<any> = new EventEmitter();
   public submit: EventEmitter<any> = new EventEmitter();
   public change: EventEmitter<any> = new EventEmitter();
-
+  public onChange: EventEmitter<Object>;
+  public onValueChange: EventEmitter<OValueChangeEvent>;
   public onAddComponent: EventEmitter<any> = new EventEmitter();
   public onMoveComponent: EventEmitter<any> = new EventEmitter();
   public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   public onDeleteComponent: EventEmitter<any> = new EventEmitter();
-
   public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected reloadStream: Observable<any>;
 
-  public loading: boolean = false;
-  public formData: Object = {};
+  protected _pKeysEquiv = {};
 
   protected urlParamSub: any;
   protected urlParams: Object;
   protected onFormDataSubscribe: any;
 
   protected _fControl: FormControl;
-
-  public onChange: EventEmitter<Object>;
-  public onValueChange: EventEmitter<OValueChangeEvent>;
 
   constructor(
     protected actRoute: ActivatedRoute,
@@ -117,7 +125,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     );
 
     const self = this;
-    this.reloadStream.subscribe(function (valArr) {
+    this.reloadStream.subscribe(valArr => {
       if (Util.isArray(valArr) && valArr.length === 2) {
         if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
           self.doQuery(true);
@@ -129,7 +137,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public ngOnInit(): void {
     this.keysArray = Util.parseArray(this.keys);
     this.colsArray = Util.parseArray(this.columns);
-    let pkArray = Util.parseArray(this.parentKeys);
+    const pkArray = Util.parseArray(this.parentKeys);
     this._pKeysEquiv = Util.parseParentKeysEquivalences(pkArray);
 
     // ensuring formControl creation
@@ -161,19 +169,20 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return SQLTypes.OTHER;
   }
 
-  public getAttribute() {
+  public getAttribute(): string {
     if (this.oattr) {
       return this.oattr;
     } else if (this.elRef && this.elRef.nativeElement.attributes['attr']) {
       return this.elRef.nativeElement.attributes['attr'].value;
     }
+    return this.oattr;
   }
 
   public ngAfterViewInit(): void {
     this.onFormInitStream.emit(true);
   }
 
-  public configureService() {
+  public configureService(): void {
     let loadingService: any = OntimizeService;
     if (this.serviceType) {
       loadingService = this.serviceType;
@@ -181,7 +190,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     try {
       this.dataService = this.injector.get(loadingService);
       if (Util.isDataService(this.dataService)) {
-        let serviceCfg = this.dataService.getDefaultServiceConfiguration(this.service);
+        const serviceCfg = this.dataService.getDefaultServiceConfiguration(this.service);
         if (this.entity) {
           serviceCfg['entity'] = this.entity;
         }
@@ -221,7 +230,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   set data(value: any) {
-    let formDef = undefined;
+    let formDef: any;
     if (value instanceof OFormValue) {
       formDef = value.value;
     }
@@ -239,28 +248,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return this.autoRegistering;
   }
 
-  protected getCurrentKeysValues() {
-    let filter = {};
-    if (this.urlParams && this.keysArray) {
-      this.keysArray.map(key => {
-        if (this.urlParams[key]) {
-          filter[key] = this.urlParams[key];
-        }
-      });
-    }
-
-    let keys = Object.keys(this._pKeysEquiv);
-    if (this.urlParams && keys && keys.length > 0) {
-      keys.forEach(item => {
-        let urlVal = this.urlParams[this._pKeysEquiv[item]];
-        if (urlVal) {
-          filter[item] = urlVal;
-        }
-      });
-    }
-    return filter;
-  }
-
   public doQuery(useFilter: boolean = false): void {
     let filter = {};
     if (useFilter) {
@@ -270,7 +257,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
 
   public getAttributesToQuery(): any[] {
-    let attributes: any[] = [];
+    const attributes: any[] = [];
     // add form keys...
     if (this.keysArray && this.keysArray.length > 0) {
       attributes.push(...this.keysArray);
@@ -281,7 +268,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return attributes;
   }
 
-  _setData(data) {
+  public _setData(data): void {
     if (Util.isArray(data) && data.length === 1) {
       this.formData = data[0];
       this._emitData(this.formData);
@@ -292,12 +279,12 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       console.warn('DynamicForm has received not supported service data. Supported data are Array or Object');
     }
     if (this.oattr) {
-      let dynamicData = this.formData[this.oattr];
+      const dynamicData = this.formData[this.oattr];
       this.formDefinition = dynamicData;
     }
   }
 
-  _emitData(data) {
+  public _emitData(data): void {
     this.onDynamicFormDataLoaded.emit(data);
   }
 
@@ -352,7 +339,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public load(): any {
     const self = this;
     const loadObservable = new Observable(observer => {
-      var timer = window.setTimeout(() => {
+      const timer = window.setTimeout(() => {
         observer.next(true);
       }, 250);
 
@@ -383,7 +370,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  get formDefinition() {
+  get formDefinition(): any {
     return this.innerFormDefinition;
   }
 
@@ -400,6 +387,28 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   public hasError(error: string): boolean {
     return this._fControl && this._fControl.hasError(error);
+  }
+
+  protected getCurrentKeysValues(): any {
+    const filter = {};
+    if (this.urlParams && this.keysArray) {
+      this.keysArray.map(key => {
+        if (this.urlParams[key]) {
+          filter[key] = this.urlParams[key];
+        }
+      });
+    }
+
+    const keys = Object.keys(this._pKeysEquiv);
+    if (this.urlParams && keys && keys.length > 0) {
+      keys.forEach(item => {
+        const urlVal = this.urlParams[this._pKeysEquiv[item]];
+        if (urlVal) {
+          filter[item] = urlVal;
+        }
+      });
+    }
+    return filter;
   }
 
 }
