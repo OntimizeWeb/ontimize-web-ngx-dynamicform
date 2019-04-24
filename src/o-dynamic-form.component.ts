@@ -49,7 +49,10 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'onDeleteComponent',
     'onDynamicFormDataLoaded'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.o-dynamic-form]': 'true'
+  }
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 

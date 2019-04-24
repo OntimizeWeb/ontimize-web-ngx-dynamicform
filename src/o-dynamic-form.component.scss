@@ -1,40 +1,45 @@
-.odf-element-options-container {
-  z-index: 1;
-  background: #DADADA;
-  cursor: pointer;
+.o-dynamic-form {
+  display: block;
+  height: 100%;
 
-  .odf-element-options-attr {
-    display: inline-flex;
-    align-items: center;
-    padding-left: 8px;
-  }
-
-  mat-icon {
-    font-size: 14px;
+  .odf-element-options-container {
+    z-index: 1;
+    background: #DADADA;
     cursor: pointer;
-    padding: 5px;
-    box-sizing: border-box;
+
+    .odf-element-options-attr {
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+    }
+
+    mat-icon {
+      font-size: 14px;
+      cursor: pointer;
+      padding: 5px;
+      box-sizing: border-box;
+    }
   }
-}
 
-odf-element {
-  o-column.o-column[class*="mat-elevation-z"],
-  o-row.o-row[class*="mat-elevation-z"] {
-    margin: 8px 4px;
+  odf-element {
+    o-column.o-column[class*="mat-elevation-z"],
+    o-row.o-row[class*="mat-elevation-z"] {
+      margin: 8px 4px;
+    }
   }
-}
 
-.odf-element-container {
-  position: relative;
-  cursor: inherit !important;
+  .odf-element-container {
+    position: relative;
+    cursor: inherit !important;
 
-  .component-container.editable {
-    border: 1px solid #DADADA;
+    .component-container.editable {
+      border: 1px solid #DADADA;
 
-    o-column.margin-top-bottom,
-    o-row.margin-top-bottom {
-      margin: 0;
-      padding: 8px 0;
+      o-column.margin-top-bottom,
+      o-row.margin-top-bottom {
+        margin: 0;
+        padding: 8px 0;
+      }
     }
   }
 }
