@@ -1,5 +1,5 @@
 <div *ngFor="let comp of components; let i = index;" dnd-draggable [dragData]="getDraggableData()" [dragEnabled]="isDragEnabled" fxLayout="column"
-  class="odf-element-container">
+  class="odf-element-container" fxFill>
 
   <div [ngClass]="{'component-container': isContainerComponent(comp), 'component': !isContainerComponent(comp), 'editable': editMode}">
 
