@@ -1,8 +1,9 @@
-import { DFComponents } from '../../components';
-import { DFTemplate } from '../../../o-dynamic-form.template';
-import { ODynamicFormEvents } from '../../../o-dynamic-form.events';
-import { InputComponent, InputOptions } from '../input';
 import { DEFAULT_INPUTS_O_INTEGER_INPUT } from 'ontimize-web-ngx';
+
+import { ODynamicFormEvents } from '../../../o-dynamic-form.events';
+import { DFTemplate } from '../../../o-dynamic-form.template';
+import { DFComponents } from '../../components';
+import { InputComponent, InputOptions } from '../input';
 
 export class IntegerFieldComponent extends InputComponent<InputOptions> {
 
@@ -10,12 +11,12 @@ export class IntegerFieldComponent extends InputComponent<InputOptions> {
     super(settings, events, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_INTEGER_INPUT;
   }
 
 }
 
-export function OdfOIntegerInput(template: DFTemplate) {
+export function OdfOIntegerInput(template: DFTemplate): void {
   DFComponents.register('o-integer-input', IntegerFieldComponent, template.components['o-integer-input']);
 }

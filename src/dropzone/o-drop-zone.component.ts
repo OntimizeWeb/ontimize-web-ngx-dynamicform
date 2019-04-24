@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewEncapsulation } from '@angular/core';
 import { InputConverter } from 'ontimize-web-ngx';
 
 import { BaseComponent } from '../components/base';
@@ -13,21 +13,24 @@ import { BaseComponent } from '../components/base';
     'addComponentEmitter : add-component-emitter',
     'moveComponentEmitter : move-component-emitter'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.o-drop-zone]': 'true'
+  }
 })
 export class ODropZoneComponent implements OnInit {
+
+  public id: string;
+  @InputConverter()
+  public forChildren: boolean = false;
+  public component: BaseComponent<any>;
+  public addComponentEmitter: EventEmitter<any>;
+  public moveComponentEmitter: EventEmitter<any>;
 
   protected DEFAULT_ID: string = 'o-drop-zone';
   protected CHILDREN_ID_PATH: string = '-children';
 
-  id: string;
-  @InputConverter()
-  forChildren: boolean = false;
-  component: BaseComponent<any>;
-  addComponentEmitter: EventEmitter<any>;
-  moveComponentEmitter: EventEmitter<any>;
-
-  ngOnInit() {
+  public ngOnInit(): void {
     this.id = this.DEFAULT_ID;
     let attr: string;
     if (this.component) {
@@ -40,9 +43,9 @@ export class ODropZoneComponent implements OnInit {
 
   }
 
-  onDropEnd(event: any) {
-    let comp = event.dragData;
-    let params = {
+  public onDropEnd(event: any): void {
+    const comp = event.dragData;
+    const params = {
       component: comp
     };
     if (this.component) {
@@ -61,12 +64,12 @@ export class ODropZoneComponent implements OnInit {
     }
   }
 
-  allowDropFunction() {
-    let self = this;
+  public allowDropFunction() {
+    const self = this;
     return function (dragData: BaseComponent<any>) {
       if (dragData) {
-        let fakeDZAttr: string = self.DEFAULT_ID + '-' + dragData.getComponentAttr();
-        let checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.CHILDREN_ID_PATH;
+        const fakeDZAttr: string = self.DEFAULT_ID + '-' + dragData.getComponentAttr();
+        const checkSelf: boolean = this._elem.id !== fakeDZAttr && this._elem.id !== fakeDZAttr + self.CHILDREN_ID_PATH;
 
         let checkChildren: boolean = true;
         if (dragData instanceof BaseComponent && dragData.isContainerComponent()) {

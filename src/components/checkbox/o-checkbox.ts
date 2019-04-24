@@ -1,7 +1,8 @@
-import { DFComponents } from '../components';
+import { DEFAULT_INPUTS_O_CHECKBOX, OCheckboxComponent } from 'ontimize-web-ngx';
+
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent, ComponentOptions } from '../base';
-import { DEFAULT_INPUTS_O_CHECKBOX, OCheckboxComponent } from 'ontimize-web-ngx';
+import { DFComponents } from '../components';
 
 export class CheckboxComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -9,16 +10,16 @@ export class CheckboxComponent extends BaseComponent<ComponentOptions<string, an
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_CHECKBOX;
   }
 
-  getOntimizeComponentClass() {
+  public getOntimizeComponentClass(): typeof OCheckboxComponent {
     return OCheckboxComponent;
   }
 
 }
 
-export function OdfOCheckbox(template: DFTemplate) {
+export function OdfOCheckbox(template: DFTemplate): void {
   DFComponents.register('o-checkbox', CheckboxComponent, template.components['o-checkbox']);
 }

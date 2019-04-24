@@ -1,11 +1,6 @@
-import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewEncapsulation, } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/combineLatest';
-
+import { ActivatedRoute } from '@angular/router';
 import {
   IFormDataComponent,
   IFormDataTypeComponent,
@@ -13,10 +8,12 @@ import {
   OFormComponent,
   OFormValue,
   OntimizeService,
+  OValueChangeEvent,
+  ServiceUtils,
   SQLTypes,
-  Util,
-  ServiceUtils
+  Util
 } from 'ontimize-web-ngx';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 
 import { DynamicFormDefinition } from './o-dynamic-form.common';
 import { ODynamicFormEvents } from './o-dynamic-form.events';
@@ -52,65 +49,71 @@ import { ODynamicFormEvents } from './o-dynamic-form.events';
     'onDeleteComponent',
     'onDynamicFormDataLoaded'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.o-dynamic-form]': 'true'
+  }
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 
-  public ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public formDefComponents$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   /* inputs */
-  oattr: string;
+  public oattr: string;
   @InputConverter()
-  editMode: boolean = false;
-  entity: string;
-  keys: string = '';
-  parentKeys: string = '';
-  columns: string = '';
-  service: string;
-  serviceType: string;
+  public editMode: boolean = false;
+  public entity: string;
+  public keys: string = '';
+  public parentKeys: string = '';
+  public columns: string = '';
+  public service: string;
+  public serviceType: string;
   @InputConverter()
-  queryOnInit: boolean = true;
+  public queryOnInit: boolean = true;
   @InputConverter()
-  queryOnBind: boolean = true;
+  public queryOnBind: boolean = true;
   @InputConverter()
-  queryOnRender: boolean = true;
+  public queryOnRender: boolean = true;
   @InputConverter()
-  registerInParentForm: boolean = true;
+  public registerInParentForm: boolean = true;
   @InputConverter()
-  autoBinding: boolean = true;
+  public autoBinding: boolean = true;
   @InputConverter()
-  autoRegistering: boolean = true;
+  public autoRegistering: boolean = true;
   /* end of inputs */
 
   /*parsed inputs */
-  innerFormDefinition: DynamicFormDefinition = null;
-  keysArray: string[] = [];
-  colsArray: string[] = [];
-  _pKeysEquiv = {};
-  dataService: any;
+  public innerFormDefinition: DynamicFormDefinition = null;
+  public keysArray: string[] = [];
+  public colsArray: string[] = [];
+  public dataService: any;
   /* end of parsed inputs */
 
-  render: EventEmitter<any> = new EventEmitter();
-  submit: EventEmitter<any> = new EventEmitter();
-  change: EventEmitter<any> = new EventEmitter();
+  public loading: boolean = false;
+  public formData: Object = {};
 
-  onAddComponent: EventEmitter<any> = new EventEmitter();
-  onMoveComponent: EventEmitter<any> = new EventEmitter();
-  onEditComponentSettings: EventEmitter<any> = new EventEmitter();
-  onDeleteComponent: EventEmitter<any> = new EventEmitter();
-
-  onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
+  public render: EventEmitter<any> = new EventEmitter();
+  public submit: EventEmitter<any> = new EventEmitter();
+  public change: EventEmitter<any> = new EventEmitter();
+  public onChange: EventEmitter<Object>;
+  public onValueChange: EventEmitter<OValueChangeEvent>;
+  public onAddComponent: EventEmitter<any> = new EventEmitter();
+  public onMoveComponent: EventEmitter<any> = new EventEmitter();
+  public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
+  public onDeleteComponent: EventEmitter<any> = new EventEmitter();
+  public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected reloadStream: Observable<any>;
 
-  public loading: boolean = false;
-  public formData: Object = {};
+  protected _pKeysEquiv = {};
 
   protected urlParamSub: any;
   protected urlParams: Object;
   protected onFormDataSubscribe: any;
+
+  protected _fControl: FormControl;
 
   constructor(
     protected actRoute: ActivatedRoute,
@@ -119,13 +122,13 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     protected elRef: ElementRef,
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected parentForm: OFormComponent
   ) {
-    this.reloadStream = Observable.combineLatest(
+    this.reloadStream = combineLatest(
       this.onFormInitStream.asObservable(),
       this.onUrlParamChangedStream.asObservable()
     );
 
     const self = this;
-    this.reloadStream.subscribe(function (valArr) {
+    this.reloadStream.subscribe(valArr => {
       if (Util.isArray(valArr) && valArr.length === 2) {
         if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
           self.doQuery(true);
@@ -134,15 +137,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     });
   }
 
-  ngOnInit() {
-    if (this.formDefinition) {
-      this.ready.next(true);
-    }
-
+  public ngOnInit(): void {
     this.keysArray = Util.parseArray(this.keys);
     this.colsArray = Util.parseArray(this.columns);
-    let pkArray = Util.parseArray(this.parentKeys);
+    const pkArray = Util.parseArray(this.parentKeys);
     this._pKeysEquiv = Util.parseParentKeysEquivalences(pkArray);
+
+    // ensuring formControl creation
+    this.getControl();
 
     this.configureService();
 
@@ -166,23 +168,24 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  getSQLType(): number {
+  public getSQLType(): number {
     return SQLTypes.OTHER;
   }
 
-  getAttribute() {
+  public getAttribute(): string {
     if (this.oattr) {
       return this.oattr;
     } else if (this.elRef && this.elRef.nativeElement.attributes['attr']) {
       return this.elRef.nativeElement.attributes['attr'].value;
     }
+    return this.oattr;
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit(): void {
     this.onFormInitStream.emit(true);
   }
 
-  configureService() {
+  public configureService(): void {
     let loadingService: any = OntimizeService;
     if (this.serviceType) {
       loadingService = this.serviceType;
@@ -190,7 +193,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     try {
       this.dataService = this.injector.get(loadingService);
       if (Util.isDataService(this.dataService)) {
-        let serviceCfg = this.dataService.getDefaultServiceConfiguration(this.service);
+        const serviceCfg = this.dataService.getDefaultServiceConfiguration(this.service);
         if (this.entity) {
           serviceCfg['entity'] = this.entity;
         }
@@ -201,7 +204,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  registerFormListeners() {
+  public registerFormListeners(): void {
     if (this.parentForm && this.registerInParentForm) {
       this.parentForm.registerFormComponent(this);
       this.parentForm.registerDynamicFormComponent(this);
@@ -209,7 +212,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  unregisterFormListeners() {
+  public unregisterFormListeners(): void {
     if (this.parentForm && this.registerInParentForm) {
       this.parentForm.unregisterFormComponent(this);
       this.parentForm.unregisterDynamicFormComponent(this);
@@ -217,12 +220,20 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  setValue(val: any) {
+  public getValue(): void {
+    // TO-DO
+  }
+
+  public clearValue(): void {
+    // TO-DO
+  }
+
+  public setValue(val: any): void {
     this.formDefinition = val;
   }
 
   set data(value: any) {
-    let formDef = undefined;
+    let formDef: any;
     if (value instanceof OFormValue) {
       formDef = value.value;
     }
@@ -232,37 +243,15 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.formDefinition = formDef;
   }
 
-  isAutomaticBinding(): boolean {
+  public isAutomaticBinding(): boolean {
     return this.autoBinding;
   }
 
-  isAutomaticRegistering(): boolean {
+  public isAutomaticRegistering(): boolean {
     return this.autoRegistering;
   }
 
-  protected getCurrentKeysValues() {
-    let filter = {};
-    if (this.urlParams && this.keysArray) {
-      this.keysArray.map(key => {
-        if (this.urlParams[key]) {
-          filter[key] = this.urlParams[key];
-        }
-      });
-    }
-
-    let keys = Object.keys(this._pKeysEquiv);
-    if (this.urlParams && keys && keys.length > 0) {
-      keys.forEach(item => {
-        let urlVal = this.urlParams[this._pKeysEquiv[item]];
-        if (urlVal) {
-          filter[item] = urlVal;
-        }
-      });
-    }
-    return filter;
-  }
-
-  doQuery(useFilter: boolean = false) {
+  public doQuery(useFilter: boolean = false): void {
     let filter = {};
     if (useFilter) {
       filter = this.getCurrentKeysValues();
@@ -270,8 +259,8 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.queryData(filter);
   }
 
-  getAttributesToQuery() {
-    let attributes: Array<any> = [];
+  public getAttributesToQuery(): any[] {
+    const attributes: any[] = [];
     // add form keys...
     if (this.keysArray && this.keysArray.length > 0) {
       attributes.push(...this.keysArray);
@@ -282,7 +271,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return attributes;
   }
 
-  _setData(data) {
+  public _setData(data): void {
     if (Util.isArray(data) && data.length === 1) {
       this.formData = data[0];
       this._emitData(this.formData);
@@ -293,16 +282,16 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       console.warn('DynamicForm has received not supported service data. Supported data are Array or Object');
     }
     if (this.oattr) {
-      let dynamicData = this.formData[this.oattr];
+      const dynamicData = this.formData[this.oattr];
       this.formDefinition = dynamicData;
     }
   }
 
-  _emitData(data) {
+  public _emitData(data): void {
     this.onDynamicFormDataLoaded.emit(data);
   }
 
-  queryData(filter) {
+  public queryData(filter): void {
     if (!Util.isDefined(filter) || (Util.isObject(filter) && Object.keys(filter).length === 0)) {
       return;
     }
@@ -326,14 +315,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     });
   }
 
-  get areEmptyComponents() {
-    if (this.formDefinition && this.formDefinition.components) {
-      return this.formDefinition.components.length === 0;
+  get areEmptyComponents(): boolean {
+    if (this.innerFormDefinition && this.innerFormDefinition.components) {
+      return this.innerFormDefinition.components.length === 0;
     }
     return true;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.urlParamSub) {
       this.urlParamSub.unsubscribe();
     }
@@ -343,17 +332,17 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  onComponentRendered() {
+  public onComponentRendered(): void {
     // The form is done rendering.
     if (this.render) {
       this.render.emit(this.queryOnRender);
     }
   }
 
-  load(): any {
+  public load(): any {
     const self = this;
     const loadObservable = new Observable(observer => {
-      var timer = window.setTimeout(() => {
+      const timer = window.setTimeout(() => {
         observer.next(true);
       }, 250);
 
@@ -369,31 +358,60 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return subscription;
   }
 
-  set formDefinition(definition) {
+  set formDefinition(definition: any) {
     let definitionJSON: any = definition;
     if (definition && typeof definition === 'string') {
       try {
         definitionJSON = JSON.parse(definition);
       } catch (e) {
-        console.error('set formDefinition error');
+        console.error('set formDefinition error', definition);
       }
     }
     this.innerFormDefinition = definitionJSON;
+    if (this.innerFormDefinition) {
+      this.formDefComponents$.next(this.innerFormDefinition.components);
+    }
   }
 
-  get formDefinition() {
+  get formDefinition(): any {
     return this.innerFormDefinition;
   }
 
-  getControl(): FormControl {
-    return undefined;
+  public getControl(): FormControl {
+    if (!this._fControl) {
+      this._fControl = new FormControl();
+    }
+    return this._fControl;
   }
 
-  getFormControl(): FormControl {
-    return undefined;
+  public getFormControl(): FormControl {
+    return this._fControl;
   }
 
-  hasError(error: string): boolean {
-    return false;
+  public hasError(error: string): boolean {
+    return this._fControl && this._fControl.hasError(error);
   }
+
+  protected getCurrentKeysValues(): any {
+    const filter = {};
+    if (this.urlParams && this.keysArray) {
+      this.keysArray.map(key => {
+        if (this.urlParams[key]) {
+          filter[key] = this.urlParams[key];
+        }
+      });
+    }
+
+    const keys = Object.keys(this._pKeysEquiv);
+    if (this.urlParams && keys && keys.length > 0) {
+      keys.forEach(item => {
+        const urlVal = this.urlParams[this._pKeysEquiv[item]];
+        if (urlVal) {
+          filter[item] = urlVal;
+        }
+      });
+    }
+    return filter;
+  }
+
 }

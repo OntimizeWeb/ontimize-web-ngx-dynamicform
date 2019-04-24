@@ -1,5 +1,7 @@
-import { DFTemplate } from './o-dynamic-form.template';
-
+import { OdfOCheckbox } from './components/checkbox/o-checkbox';
+import { OdfOColumn } from './components/container/o-column';
+import { OdfORow } from './components/container/o-row';
+import { OdfOTable } from './components/data/o-table';
 import { OdfOCurrencyInput } from './components/input/currency-input/o-currency-input';
 import { OdfODateInput } from './components/input/date-input/o-date-input';
 import { OdfOEmailInput } from './components/input/email-input/o-email-input';
@@ -10,14 +12,11 @@ import { OdfOPercentInput } from './components/input/percent-input/o-percent-inp
 import { OdfORealInput } from './components/input/real-input/o-real-input';
 import { OdfOTextInput } from './components/input/text-input/o-text-input';
 import { OdfOTextareaInput } from './components/input/textarea-input/o-textarea-input';
-import { OdfOColumn } from './components/container/o-column';
-import { OdfORow } from './components/container/o-row';
 import { OdfOCombo } from './components/service/o-combo';
 import { OdfOListPicker } from './components/service/o-list-picker';
-import { OdfOCheckbox } from './components/checkbox/o-checkbox';
-import { OdfOTable } from './components/data/o-table';
+import { DFTemplate } from './o-dynamic-form.template';
 
-export function RegisterComponents(template: DFTemplate) {
+export function RegisterComponents(template: DFTemplate): void {
   OdfOCurrencyInput(template);
   OdfODateInput(template);
   OdfOEmailInput(template);

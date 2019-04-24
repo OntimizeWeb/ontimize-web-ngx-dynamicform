@@ -1,8 +1,9 @@
-import { DFComponents } from '../components';
+import { DEFAULT_INPUTS_O_TABLE, OTableComponent } from 'ontimize-web-ngx';
+
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent } from '../base';
+import { DFComponents } from '../components';
 import { InputOptions } from '../input/input';
-import { DEFAULT_INPUTS_O_TABLE, OTableComponent } from 'ontimize-web-ngx';
 
 export class TableComponent extends BaseComponent<InputOptions> {
 
@@ -10,16 +11,16 @@ export class TableComponent extends BaseComponent<InputOptions> {
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_TABLE;
   }
 
-  getOntimizeComponentClass() {
+  public getOntimizeComponentClass(): typeof OTableComponent {
     return OTableComponent;
   }
 
 }
 
-export function OdfOTable(template: DFTemplate) {
+export function OdfOTable(template: DFTemplate): void {
   DFComponents.register('o-table', TableComponent, template.components['o-table']);
 }

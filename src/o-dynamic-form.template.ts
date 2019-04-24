@@ -1,12 +1,13 @@
-import { Type, NgModule } from '@angular/core';
+import { NgModule, Type } from '@angular/core';
+
 declare var require: any;
 let Reflect = require('core-js/es7/reflect');
 
 export interface DFComponentMetaData {
   template?: string;
   selector?: string;
-  inputs?: Array<string>;
-  styles?: Array<string>;
+  inputs?: string[];
+  styles?: string[];
 }
 
 export interface DFComponentTemplate {
@@ -52,11 +53,10 @@ export interface DFTemplate {
  *
  * @param cmp - The component class to alter.
  * @param template - The template to add to this component.
- * @constructor
  */
-export function RegisterTemplate(cmp: Type<any>, template: DFComponentTemplate) {
+export function RegisterTemplate(cmp: Type<any>, template: DFComponentTemplate): void {
   //noinspection TypeScriptUnresolvedFunction
-  let annotations = Reflect.getMetadata('annotations', cmp);
+  const annotations = Reflect.getMetadata('annotations', cmp);
   annotations[0].template = template.component.template;
   if (template.component.styles) {
     annotations[0].styles = template.component.styles;

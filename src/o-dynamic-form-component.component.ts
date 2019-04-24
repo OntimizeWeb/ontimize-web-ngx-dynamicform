@@ -1,25 +1,10 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  Inject,
-  Injector,
-  OnInit,
-  Optional,
-  ViewChild,
-  ViewEncapsulation
-} from '@angular/core';
-
+import { Component, ElementRef, EventEmitter, forwardRef, Inject, Injector, OnInit, Optional, ViewChild, ViewEncapsulation } from '@angular/core';
 import { OFormComponent } from 'ontimize-web-ngx';
 
+import { BaseComponent, BaseOptions } from './components/base';
 import { DFComponents } from './components/components';
-import {
-  BaseComponent,
-  BaseOptions
-} from './components/base';
-import { ODynamicFormEvents } from './o-dynamic-form.events';
 import { ODFElementComponent } from './o-dynamic-form-element.component';
+import { ODynamicFormEvents } from './o-dynamic-form.events';
 
 @Component({
   selector: 'odf-component',
@@ -39,25 +24,25 @@ import { ODFElementComponent } from './o-dynamic-form-element.component';
 })
 export class ODFComponentComponent<T> implements OnInit {
 
+  public show: boolean = true;
+  public components: Array<BaseComponent<any>> = [];
+
+  public component: BaseOptions<T>;
+
+  public label: string | boolean;
+  public editMode: boolean = false;
+
+  public addComponentEmitter: EventEmitter<any>;
+  public moveComponentEmitter: EventEmitter<any>;
+  public editComponentSettingsEmitter: EventEmitter<any>;
+  public deleteComponentEmitter: EventEmitter<any>;
+
+  public render: EventEmitter<any> = new EventEmitter();
+
+  public isDragEnabled: boolean = false;
+
   @ViewChild('odfElement')
   protected odfElement: ODFElementComponent;
-
-  show: Boolean = true;
-  components: Array<BaseComponent<any>> = [];
-
-  component: BaseOptions<T>;
-
-  label: string | boolean;
-  editMode: boolean = false;
-
-  addComponentEmitter: EventEmitter<any>;
-  moveComponentEmitter: EventEmitter<any>;
-  editComponentSettingsEmitter: EventEmitter<any>;
-  deleteComponentEmitter: EventEmitter<any>;
-
-  render: EventEmitter<any> = new EventEmitter();
-
-  isDragEnabled: boolean = false;
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
@@ -66,18 +51,18 @@ export class ODFComponentComponent<T> implements OnInit {
     private events: ODynamicFormEvents
   ) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     // Add the initial component.
     this.addComponent();
     this.events.onChange.subscribe(() => this.checkConditions());
   }
 
-  checkConditions() {
+  public checkConditions(): void {
     this.show = true;
   }
 
-  addComponent() {
-    let component = DFComponents.createComponent(
+  public addComponent(): void {
+    const component = DFComponents.createComponent(
       this.component,
       this.events,
       this.injector
@@ -94,15 +79,15 @@ export class ODFComponentComponent<T> implements OnInit {
     return component;
   }
 
-  removeAt(index: number) {
+  public removeAt(index: number): void {
     this.components.splice(index, 1);
   }
 
-  isContainerComponent(component: BaseComponent<any>) {
+  public isContainerComponent(component: BaseComponent<any>): boolean {
     return component.isContainerComponent();
   }
 
-  getDraggableData() {
+  public getDraggableData(): BaseComponent<any> {
     return this.odfElement ? this.odfElement.component : null;
   }
 

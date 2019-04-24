@@ -1,7 +1,8 @@
-import { DFComponents } from '../../components';
-import { DFTemplate } from '../../../o-dynamic-form.template';
-import { InputComponent, InputOptions } from '../input';
 import { DEFAULT_INPUTS_O_REAL_INPUT } from 'ontimize-web-ngx';
+
+import { DFTemplate } from '../../../o-dynamic-form.template';
+import { DFComponents } from '../../components';
+import { InputComponent, InputOptions } from '../input';
 
 export class RealFieldComponent extends InputComponent<InputOptions> {
 
@@ -9,12 +10,12 @@ export class RealFieldComponent extends InputComponent<InputOptions> {
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_REAL_INPUT;
   }
 
 }
 
-export function OdfORealInput(template: DFTemplate) {
+export function OdfORealInput(template: DFTemplate): void {
   DFComponents.register('o-real-input', RealFieldComponent, template.components['o-real-input']);
 }

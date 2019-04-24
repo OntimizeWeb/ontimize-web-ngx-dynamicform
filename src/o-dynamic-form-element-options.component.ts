@@ -1,8 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  ViewEncapsulation
-} from '@angular/core';
+import { Component, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { BaseComponent } from './components/base';
 
@@ -18,17 +14,17 @@ import { BaseComponent } from './components/base';
 })
 export class ODFElementOptionsComponent {
 
-  component: BaseComponent<any>;
-  editComponentSettingsEmitter: EventEmitter<any>;
-  deleteComponentEmitter: EventEmitter<any>;
+  public component: BaseComponent<any>;
+  public editComponentSettingsEmitter: EventEmitter<any>;
+  public deleteComponentEmitter: EventEmitter<any>;
 
-  onEditOdfElement() {
+  public onEditOdfElement(): void {
     this.editComponentSettingsEmitter.emit({
       component: this.component
     });
   }
 
-  onDeleteOdfElement() {
+  public onDeleteOdfElement(): void {
     this.deleteComponentEmitter.emit({
       component: this.component
     });

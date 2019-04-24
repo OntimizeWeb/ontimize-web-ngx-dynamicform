@@ -1,7 +1,8 @@
-import { DFComponents } from '../components';
+import { DEFAULT_INPUTS_O_COMBO, OComboComponent } from 'ontimize-web-ngx';
+
 import { DFTemplate } from '../../o-dynamic-form.template';
 import { BaseComponent, ComponentOptions } from '../base';
-import { DEFAULT_INPUTS_O_COMBO, OComboComponent } from 'ontimize-web-ngx';
+import { DFComponents } from '../components';
 
 export class ComboComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -9,16 +10,16 @@ export class ComboComponent extends BaseComponent<ComponentOptions<string, any>>
     super(settings, data);
   }
 
-  getInputsProperties(): Array<any> {
+  public getInputsProperties(): any[] {
     return DEFAULT_INPUTS_O_COMBO;
   }
 
-  getOntimizeComponentClass() {
+  public getOntimizeComponentClass(): typeof OComboComponent {
     return OComboComponent;
   }
 
 }
 
-export function OdfOCombo(template: DFTemplate) {
+export function OdfOCombo(template: DFTemplate): void {
   DFComponents.register('o-combo', ComboComponent, template.components['o-combo']);
 }
