@@ -13,7 +13,10 @@ import { BaseComponent } from '../components/base';
     'addComponentEmitter : add-component-emitter',
     'moveComponentEmitter : move-component-emitter'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.o-drop-zone]': 'true'
+  }
 })
 export class ODropZoneComponent implements OnInit {
 
