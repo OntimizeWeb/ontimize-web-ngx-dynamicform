@@ -67,6 +67,7 @@
     "ajv": "6.5.4",
     "copyfiles": "1.2.0",
     "core-js": "2.5.7",
+    "fstream": "1.0.12",
     "gulp": "4.0.0",
     "gulp-cssimport": "6.0.0",
     "gulp-inline-ng2-template": "5.0.1",
