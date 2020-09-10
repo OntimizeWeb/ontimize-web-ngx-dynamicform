@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
 
-import { DFComponentTemplate } from './interfaces/df-component-template.interface';
+import { DFComponentTemplate } from '../interfaces/df-component-template.interface';
 
 declare var require: any;
 let Reflect = require('core-js/es7/reflect');

@@ -25,8 +25,8 @@ import {
 } from 'ontimize-web-ngx';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 
-import { DynamicFormDefinition } from './interfaces/o-dynamic-form-definition.interface';
-import { ODynamicFormEvents } from './services/o-dynamic-form-events.service';
+import { DynamicFormDefinition } from '../interfaces/o-dynamic-form-definition.interface';
+import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
 
 @Component({
   selector: 'o-dynamic-form',

@@ -1,7 +1,7 @@
 /*
  * Public API Surface of ontimize-web-ngx-dynamicform
  */
-export * from './lib/o-dynamic-form.component';
+export * from './lib/dynamic-form/o-dynamic-form.component';
 // export * from './lib/o-components';
 // export * from './lib/o-models';
 // export * from './lib/o-adapters';

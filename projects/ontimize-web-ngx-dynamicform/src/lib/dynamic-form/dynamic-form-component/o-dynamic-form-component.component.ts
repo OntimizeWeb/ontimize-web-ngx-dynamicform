@@ -1,3 +1,4 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   Component,
   ElementRef,
@@ -12,12 +13,11 @@ import {
 } from '@angular/core';
 import { OFormComponent } from 'ontimize-web-ngx';
 
-import { BaseComponent } from './components/base';
-import { DFComponents } from './components/components';
-import { BaseOptions } from './interfaces/base-options.interface';
-import { ODFElementComponent } from './o-dynamic-form-element.component';
-import { ODynamicFormEvents } from './services/o-dynamic-form-events.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { BaseComponent } from '../../components/base';
+import { DFComponents } from '../../components/components';
+import { BaseOptions } from '../../interfaces/base-options.interface';
+import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
+import { ODFElementComponent } from '../dynamic-form-element/o-dynamic-form-element.component';
 
 @Component({
   selector: 'odf-component',

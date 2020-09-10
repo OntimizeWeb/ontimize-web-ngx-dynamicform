@@ -1,8 +1,7 @@
 import { Compiler, Component, ComponentRef, EventEmitter, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 
-import { BaseComponent } from './components/base';
-import { DFComponents } from './components/components';
-
+import { BaseComponent } from '../../components/base';
+import { DFComponents } from '../../components/components';
 
 @Component({
   selector: 'odf-element',
