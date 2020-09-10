@@ -1,0 +1,10 @@
+<o-column #ontimizeComponent fxLayout="column">
+
+  <ng-template ngFor let-cmp [ngForOf]="component.getChildren()">
+    <odf-component *ngIf="component.isContainerComponent()" [component]="cmp" [edit-mode]="editMode" (render)="onRender()"
+      [add-component-emitter]="onAddComponent" [move-component-emitter]="onMoveComponent" [edit-component-settings-emitter]="onEditComponentSettings"
+      [delete-component-emitter]="onDeleteComponent" fxFlex>
+    </odf-component>
+  </ng-template>
+
+</o-column>

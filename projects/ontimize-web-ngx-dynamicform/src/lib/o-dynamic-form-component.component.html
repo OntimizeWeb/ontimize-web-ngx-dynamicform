@@ -1,0 +1,42 @@
+<div cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="components">
+  <div *ngFor="let comp of components; let i = index;" 
+    cdkDrag [cdkDragData]="getDraggableData()" [cdkDragDisabled]="!isDragEnabled"
+    fxLayout="column" class="odf-element-container" fxFill>
+
+    <div [ngClass]="{'component-container': isContainerComponent(comp), 'component': !isContainerComponent(comp), 'editable': editMode}">
+
+      <!-- dnd-draggable-handle -->
+      <odf-element-options
+        (mouseenter)="isDragEnabled=true"
+        (mouseleave)="isDragEnabled=false"
+        fxLayout
+        *ngIf="editMode"
+        [component]="comp"
+        [edit-component-settings-emitter]="editComponentSettingsEmitter"
+        [delete-component-emitter]="deleteComponentEmitter">
+      </odf-element-options>
+
+      <odf-element
+        #odfElement
+        fxLayout="column"
+        [component]="comp"
+        [render]="render"
+        [edit-mode]="editMode"
+        [add-component-emitter]="addComponentEmitter"
+        [move-component-emitter]="moveComponentEmitter"
+        [edit-component-settings-emitter]="editComponentSettingsEmitter"
+        [delete-component-emitter]="deleteComponentEmitter">
+      </odf-element>
+
+    </div>
+
+    <o-drop-zone
+      *ngIf="editMode"
+      for-children="false"
+      [component]="comp"
+      [add-component-emitter]="addComponentEmitter"
+      [move-component-emitter]="moveComponentEmitter">
+    </o-drop-zone>
+
+  </div>
+</div>

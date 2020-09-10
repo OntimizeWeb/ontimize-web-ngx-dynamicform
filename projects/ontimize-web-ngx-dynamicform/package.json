@@ -1,0 +1,33 @@
+{
+  "name": "ontimize-web-ngx-dynamicform",
+  "version": "8.0.0-rc.0",
+  "description": "Dynamic form",
+  "license": "Apache-2.0",
+  "readmeFilename": "README.md",
+  "main": "./bundles/ontimize-web-ngx-dynamicform.umd.js",
+  "metadata": "./index.metadata.json",
+  "module": "./index.js",
+  "es2015": "./esm2015/ontimize-web-ngx-dynamicform.js",
+  "typings": "./index.d.ts",
+  "bugs": {
+    "url": "https://github.com/OntimizeWeb/ontimize-web-ngx-dynamicform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OntimizeWeb/ontimize-web-ngx-dynamicform"
+  },
+  "author": {
+    "name": "Imatia S.L.",
+    "email": "contact@imatia.com"
+  },
+  "keywords": [
+    "ontimize",
+    "web",
+    "dynamic",
+    "form"
+  ],
+  "dependencies": {},
+  "peerDependencies": {
+    "ontimize-web-ngx": "8.0.0-rc.0"
+  }
+}

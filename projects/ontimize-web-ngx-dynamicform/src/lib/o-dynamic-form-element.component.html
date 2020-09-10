@@ -1,0 +1,9 @@
+<ng-template #odfElement></ng-template>
+
+<o-drop-zone
+  *ngIf="editMode && component.isContainerComponent()"
+  [component]="component"
+  for-children="true"
+  [add-component-emitter]="addComponentEmitter"
+  [move-component-emitter]="moveComponentEmitter">
+</o-drop-zone>
