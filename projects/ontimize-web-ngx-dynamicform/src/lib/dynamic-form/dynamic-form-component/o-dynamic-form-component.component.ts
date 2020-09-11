@@ -13,11 +13,22 @@ import {
 } from '@angular/core';
 import { OFormComponent } from 'ontimize-web-ngx';
 
-import { BaseComponent } from '../../components/base';
-import { DFComponents } from '../../components/components';
+import { BaseComponent } from '../../components/base.component';
+import { OColumnComponent } from '../../components/container/o-column';
+import { ORowComponent } from '../../components/container/o-row';
+import { NifFieldComponent } from '../../components/input/nif-input/o-nif-input';
+import { TextFieldComponent } from '../../components/input/text-input/o-text-input';
 import { BaseOptions } from '../../interfaces/base-options.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
 import { ODFElementComponent } from '../dynamic-form-element/o-dynamic-form-element.component';
+
+
+const paths = {
+  'o-column': OColumnComponent,
+  'o-nif-input': NifFieldComponent,
+  'o-text-input': TextFieldComponent,
+  'o-row': ORowComponent
+}
 
 @Component({
   selector: 'odf-component',
@@ -40,11 +51,10 @@ export class ODFComponentComponent<T> implements OnInit {
   public show: boolean = true;
   public components: Array<BaseComponent<any>> = [];
 
-  public component: BaseOptions<T>;
-
   public label: string | boolean;
-  public editMode: boolean = false;
 
+  public component: BaseOptions<T>;
+  public editMode: boolean = false;
   public addComponentEmitter: EventEmitter<any>;
   public moveComponentEmitter: EventEmitter<any>;
   public editComponentSettingsEmitter: EventEmitter<any>;
@@ -74,12 +84,16 @@ export class ODFComponentComponent<T> implements OnInit {
     this.show = true;
   }
 
-  public addComponent(): void {
-    const component = DFComponents.createComponent(
-      this.component,
-      this.events,
-      this.injector
-    );
+  public async addComponent(): Promise<void> {
+
+    const DynamicComponent = paths[this.component['ontimize-directive']];
+
+    const component = new DynamicComponent(this.component, this.events, this.injector);
+    // const component = DFComponents.createComponent(
+    //   this.component,
+    //   this.events,
+    //   this.injector
+    // );
     if (component) {
       // Set the index and readOnly flag.
       component.index = this.components.length;

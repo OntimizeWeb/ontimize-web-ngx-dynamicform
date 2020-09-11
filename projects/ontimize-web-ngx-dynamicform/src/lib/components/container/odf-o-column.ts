@@ -1,10 +1,10 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_COLUMN } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';
-import { DFTemplate } from '../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
-import { BaseComponent } from '../base';
-import { DFComponents } from '../components';
+import { BaseComponent } from '../base.component';
+import { CustomContainerDynamicComponent } from '../o-custom-dynamic-component';
 
 export class OColumnComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -22,6 +22,8 @@ export class OColumnComponent extends BaseComponent<ComponentOptions<string, any
 
 }
 
-export function OdfOColumn(template: DFTemplate): void {
-  DFComponents.register('o-column', OColumnComponent, template.components['o-column']);
-}
+@Component({
+  selector: 'odf-o-column',
+  templateUrl: './odf-o-column.component.html'
+})
+export class OColumnDynamicComponent extends CustomContainerDynamicComponent { }

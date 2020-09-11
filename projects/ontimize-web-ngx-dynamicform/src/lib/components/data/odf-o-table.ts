@@ -1,9 +1,9 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_TABLE, OTableComponent } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../interfaces/df-template.interface';
-import { BaseComponent } from '../base';
-import { DFComponents } from '../components';
+import { BaseComponent } from '../base.component';
 import { InputOptions } from '../input/input';
+import { CustomDynamicComponent } from '../o-custom-dynamic-component';
 
 export class TableComponent extends BaseComponent<InputOptions> {
 
@@ -21,6 +21,8 @@ export class TableComponent extends BaseComponent<InputOptions> {
 
 }
 
-export function OdfOTable(template: DFTemplate): void {
-  DFComponents.register('o-table', TableComponent, template.components['o-table']);
-}
+@Component({
+  selector: 'odf-o-table',
+  templateUrl: './odf-o-table-input.component.html'
+})
+export class OTableDynamicComponent extends CustomDynamicComponent { }

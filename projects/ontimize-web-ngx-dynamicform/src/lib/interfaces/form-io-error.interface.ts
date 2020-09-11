@@ -1,4 +1,4 @@
-import { BaseOptions } from '../components/base';
+import { BaseOptions } from '../components/base.component';
 
 export class FormioError {
   message: string;

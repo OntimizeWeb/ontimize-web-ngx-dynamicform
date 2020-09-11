@@ -1,8 +1,8 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_DATE_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class DateFieldComponent extends InputComponent<InputOptions> {
@@ -17,6 +17,8 @@ export class DateFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfODateInput(template: DFTemplate): void {
-  DFComponents.register('o-date-input', DateFieldComponent, template.components['o-date-input']);
-}
+@Component({
+  selector: 'odf-o-date-input',
+  templateUrl: './odf-o-date-input.component.html'
+})
+export class ODateInputDynamicComponent extends CustomDynamicComponent { }

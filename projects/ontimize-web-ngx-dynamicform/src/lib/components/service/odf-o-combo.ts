@@ -1,9 +1,9 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_COMBO, OComboComponent } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';
-import { DFTemplate } from '../../interfaces/df-template.interface';
-import { BaseComponent } from '../base';
-import { DFComponents } from '../components';
+import { BaseComponent } from '../base.component';
+import { CustomDynamicComponent } from '../o-custom-dynamic-component';
 
 export class ComboComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -21,6 +21,8 @@ export class ComboComponent extends BaseComponent<ComponentOptions<string, any>>
 
 }
 
-export function OdfOCombo(template: DFTemplate): void {
-  DFComponents.register('o-combo', ComboComponent, template.components['o-combo']);
-}
+@Component({
+  selector: 'odf-o-combo',
+  templateUrl: './odf-o-combo.component.html'
+})
+export class OComboDynamicComponent extends CustomDynamicComponent { }

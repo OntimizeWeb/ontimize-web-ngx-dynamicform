@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, ViewEncapsulation } from '@angular/core';
 import { InputConverter } from 'ontimize-web-ngx';
 
-import { BaseComponent } from '../components/base';
+import { BaseComponent } from '../components/base.component';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({

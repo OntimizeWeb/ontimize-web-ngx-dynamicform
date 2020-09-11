@@ -1,6 +1,6 @@
 import { Component, EventEmitter, ViewEncapsulation } from '@angular/core';
 
-import { BaseComponent } from '../../components/base';
+import { BaseComponent } from '../../components/base.component';
 
 @Component({
   selector: 'odf-element-options',

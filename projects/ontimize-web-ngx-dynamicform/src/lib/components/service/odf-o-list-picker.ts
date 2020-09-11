@@ -1,9 +1,9 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_LIST_PICKER, OListPickerComponent } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';
-import { DFTemplate } from '../../interfaces/df-template.interface';
-import { BaseComponent } from '../base';
-import { DFComponents } from '../components';
+import { BaseComponent } from '../base.component';
+import { CustomDynamicComponent } from '../o-custom-dynamic-component';
 
 export class ListPickerComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -21,6 +21,8 @@ export class ListPickerComponent extends BaseComponent<ComponentOptions<string, 
 
 }
 
-export function OdfOListPicker(template: DFTemplate): void {
-  DFComponents.register('o-list-picker', ListPickerComponent, template.components['o-list-picker']);
-}
+@Component({
+  selector: 'odf-o-list-picker',
+  templateUrl: './odf-o-list-picker.component.html'
+})
+export class OListPickerDynamicComponent extends CustomDynamicComponent { }

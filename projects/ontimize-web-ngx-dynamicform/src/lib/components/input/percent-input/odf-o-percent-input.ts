@@ -1,8 +1,8 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_PERCENT_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class PercentFieldComponent extends InputComponent<InputOptions> {
@@ -17,6 +17,8 @@ export class PercentFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfOPercentInput(template: DFTemplate): void {
-  DFComponents.register('o-percent-input', PercentFieldComponent, template.components['o-percent-input']);
-}
+@Component({
+  selector: 'odf-o-percent-input',
+  templateUrl: './odf-o-percent-input.component.html'
+})
+export class OPercentInputDynamicComponent extends CustomDynamicComponent { }

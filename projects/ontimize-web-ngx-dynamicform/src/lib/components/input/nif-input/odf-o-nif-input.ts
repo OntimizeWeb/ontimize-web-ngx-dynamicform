@@ -1,8 +1,8 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_NIF_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class NifFieldComponent extends InputComponent<InputOptions> {
@@ -17,6 +17,8 @@ export class NifFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfONifInput(template: DFTemplate): void {
-  DFComponents.register('o-nif-input', NifFieldComponent, template.components['o-nif-input']);
-}
+@Component({
+  selector: 'odf-o-nif-input',
+  templateUrl: './odf-o-nif-input.component.html'
+})
+export class ONifInputDynamicComponent extends CustomDynamicComponent { }

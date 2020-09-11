@@ -1,10 +1,10 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_ROW } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';
-import { DFTemplate } from '../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
-import { BaseComponent } from '../base';
-import { DFComponents } from '../components';
+import { BaseComponent } from '../base.component';
+import { CustomContainerDynamicComponent } from '../o-custom-dynamic-component';
 
 export class ORowComponent extends BaseComponent<ComponentOptions<string, any>> {
 
@@ -22,6 +22,8 @@ export class ORowComponent extends BaseComponent<ComponentOptions<string, any>> 
 
 }
 
-export function OdfORow(template: DFTemplate): void {
-  DFComponents.register('o-row', ORowComponent, template.components['o-row']);
-}
+@Component({
+  selector: 'odf-o-row',
+  templateUrl: './odf-o-row.component.html'
+})
+export class ORowDynamicComponent extends CustomContainerDynamicComponent { }

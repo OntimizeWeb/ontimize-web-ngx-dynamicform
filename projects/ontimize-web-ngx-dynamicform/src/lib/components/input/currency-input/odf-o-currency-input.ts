@@ -1,8 +1,8 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_CURRENCY_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class CurrencyFieldComponent extends InputComponent<InputOptions> {
@@ -17,6 +17,8 @@ export class CurrencyFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfOCurrencyInput(template: DFTemplate): void {
-  DFComponents.register('o-currency-input', CurrencyFieldComponent, template.components['o-currency-input']);
-}
+@Component({
+  selector: 'odf-o-currency-input',
+  templateUrl: './odf-o-currency-input.component.html'
+})
+export class OCurrencyInputDynamicComponent extends CustomDynamicComponent { }

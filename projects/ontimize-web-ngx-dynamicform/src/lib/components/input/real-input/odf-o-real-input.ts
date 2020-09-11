@@ -1,7 +1,7 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_REAL_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class RealFieldComponent extends InputComponent<InputOptions> {
@@ -16,6 +16,8 @@ export class RealFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfORealInput(template: DFTemplate): void {
-  DFComponents.register('o-real-input', RealFieldComponent, template.components['o-real-input']);
-}
+@Component({
+  selector: 'odf-o-real-input',
+  templateUrl: './odf-o-real-input.component.html'
+})
+export class ORealInputDynamicComponent extends CustomDynamicComponent { }

@@ -1,7 +1,7 @@
 import { ComponentOptions } from '../../interfaces/component-options.interface';
 import { ValidateOptions } from '../../interfaces/validate-options.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
-import { BaseComponent } from '../base';
+import { BaseComponent } from '../base.component';
 
 /**
  * The InputValidation interface.

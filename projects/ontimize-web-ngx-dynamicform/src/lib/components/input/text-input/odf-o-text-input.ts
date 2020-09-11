@@ -1,7 +1,7 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_TEXT_INPUT, OTextInputComponent } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class TextFieldComponent extends InputComponent<InputOptions> {
@@ -20,6 +20,8 @@ export class TextFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfOTextInput(template: DFTemplate): void {
-  DFComponents.register('o-text-input', TextFieldComponent, template.components['o-text-input']);
-}
+@Component({
+  selector: 'odf-o-text-input',
+  templateUrl: './odf-o-text-input.component.html'
+})
+export class OTextInputDynamicComponent extends CustomDynamicComponent { }

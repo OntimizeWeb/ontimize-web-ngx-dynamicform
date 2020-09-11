@@ -1,8 +1,8 @@
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_EMAIL_INPUT } from 'ontimize-web-ngx';
 
-import { DFTemplate } from '../../../interfaces/df-template.interface';
 import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
-import { DFComponents } from '../../components';
+import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class EmailFieldComponent extends InputComponent<InputOptions> {
@@ -17,6 +17,8 @@ export class EmailFieldComponent extends InputComponent<InputOptions> {
 
 }
 
-export function OdfOEmailInput(template: DFTemplate): void {
-  DFComponents.register('o-email-input', EmailFieldComponent, template.components['o-email-input']);
-}
+@Component({
+  selector: 'odf-o-email-input',
+  templateUrl: './odf-o-email-input.component.html'
+})
+export class OEmailInputDynamicComponent extends CustomDynamicComponent { }

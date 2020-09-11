@@ -3,29 +3,30 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material';
+import { OntimizeWebModule } from 'ontimize-web-ngx';
 
-import { RegisterComponents } from './components';
-import { O_DYNAMICFORM_COMPONENTS } from './dynamic-form.index';
+import { DYNAMIC_COMPONENTS_WRAPPERS } from './components/o-components';
+import { O_DYNAMICFORM_COMPONENTS } from './dynamic-form/index';
 import { ODynamicFormEvents } from './services/o-dynamic-form-events.service';
-import { ODynamicFormCustomMaterialModule } from './shared/custom.material.module';
-import { DYNAMIC_FORM_BOOTSTRAP } from './templates/bootstrap.templates';
 
 @NgModule({
   imports: [
     FlexLayoutModule,
     CommonModule,
     ReactiveFormsModule,
-    ODynamicFormCustomMaterialModule,
-    DragDropModule
+    DragDropModule,
+    MatIconModule,
+    OntimizeWebModule
   ],
-  declarations: O_DYNAMICFORM_COMPONENTS,
+  declarations: [
+    ...O_DYNAMICFORM_COMPONENTS,
+    ...DYNAMIC_COMPONENTS_WRAPPERS
+  ],
   exports: O_DYNAMICFORM_COMPONENTS,
   providers: [
     ODynamicFormEvents
-  ]
+  ],
+  entryComponents: DYNAMIC_COMPONENTS_WRAPPERS
 })
-export class DynamicFormModule {
-  constructor() {
-    RegisterComponents(DYNAMIC_FORM_BOOTSTRAP);
-  }
-}
+export class DynamicFormModule { }
