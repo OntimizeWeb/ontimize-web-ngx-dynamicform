@@ -14,20 +14,43 @@ import {
 import { OFormComponent } from 'ontimize-web-ngx';
 
 import { BaseComponent } from '../../components/base.component';
-import { OColumnComponent } from '../../components/container/o-column';
-import { ORowComponent } from '../../components/container/o-row';
-import { NifFieldComponent } from '../../components/input/nif-input/o-nif-input';
-import { TextFieldComponent } from '../../components/input/text-input/o-text-input';
+import { CheckboxComponent } from '../../components/checkbox/odf-o-checkbox';
+import { OColumnComponent } from '../../components/container/odf-o-column';
+import { ORowComponent } from '../../components/container/odf-o-row';
+import { TableComponent } from '../../components/data/odf-o-table';
+import { CurrencyFieldComponent } from '../../components/input/currency-input/odf-o-currency-input';
+import { DateFieldComponent } from '../../components/input/date-input/odf-o-date-input';
+import { EmailFieldComponent } from '../../components/input/email-input/odf-o-email-input';
+import { IntegerFieldComponent } from '../../components/input/integer-input/odf-o-integer-input';
+import { NifFieldComponent } from '../../components/input/nif-input/odf-o-nif-input';
+import { PasswordFieldComponent } from '../../components/input/password-input/odf-o-password-input';
+import { PercentFieldComponent } from '../../components/input/percent-input/odf-o-percent-input';
+import { RealFieldComponent } from '../../components/input/real-input/odf-o-real-input';
+import { TextFieldComponent } from '../../components/input/text-input/odf-o-text-input';
+import { OTextareaInputDynamicComponent } from '../../components/input/textarea-input/odf-o-textarea-input';
+import { ComboComponent } from '../../components/service/odf-o-combo';
+import { ListPickerComponent } from '../../components/service/odf-o-list-picker';
 import { BaseOptions } from '../../interfaces/base-options.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
 import { ODFElementComponent } from '../dynamic-form-element/o-dynamic-form-element.component';
 
-
 const paths = {
+  'o-checkbox': CheckboxComponent,
   'o-column': OColumnComponent,
+  'o-row': ORowComponent,
+  'o-table': TableComponent,
+  'o-currency-input': CurrencyFieldComponent,
+  'o-date-input': DateFieldComponent,
+  'o-email-input': EmailFieldComponent,
+  'o-integer-input': IntegerFieldComponent,
   'o-nif-input': NifFieldComponent,
+  'o-password-input': PasswordFieldComponent,
+  'o-percent-input': PercentFieldComponent,
+  'o-real-input': RealFieldComponent,
   'o-text-input': TextFieldComponent,
-  'o-row': ORowComponent
+  'o-textarea-input': OTextareaInputDynamicComponent,
+  'o-combo': ComboComponent,
+  'o-list-picker': ListPickerComponent
 }
 
 @Component({
