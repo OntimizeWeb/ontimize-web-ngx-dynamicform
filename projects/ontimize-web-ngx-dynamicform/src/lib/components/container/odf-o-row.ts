@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { DEFAULT_INPUTS_O_ROW } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';

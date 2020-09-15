@@ -27,7 +27,7 @@ import { PasswordFieldComponent } from '../../components/input/password-input/od
 import { PercentFieldComponent } from '../../components/input/percent-input/odf-o-percent-input';
 import { RealFieldComponent } from '../../components/input/real-input/odf-o-real-input';
 import { TextFieldComponent } from '../../components/input/text-input/odf-o-text-input';
-import { OTextareaInputDynamicComponent } from '../../components/input/textarea-input/odf-o-textarea-input';
+import { TextareaFieldComponent } from '../../components/input/textarea-input/odf-o-textarea-input';
 import { ComboComponent } from '../../components/service/odf-o-combo';
 import { ListPickerComponent } from '../../components/service/odf-o-list-picker';
 import { BaseOptions } from '../../interfaces/base-options.interface';
@@ -48,7 +48,7 @@ const paths = {
   'o-percent-input': PercentFieldComponent,
   'o-real-input': RealFieldComponent,
   'o-text-input': TextFieldComponent,
-  'o-textarea-input': OTextareaInputDynamicComponent,
+  'o-textarea-input': TextareaFieldComponent,
   'o-combo': ComboComponent,
   'o-list-picker': ListPickerComponent
 }
@@ -108,15 +108,7 @@ export class ODFComponentComponent<T> implements OnInit {
   }
 
   public async addComponent(): Promise<void> {
-
-    const DynamicComponent = paths[this.component['ontimize-directive']];
-
-    const component = new DynamicComponent(this.component, this.events, this.injector);
-    // const component = DFComponents.createComponent(
-    //   this.component,
-    //   this.events,
-    //   this.injector
-    // );
+    const component = this.createComponent();
     if (component) {
       // Set the index and readOnly flag.
       component.index = this.components.length;
@@ -143,5 +135,17 @@ export class ODFComponentComponent<T> implements OnInit {
 
   public drop(event: CdkDragDrop<BaseComponent<any>[]>) {
     moveItemInArray(this.components, event.previousIndex, event.currentIndex);
+  }
+
+  private createComponent() {
+    let component;
+    const DynamicComponent = paths[this.component['ontimize-directive']];
+    if (DynamicComponent) {
+      component = new DynamicComponent(this.component, this.events, this.injector);
+    } else {
+      console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O', this.component['ontimize-directive'], this.component);
+      return undefined;
+    }
+    return component;
   }
 }

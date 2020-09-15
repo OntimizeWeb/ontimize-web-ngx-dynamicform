@@ -12,7 +12,7 @@ export class CustomDynamicComponent {
   public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   public onDeleteComponent: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('ontimizeComponent', { static: false })
+  @ViewChild('ontimizeComponent', { static: true })
   public ontimizeComponent: any;
 
   public formGroupSubs: any;
@@ -58,6 +58,6 @@ export class CustomDynamicComponent {
 }
 
 export class CustomContainerDynamicComponent extends CustomDynamicComponent {
-  @Input() public addComponentEmitter: EventEmitter<any>;
-  @Input() public editMode: boolean = false;
+  @Input('add-component-emitter') public addComponentEmitter: EventEmitter<any>;
+  @Input('edit-mode') public editMode: boolean = false;
 }

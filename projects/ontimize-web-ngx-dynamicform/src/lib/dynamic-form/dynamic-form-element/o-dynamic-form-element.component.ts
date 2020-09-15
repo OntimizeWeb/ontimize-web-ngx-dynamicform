@@ -78,10 +78,15 @@ export class ODFElementComponent implements OnInit {
   ) { }
 
   public async ngOnInit() {
+    if (!this.element) {
+      return void 0;
+    }
+
     const componentReference = paths[this.component.settings['ontimize-directive']];
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentReference);
+    
+    this.element.clear();
     const cmpRef: ComponentRef<any> = this.element.createComponent<any>(componentFactory);
-
 
     // cmpRef.instance is a CustomDynamicComponent
     cmpRef.instance['component'] = this.component;
@@ -91,23 +96,6 @@ export class ODFElementComponent implements OnInit {
     cmpRef.instance['onEditComponentSettings'] = this.editComponentSettingsEmitter;
     cmpRef.instance['onDeleteComponent'] = this.deleteComponentEmitter;
     cmpRef.instance['render'] = this.render;
-
-    // const self = this;
-    // DFComponents.element(this.component.settings['ontimize-directive'], this.compiler).then(factory => {
-    //   if (!self.element) {
-    //     return void 0;
-    //   }
-    //   self.element.clear();
-    //   const cmpRef: ComponentRef<any> = self.element.createComponent<ODFElementComponent>(factory);
-    //   // cmpRef.instance is a CustomDynamicComponent
-    //   cmpRef.instance['component'] = self.component;
-    //   cmpRef.instance['editMode'] = self.editMode;
-    //   cmpRef.instance['onAddComponent'] = self.addComponentEmitter;
-    //   cmpRef.instance['onMoveComponent'] = self.moveComponentEmitter;
-    //   cmpRef.instance['onEditComponentSettings'] = self.editComponentSettingsEmitter;
-    //   cmpRef.instance['onDeleteComponent'] = self.deleteComponentEmitter;
-    //   cmpRef.instance['render'] = self.render;
-    // });
   }
 
 }

@@ -22,7 +22,7 @@ export class CheckboxComponent extends BaseComponent<ComponentOptions<string, an
 }
 
 @Component({
-  selector: 'odf-o-checkbox-input',
-  templateUrl: './odf-o-checkbox-input.component.html'
+  selector: 'odf-o-checkbox',
+  templateUrl: './odf-o-checkbox.component.html'
 })
 export class OCheckboxDynamicComponent extends CustomDynamicComponent { }

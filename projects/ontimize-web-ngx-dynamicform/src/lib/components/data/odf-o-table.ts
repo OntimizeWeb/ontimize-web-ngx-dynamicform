@@ -23,6 +23,6 @@ export class TableComponent extends BaseComponent<InputOptions> {
 
 @Component({
   selector: 'odf-o-table',
-  templateUrl: './odf-o-table-input.component.html'
+  templateUrl: './odf-o-table.component.html'
 })
 export class OTableDynamicComponent extends CustomDynamicComponent { }
