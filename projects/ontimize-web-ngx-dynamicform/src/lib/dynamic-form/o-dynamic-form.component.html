@@ -1,6 +1,28 @@
-<o-drop-zone id="main" *ngIf="editMode" [add-component-emitter]="onAddComponent" [move-component-emitter]="onMoveComponent"></o-drop-zone>
+<div 
+  [id]="uId" 
+  cdkDropList
+  [cdkDropListData]="formDefComponents$ | async"
+  (cdkDropListDropped)="onDragDrop($event)"
+  [cdkDropListConnectedTo]="connectedDropListIds"
+  >
+  <odf-component fxLayout
+    *ngFor="let component of formDefComponents$ | async" 
+    [component]="component" 
+    [edit-mode]="editMode"
+  
+    [delete-component-emitter]="onDeleteComponent"
+    [edit-component-settings-emitter]="onEditComponentSettings"
+  
+    (render)="onComponentRendered()" 
+    (change)="$event.stopPropagation()"
+    
+   
 
-<odf-component *ngFor="let component of formDefComponents$ | async" [component]="component" [edit-mode]="editMode"
-  [add-component-emitter]="onAddComponent" [move-component-emitter]="onMoveComponent" [edit-component-settings-emitter]="onEditComponentSettings"
-  [delete-component-emitter]="onDeleteComponent" (render)="onComponentRendered()" (change)="$event.stopPropagation()" fxLayout>
-</odf-component>
+    cdkDrag
+    [cdkDragDisabled]="!editMode"
+    [cdkDragData]="component"
+    (cdkDropListDropped)="onDragDrop($event)"
+    (componentDropped)="onDragDrop($event)"
+    >
+  </odf-component>
+</div>

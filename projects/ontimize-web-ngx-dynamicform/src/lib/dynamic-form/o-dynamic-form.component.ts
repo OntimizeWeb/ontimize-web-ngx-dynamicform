@@ -1,8 +1,10 @@
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import {
   Component,
   ElementRef,
   EventEmitter,
   forwardRef,
+  HostBinding,
   Inject,
   Injector,
   OnInit,
@@ -24,8 +26,10 @@ import {
   Util,
 } from 'ontimize-web-ngx';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import * as uuid from 'uuid';
 
 import { DynamicFormDefinition } from '../interfaces/o-dynamic-form-definition.interface';
+import { ODynamicFormDragAndDropService } from '../services/o-dynamic-form-drag-and-drop.service';
 import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
 
 @Component({
@@ -125,6 +129,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   protected _fControl: FormControl;
 
+  @HostBinding('style.flexDirection') get style_flexDirection() { return 'column'; }
+
+  uId: string;
+  protected dragAndDropService: ODynamicFormDragAndDropService;
+
   constructor(
     protected actRoute: ActivatedRoute,
     protected injector: Injector,
@@ -137,14 +146,19 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.onUrlParamChangedStream.asObservable()
     );
 
-    const self = this;
     this.reloadStream.subscribe(valArr => {
       if (Util.isArray(valArr) && valArr.length === 2) {
-        if (self.queryOnInit && valArr[0] === true && valArr[1] === true) {
-          self.doQuery(true);
+        if (this.queryOnInit && valArr[0] === true && valArr[1] === true) {
+          this.doQuery(true);
         }
       }
     });
+
+    this.dragAndDropService = this.injector.get(ODynamicFormDragAndDropService);
+    this.dragAndDropService.reset();
+
+    this.uId = uuid.v4();
+    this.dragAndDropService.addDropListId(this.uId);
   }
 
   public ngOnInit(): void {
@@ -424,4 +438,53 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return filter;
   }
 
+  get allDropListsIds$(): BehaviorSubject<string[]> {
+    return this.dragAndDropService.allDropListsIds$;
+  }
+
+  onDragDrop(event: CdkDragDrop<any>) {
+    const comp = event.item.data;
+    const params = {
+      component: comp
+    };
+    // if (this.component) {
+    //   if (this.forChildren) {
+    //     // Drop zone from row or column
+    //     params['parent'] = this.component;
+    //   } else {
+    //     // Drop zone form element
+    //     params['previousSibling'] = this.component;
+    //   }
+    // }
+
+    if (comp.hasOwnProperty('directive')) {
+      delete comp['directive'];
+
+      if (event.container.data.length > 0 && event.currentIndex > 0) {
+        params['previousSibling'] = event.container.data[event.currentIndex - 1];
+      }
+
+
+      this.onAddComponent.emit(params);
+    } else {
+      if (event.previousContainer.id === event.container.id) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      } else {
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+      }
+      this.onMoveComponent.emit();
+    }
+    setTimeout(() => {
+      console.log('drop');
+      // console.log(this.parentItem.components);
+    }, 1000);
+
+  }
+
+  get connectedDropListIds(): string[] {
+    return this.dragAndDropService.ids.filter(id => id !== this.uId);
+  }
 }

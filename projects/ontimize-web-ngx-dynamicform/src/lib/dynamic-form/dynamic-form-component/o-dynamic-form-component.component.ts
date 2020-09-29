@@ -1,4 +1,3 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   Component,
   ElementRef,
@@ -56,16 +55,16 @@ const paths = {
 @Component({
   selector: 'odf-component',
   templateUrl: './o-dynamic-form-component.component.html',
+  styleUrls: ['./o-dynamic-form-component.component.scss'],
   inputs: [
     'component',
     'editMode : edit-mode',
-    'addComponentEmitter : add-component-emitter',
-    'moveComponentEmitter : move-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
     'deleteComponentEmitter : delete-component-emitter'
   ],
   outputs: [
-    'render'
+    'render',
+    'componentDropped'
   ],
   encapsulation: ViewEncapsulation.None
 })
@@ -78,12 +77,12 @@ export class ODFComponentComponent<T> implements OnInit {
 
   public component: BaseOptions<T>;
   public editMode: boolean = false;
-  public addComponentEmitter: EventEmitter<any>;
-  public moveComponentEmitter: EventEmitter<any>;
+  
   public editComponentSettingsEmitter: EventEmitter<any>;
   public deleteComponentEmitter: EventEmitter<any>;
 
   public render: EventEmitter<any> = new EventEmitter();
+  public componentDropped: EventEmitter<any> = new EventEmitter();
 
   public isDragEnabled: boolean = false;
 
@@ -131,10 +130,6 @@ export class ODFComponentComponent<T> implements OnInit {
 
   public getDraggableData(): BaseComponent<any> {
     return this.odfElement ? this.odfElement.component : null;
-  }
-
-  public drop(event: CdkDragDrop<BaseComponent<any>[]>) {
-    moveItemInArray(this.components, event.previousIndex, event.currentIndex);
   }
 
   private createComponent() {

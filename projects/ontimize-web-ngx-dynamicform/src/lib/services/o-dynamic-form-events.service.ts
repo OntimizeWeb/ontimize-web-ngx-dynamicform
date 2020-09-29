@@ -12,7 +12,6 @@ export class ODynamicFormEvents {
   public onRender: EventEmitter<any>;
   // public errors: Array<FormioError>;
   public alerts: FormioAlert[];
-  // public addComponentEmitter: EventEmitter<Object>;
 
   constructor() {
     this.beforeSubmit = new EventEmitter();
@@ -20,7 +19,6 @@ export class ODynamicFormEvents {
     this.onInvalid = new EventEmitter();
     this.onChange = new EventEmitter();
     this.onRender = new EventEmitter();
-    // this.addComponentEmitter = new EventEmitter();
     // this.errors = [];
     this.alerts = [];
   }

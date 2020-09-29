@@ -1,3 +1,4 @@
+import { Injector } from '@angular/core';
 import {
   Compiler,
   Component,
@@ -53,7 +54,7 @@ const paths = {
     'component',
     'render',
     'editMode : edit-mode',
-    'addComponentEmitter : add-component-emitter',
+    'dropComponentEmitter : drop-component-emitter',
     'moveComponentEmitter : move-component-emitter',
     'editComponentSettingsEmitter : edit-component-settings-emitter',
     'deleteComponentEmitter : delete-component-emitter'
@@ -64,8 +65,8 @@ export class ODFElementComponent implements OnInit {
   public component: BaseComponent<any>;
   public render: EventEmitter<any>;
   public editMode: boolean = false;
-  public addComponentEmitter: EventEmitter<any>;
   public moveComponentEmitter: EventEmitter<any>;
+  public dropComponentEmitter: EventEmitter<any> ;
   public editComponentSettingsEmitter: EventEmitter<any>;
   public deleteComponentEmitter: EventEmitter<any>;
 
@@ -73,6 +74,7 @@ export class ODFElementComponent implements OnInit {
   public element: ViewContainerRef;
 
   constructor(
+    protected injector: Injector,
     protected compiler: Compiler,
     private componentFactoryResolver: ComponentFactoryResolver
   ) { }
@@ -89,10 +91,11 @@ export class ODFElementComponent implements OnInit {
     const cmpRef: ComponentRef<any> = this.element.createComponent<any>(componentFactory);
 
     // cmpRef.instance is a CustomDynamicComponent
+    cmpRef.instance['injector'] = this.injector;
     cmpRef.instance['component'] = this.component;
     cmpRef.instance['editMode'] = this.editMode;
-    cmpRef.instance['onAddComponent'] = this.addComponentEmitter;
     cmpRef.instance['onMoveComponent'] = this.moveComponentEmitter;
+    cmpRef.instance['onDropComponent'] = this.dropComponentEmitter;
     cmpRef.instance['onEditComponentSettings'] = this.editComponentSettingsEmitter;
     cmpRef.instance['onDeleteComponent'] = this.deleteComponentEmitter;
     cmpRef.instance['render'] = this.render;

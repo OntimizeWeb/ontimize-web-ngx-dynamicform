@@ -1,4 +1,8 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Injector } from '@angular/core';
 import { EventEmitter, Input, ViewChild } from '@angular/core';
+import * as uuid from 'uuid';
+import { ODynamicFormDragAndDropService } from '../services/o-dynamic-form-drag-and-drop.service';
 
 import { BaseComponent } from './base.component';
 
@@ -7,8 +11,6 @@ export class CustomDynamicComponent {
   @Input() public component: BaseComponent<any>;
   @Input() public data: any;
 
-  public onAddComponent: EventEmitter<any> = new EventEmitter();
-  public onMoveComponent: EventEmitter<any> = new EventEmitter();
   public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   public onDeleteComponent: EventEmitter<any> = new EventEmitter();
 
@@ -58,6 +60,31 @@ export class CustomDynamicComponent {
 }
 
 export class CustomContainerDynamicComponent extends CustomDynamicComponent {
-  @Input('add-component-emitter') public addComponentEmitter: EventEmitter<any>;
   @Input('edit-mode') public editMode: boolean = false;
+
+  public onDropComponent: EventEmitter<any> = new EventEmitter();
+
+  injector: Injector;
+  uId: string;
+  protected dragAndDropService: ODynamicFormDragAndDropService;
+
+  constructor() {
+    super();
+    this.uId = uuid.v4();
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    if (this.injector) {
+      this.dragAndDropService = this.injector.get(ODynamicFormDragAndDropService);
+      this.dragAndDropService.addDropListId(this.uId);
+    }
+  }
+
+  onDragDropComponent(event: CdkDragDrop<any>) {
+    if (this.onDropComponent) {
+      this.onDropComponent.emit(event);
+    }
+  }
 }

@@ -4,12 +4,10 @@
 
   .odf-element-options-container {
     z-index: 1;
-    background: #DADADA;
+    background: #dadada;
     cursor: pointer;
 
     .odf-element-options-attr {
-      display: inline-flex;
-      align-items: center;
       padding-left: 8px;
     }
 
@@ -33,7 +31,7 @@
     cursor: inherit !important;
 
     .component-container.editable {
-      border: 1px solid #DADADA;
+      border: 1px solid #dadada;
 
       o-column.margin-top-bottom,
       o-row.margin-top-bottom {
