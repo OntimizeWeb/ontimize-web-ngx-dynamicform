@@ -14,6 +14,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  BooleanConverter,
   IFormDataComponent,
   IFormDataTypeComponent,
   InputConverter,
@@ -25,12 +26,13 @@ import {
   SQLTypes,
   Util,
 } from 'ontimize-web-ngx';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import * as uuid from 'uuid';
 
+import { BaseOptions } from '../interfaces/base-options.interface';
 import { DynamicFormDefinition } from '../interfaces/o-dynamic-form-definition.interface';
-import { ODynamicFormDragAndDropService } from '../services/o-dynamic-form-drag-and-drop.service';
 import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
+import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
 
 @Component({
   selector: 'o-dynamic-form',
@@ -39,7 +41,7 @@ import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
   inputs: [
     'oattr : attr',
     'formDefinition: form-definition',
-    'editMode : edit-mode',
+    'editMode: edit-mode',
     'entity',
     'keys',
     'parentKeys: parent-keys',
@@ -61,7 +63,8 @@ import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
     'onMoveComponent',
     'onEditComponentSettings',
     'onDeleteComponent',
-    'onDynamicFormDataLoaded'
+    'onDynamicFormDataLoaded',
+    'onDrop'
   ],
   encapsulation: ViewEncapsulation.None,
   host: {
@@ -74,8 +77,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   /* inputs */
   public oattr: string;
-  @InputConverter()
-  public editMode: boolean = false;
+  protected _editMode: boolean = false;
+  get editMode(): boolean {
+    return this._editMode;
+  }
+  set editMode(value: boolean) {
+    this._editMode = BooleanConverter(value);
+    this.generalEventsSevice.editModeChange.next(this._editMode);
+  }
   public entity: string;
   public keys: string = '';
   public parentKeys: string = '';
@@ -116,6 +125,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
   public onDeleteComponent: EventEmitter<any> = new EventEmitter();
   public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
+  public onDrop: EventEmitter<Object> = new EventEmitter<Object>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
@@ -123,45 +133,55 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   protected _pKeysEquiv = {};
 
-  protected urlParamSub: any;
   protected urlParams: Object;
-  protected onFormDataSubscribe: any;
 
   protected _fControl: FormControl;
 
   @HostBinding('style.flexDirection') get style_flexDirection() { return 'column'; }
 
   uId: string;
-  protected dragAndDropService: ODynamicFormDragAndDropService;
+  connectedDropListIds: string[];
+
+  protected subscriptions: Subscription = new Subscription();
 
   constructor(
     protected actRoute: ActivatedRoute,
     protected injector: Injector,
     public events: ODynamicFormEvents,
+    protected generalEventsSevice: ODynamicFormGeneralEvents,
     protected elRef: ElementRef,
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected parentForm: OFormComponent
   ) {
+    this.uId = uuid.v4();
+
     this.reloadStream = combineLatest(
       this.onFormInitStream.asObservable(),
       this.onUrlParamChangedStream.asObservable()
     );
 
-    this.reloadStream.subscribe(valArr => {
+    this.subscriptions.add(this.reloadStream.subscribe(valArr => {
       if (Util.isArray(valArr) && valArr.length === 2) {
         if (this.queryOnInit && valArr[0] === true && valArr[1] === true) {
           this.doQuery(true);
         }
       }
-    });
+    }));
 
-    this.dragAndDropService = this.injector.get(ODynamicFormDragAndDropService);
-    this.dragAndDropService.reset();
+    this.subscriptions.add(this.generalEventsSevice.componentDropped.subscribe((arg) => {
+      this.doDrag(arg.event, { parent: arg.parent });
+    }));
 
-    this.uId = uuid.v4();
-    this.dragAndDropService.addDropListId(this.uId);
+    this.subscriptions.add(this.generalEventsSevice.componentDeleted.subscribe((arg) => {
+      this.onDeleteComponent.emit(arg);
+    }));
+
+    this.subscriptions.add(this.generalEventsSevice.editComponent.subscribe((arg) => {
+      this.onEditComponentSettings.emit(arg);
+    }));
+
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.keysArray = Util.parseArray(this.keys);
     this.colsArray = Util.parseArray(this.columns);
     const pkArray = Util.parseArray(this.parentKeys);
@@ -174,21 +194,25 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
     this.registerFormListeners();
 
-    const self = this;
-    this.urlParamSub = this.actRoute.params.subscribe(params => {
-      self.urlParams = params;
-      if (self.urlParams && Object.keys(self.urlParams).length > 0) {
-        self.onUrlParamChangedStream.emit(true);
+    this.subscriptions.add(this.actRoute.params.subscribe(params => {
+      this.urlParams = params;
+      if (this.urlParams && Object.keys(this.urlParams).length > 0) {
+        this.onUrlParamChangedStream.emit(true);
       }
-    });
+    }));
 
-    if (this.parentForm) {
-      if (self.queryOnBind) {
-        this.onFormDataSubscribe = this.parentForm.onDataLoaded.subscribe(data => {
-          const filter = ServiceUtils.getParentKeysFromForm(self._pKeysEquiv, self.parentForm);
-          self.queryData(filter);
-        });
-      }
+    if (this.parentForm && this.queryOnBind) {
+      this.subscriptions.add(this.parentForm.onDataLoaded.subscribe(data => {
+        const filter = ServiceUtils.getParentKeysFromForm(this._pKeysEquiv, this.parentForm);
+        this.queryData(filter);
+      }));
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.unregisterFormListeners();
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
   }
 
@@ -346,20 +370,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return true;
   }
 
-  public ngOnDestroy(): void {
-    if (this.urlParamSub) {
-      this.urlParamSub.unsubscribe();
-    }
-    this.unregisterFormListeners();
-    if (this.onFormDataSubscribe) {
-      this.onFormDataSubscribe.unsubscribe();
-    }
-  }
-
+  innerRenders: number = 0;
   public onComponentRendered(): void {
+    this.innerRenders++;
     // The form is done rendering.
-    if (this.render) {
+    if (this.innerRenders === this.innerFormDefinition.components.length && this.render) {
       this.render.emit(this.queryOnRender);
+      this.setConnectedIds();
+      this.innerRenders = 0;
     }
   }
 
@@ -419,7 +437,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   protected getCurrentKeysValues(): any {
     const filter = {};
     if (this.urlParams && this.keysArray) {
-      this.keysArray.map(key => {
+      this.keysArray.forEach(key => {
         if (this.urlParams[key]) {
           filter[key] = this.urlParams[key];
         }
@@ -438,53 +456,98 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return filter;
   }
 
-  get allDropListsIds$(): BehaviorSubject<string[]> {
-    return this.dragAndDropService.allDropListsIds$;
+  onDragDrop(event: CdkDragDrop<any>) {
+    const attrs = this.innerFormDefinition.components.map((comp: any) => comp.attr);
+    this.doDrag(event, { attrs: attrs });
   }
 
-  onDragDrop(event: CdkDragDrop<any>) {
+  private doDrag(event: CdkDragDrop<any>, args: any) {
     const comp = event.item.data;
-    const params = {
-      component: comp
-    };
-    // if (this.component) {
-    //   if (this.forChildren) {
-    //     // Drop zone from row or column
-    //     params['parent'] = this.component;
-    //   } else {
-    //     // Drop zone form element
-    //     params['previousSibling'] = this.component;
-    //   }
-    // }
-
     if (comp.hasOwnProperty('directive')) {
       delete comp['directive'];
-
-      if (event.container.data.length > 0 && event.currentIndex > 0) {
-        params['previousSibling'] = event.container.data[event.currentIndex - 1];
-      }
-
-
-      this.onAddComponent.emit(params);
+      this.onAddComponent.emit({
+        component: comp,
+        parent: args.parent,
+        index: event.currentIndex
+      });
     } else {
       if (event.previousContainer.id === event.container.id) {
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      } else {
-        transferArrayItem(event.previousContainer.data,
+        moveItemInArray(
           event.container.data,
           event.previousIndex,
-          event.currentIndex);
+          event.currentIndex
+        );
+        const orderedAttrs = args.attrs || event.container.data.map(child => child.attr);
+        this.onMoveComponent.emit({
+          type: 'move',
+          parent: args.parent,
+          attrs: orderedAttrs
+        });
+      } else {
+        const previousContainerComp = this.findComponentByUId(this.innerFormDefinition.components, event.previousContainer.id);
+        const containerComp = this.findComponentByUId(this.innerFormDefinition.components, event.container.id);
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+        this.onMoveComponent.emit({
+          type: 'transfer',
+          previousContainer: previousContainerComp,
+          container: containerComp,
+          previousIndex: event.previousIndex,
+          currentIndex: event.currentIndex
+        });
       }
-      this.onMoveComponent.emit();
     }
-    setTimeout(() => {
-      console.log('drop');
-      // console.log(this.parentItem.components);
-    }, 1000);
-
+    this.onDrop.emit();
   }
 
-  get connectedDropListIds(): string[] {
-    return this.dragAndDropService.ids.filter(id => id !== this.uId);
+  private findComponentByUId(components: BaseOptions<any>[], uId: string) {
+    return components.find(child => {
+      const comp = child as any;
+      if (comp.dynamicComponent && comp.dynamicComponent.uId === uId) {
+        return comp;
+      } else if (comp.children != null) {
+        this.findComponentByUId(comp.children, uId);
+      }
+      return undefined;
+    });
+  }
+
+
+  private setConnectedIds() {
+    const map = {};
+
+    const allUIds = [this.uId];
+    if (this.innerFormDefinition && this.innerFormDefinition.components) {
+      this.innerFormDefinition.components.forEach((c: any) => {
+        const childIds = this.getContainerIds(c);
+        if (c.dynamicComponent && c.dynamicComponent.uId) {
+          map[c.dynamicComponent.uId] = childIds;
+        }
+        allUIds.push(...childIds);
+      });
+    }
+    allUIds.reverse();
+    this.connectedDropListIds = allUIds;
+    if (this.innerFormDefinition && this.innerFormDefinition.components) {
+      this.innerFormDefinition.components.forEach((c: any) => {
+        if (c.dynamicComponent && map.hasOwnProperty(c.dynamicComponent.uId)) {
+          const compUIds = map[c.dynamicComponent.uId];
+          const otherIds = allUIds.filter(item => compUIds.indexOf(item) < 0);
+          c.dynamicComponent.connectedDropListIds = otherIds;
+        }
+      });
+    }
+  }
+
+  private getContainerIds(c: any): string[] {
+    const result = (c.dynamicComponent && c.dynamicComponent.uId) ? [c.dynamicComponent.uId] : [];
+    if (c.children) {
+      c.children.forEach(child => result.push(...this.getContainerIds(child)));
+    }
+    return result;
   }
 }

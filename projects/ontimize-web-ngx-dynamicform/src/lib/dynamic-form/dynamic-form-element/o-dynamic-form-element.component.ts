@@ -1,10 +1,10 @@
-import { Injector } from '@angular/core';
 import {
   Compiler,
   Component,
   ComponentFactoryResolver,
   ComponentRef,
   EventEmitter,
+  Injector,
   OnInit,
   ViewChild,
   ViewContainerRef,
@@ -52,23 +52,13 @@ const paths = {
   templateUrl: './o-dynamic-form-element.component.html',
   inputs: [
     'component',
-    'render',
-    'editMode : edit-mode',
-    'dropComponentEmitter : drop-component-emitter',
-    'moveComponentEmitter : move-component-emitter',
-    'editComponentSettingsEmitter : edit-component-settings-emitter',
-    'deleteComponentEmitter : delete-component-emitter'
+    'render'
   ]
 })
 export class ODFElementComponent implements OnInit {
 
   public component: BaseComponent<any>;
   public render: EventEmitter<any>;
-  public editMode: boolean = false;
-  public moveComponentEmitter: EventEmitter<any>;
-  public dropComponentEmitter: EventEmitter<any> ;
-  public editComponentSettingsEmitter: EventEmitter<any>;
-  public deleteComponentEmitter: EventEmitter<any>;
 
   @ViewChild('odfElement', { read: ViewContainerRef, static: true })
   public element: ViewContainerRef;
@@ -93,11 +83,6 @@ export class ODFElementComponent implements OnInit {
     // cmpRef.instance is a CustomDynamicComponent
     cmpRef.instance['injector'] = this.injector;
     cmpRef.instance['component'] = this.component;
-    cmpRef.instance['editMode'] = this.editMode;
-    cmpRef.instance['onMoveComponent'] = this.moveComponentEmitter;
-    cmpRef.instance['onDropComponent'] = this.dropComponentEmitter;
-    cmpRef.instance['onEditComponentSettings'] = this.editComponentSettingsEmitter;
-    cmpRef.instance['onDeleteComponent'] = this.deleteComponentEmitter;
     cmpRef.instance['render'] = this.render;
   }
 

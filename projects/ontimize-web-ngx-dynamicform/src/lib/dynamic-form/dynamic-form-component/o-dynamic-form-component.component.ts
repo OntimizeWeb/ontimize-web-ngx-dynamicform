@@ -5,12 +5,13 @@ import {
   forwardRef,
   Inject,
   Injector,
+  OnDestroy,
   OnInit,
   Optional,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { OFormComponent } from 'ontimize-web-ngx';
+import { Subscription } from 'rxjs';
 
 import { BaseComponent } from '../../components/base.component';
 import { CheckboxComponent } from '../../components/checkbox/odf-o-checkbox';
@@ -31,7 +32,7 @@ import { ComboComponent } from '../../components/service/odf-o-combo';
 import { ListPickerComponent } from '../../components/service/odf-o-list-picker';
 import { BaseOptions } from '../../interfaces/base-options.interface';
 import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
-import { ODFElementComponent } from '../dynamic-form-element/o-dynamic-form-element.component';
+import { ODynamicFormGeneralEvents } from '../../services/o-dynamic-form-general-events.service';
 
 const paths = {
   'o-checkbox': CheckboxComponent,
@@ -57,79 +58,56 @@ const paths = {
   templateUrl: './o-dynamic-form-component.component.html',
   styleUrls: ['./o-dynamic-form-component.component.scss'],
   inputs: [
-    'component',
-    'editMode : edit-mode',
-    'editComponentSettingsEmitter : edit-component-settings-emitter',
-    'deleteComponentEmitter : delete-component-emitter'
+    'component'
   ],
   outputs: [
-    'render',
-    'componentDropped'
+    'render'
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class ODFComponentComponent<T> implements OnInit {
-
-  public show: boolean = true;
-  public components: Array<BaseComponent<any>> = [];
-
-  public label: string | boolean;
+export class ODFComponentComponent<T> implements OnInit, OnDestroy {
 
   public component: BaseOptions<T>;
   public editMode: boolean = false;
-  
-  public editComponentSettingsEmitter: EventEmitter<any>;
-  public deleteComponentEmitter: EventEmitter<any>;
 
   public render: EventEmitter<any> = new EventEmitter();
-  public componentDropped: EventEmitter<any> = new EventEmitter();
 
-  public isDragEnabled: boolean = false;
+  public comp: BaseComponent<any>;
 
-  @ViewChild('odfElement', { static: false })
-  protected odfElement: ODFElementComponent;
+  protected subscriptions: Subscription = new Subscription();
 
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
-    private events: ODynamicFormEvents
-  ) { }
-
-  public ngOnInit(): void {
+    private events: ODynamicFormEvents,
+    protected generalEventsSevice: ODynamicFormGeneralEvents
+  ) {
+    this.subscriptions.add(this.generalEventsSevice.editModeChange.subscribe(value => {
+      this.editMode = value;
+    }));
+  }
+ 
+  ngOnInit(): void {
     // Add the initial component.
     this.addComponent();
-    this.events.onChange.subscribe(() => this.checkConditions());
   }
 
-  public checkConditions(): void {
-    this.show = true;
+  ngOnDestroy(): void {
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
+    }
   }
 
   public async addComponent(): Promise<void> {
     const component = this.createComponent();
     if (component) {
       // Set the index and readOnly flag.
-      component.index = this.components.length;
-      // Add this to the instances.
-      this.components.push(component);
-    } else {
-      // component wasnt created (triggering render so the dynamic-form would trigger render event correctly)
-      this.render.emit(true);
+      component.index = 0;
+      this.comp = component;
     }
+    this.render.emit(true);
     return component;
-  }
-
-  public removeAt(index: number): void {
-    this.components.splice(index, 1);
-  }
-
-  public isContainerComponent(component: BaseComponent<any>): boolean {
-    return component.isContainerComponent();
-  }
-
-  public getDraggableData(): BaseComponent<any> {
-    return this.odfElement ? this.odfElement.component : null;
   }
 
   private createComponent() {
