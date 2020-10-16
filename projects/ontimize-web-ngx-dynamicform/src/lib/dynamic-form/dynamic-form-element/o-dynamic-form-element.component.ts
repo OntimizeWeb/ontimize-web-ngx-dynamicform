@@ -8,6 +8,7 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 
 import { BaseComponent } from '../../components/base.component';
@@ -50,10 +51,15 @@ const paths = {
 @Component({
   selector: 'odf-element',
   templateUrl: './o-dynamic-form-element.component.html',
+  styleUrls: ['./o-dynamic-form-element.component.scss'],
   inputs: [
     'component',
     'render'
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.odf-element]': 'true'
+  }
 })
 export class ODFElementComponent implements OnInit {
 
@@ -62,6 +68,8 @@ export class ODFElementComponent implements OnInit {
 
   @ViewChild('odfElement', { read: ViewContainerRef, static: true })
   public element: ViewContainerRef;
+
+  public cmpRef: ComponentRef<any>;
 
   constructor(
     protected injector: Injector,
@@ -76,14 +84,14 @@ export class ODFElementComponent implements OnInit {
 
     const componentReference = paths[this.component.settings['ontimize-directive']];
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentReference);
-    
+
     this.element.clear();
-    const cmpRef: ComponentRef<any> = this.element.createComponent<any>(componentFactory);
+    this.cmpRef = this.element.createComponent<any>(componentFactory);
 
     // cmpRef.instance is a CustomDynamicComponent
-    cmpRef.instance['injector'] = this.injector;
-    cmpRef.instance['component'] = this.component;
-    cmpRef.instance['render'] = this.render;
+    this.cmpRef.instance['injector'] = this.injector;
+    this.cmpRef.instance['component'] = this.component;
+    this.cmpRef.instance['render'] = this.render;
   }
 
 }

@@ -28,6 +28,6 @@
   ],
   "dependencies": {},
   "peerDependencies": {
-    "ontimize-web-ngx": "8.0.0-rc.0"
+    "ontimize-web-ngx": "8.0.0"
   }
 }

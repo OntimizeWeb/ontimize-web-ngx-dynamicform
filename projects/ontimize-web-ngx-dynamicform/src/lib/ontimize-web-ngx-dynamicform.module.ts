@@ -8,7 +8,6 @@ import { OntimizeWebModule } from 'ontimize-web-ngx';
 
 import { DYNAMIC_COMPONENTS_WRAPPERS } from './components/o-components';
 import { O_DYNAMICFORM_COMPONENTS } from './dynamic-form/index';
-import { ODynamicFormEvents } from './services/o-dynamic-form-events.service';
 
 @NgModule({
   imports: [
@@ -24,9 +23,6 @@ import { ODynamicFormEvents } from './services/o-dynamic-form-events.service';
     ...DYNAMIC_COMPONENTS_WRAPPERS
   ],
   exports: O_DYNAMICFORM_COMPONENTS,
-  providers: [
-    ODynamicFormEvents
-  ],
   entryComponents: DYNAMIC_COMPONENTS_WRAPPERS
 })
 export class DynamicFormModule { }

@@ -1,15 +1,14 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_ROW } from 'ontimize-web-ngx';
 
 import { ComponentOptions } from '../../interfaces/component-options.interface';
-import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
 import { BaseComponent } from '../base.component';
 import { CustomContainerDynamicComponent } from '../o-custom-dynamic-component';
 
 export class ORowComponent extends BaseComponent<ComponentOptions<string, any>> {
 
-  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
-    super(settings, events, data);
+  constructor(settings: any, data?: any) {
+    super(settings, data);
   }
 
   public getInputsProperties(): any[] {

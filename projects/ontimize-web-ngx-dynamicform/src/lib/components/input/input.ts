@@ -1,6 +1,5 @@
 import { ComponentOptions } from '../../interfaces/component-options.interface';
 import { ValidateOptions } from '../../interfaces/validate-options.interface';
-import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
 import { BaseComponent } from '../base.component';
 
 /**
@@ -21,8 +20,8 @@ export interface InputOptions extends ComponentOptions<string, InputValidateOpti
 }
 
 export class InputComponent<T> extends BaseComponent<T> {
-  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
-    super(settings, events, data);
+  constructor(settings: any, data?: any) {
+    super(settings, data);
   }
 
   // getError(type: string, error: any): string {

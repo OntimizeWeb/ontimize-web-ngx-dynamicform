@@ -1,4 +1,3 @@
-import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
 
 export class BaseComponent<T> {
 
@@ -6,7 +5,6 @@ export class BaseComponent<T> {
 
   constructor(
     public settings: any,
-    public events: ODynamicFormEvents,
     public data: any = {}
   ) { }
 
@@ -62,6 +60,18 @@ export class BaseComponent<T> {
       });
     }
     return attrs;
+  }
+
+  public addChildInPosition(child: any, index: number): any {
+    if (index !== -1) {
+      this.settings.children.splice(index, 0, child);
+    }
+  }
+
+  public removeChildInPosition(index: number): any {
+    if (index !== -1) {
+      this.settings.children.splice(index, 1);
+    }
   }
 
 }

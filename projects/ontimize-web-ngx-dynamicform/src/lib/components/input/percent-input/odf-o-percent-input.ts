@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { DEFAULT_INPUTS_O_PERCENT_INPUT } from 'ontimize-web-ngx';
 
-import { ODynamicFormEvents } from '../../../services/o-dynamic-form-events.service';
 import { CustomDynamicComponent } from '../../o-custom-dynamic-component';
 import { InputComponent, InputOptions } from '../input';
 
 export class PercentFieldComponent extends InputComponent<InputOptions> {
 
-  constructor(settings: any, events?: ODynamicFormEvents, data?: any) {
-    super(settings, events, data);
+  constructor(settings: any, data?: any) {
+    super(settings, data);
   }
 
   public getInputsProperties(): any[] {

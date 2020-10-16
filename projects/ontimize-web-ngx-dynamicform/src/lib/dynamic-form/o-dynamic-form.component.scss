@@ -2,42 +2,35 @@
   display: block;
   height: 100%;
 
-  .odf-element-options-container {
-    z-index: 1;
-    background: #dadada;
-    cursor: pointer;
-
-    .odf-element-options-attr {
-      padding-left: 8px;
-    }
-
-    mat-icon {
-      font-size: 14px;
-      cursor: pointer;
-      padding: 5px;
-      box-sizing: border-box;
-    }
+  .hovering.cdk-drop-list-dragging {
+    border: 2px dashed #000;
   }
 
-  odf-element {
-    o-column.o-column[class*="mat-elevation-z"],
-    o-row.o-row[class*="mat-elevation-z"] {
-      margin: 8px 4px;
-    }
+  > .hovering.cdk-drop-list-dragging {
+    border: none;
   }
 
-  .odf-element-container {
-    position: relative;
-    cursor: inherit !important;
+  > .cdk-drop-list {
+    padding: 0;
+  }
+  
+  .cdk-drop-list {
+    padding: 10px 0;
+    width: 100%;
 
-    .component-container.editable {
-      border: 1px solid #dadada;
-
-      o-column.margin-top-bottom,
-      o-row.margin-top-bottom {
-        margin: 0;
-        padding: 8px 0;
-      }
+    .cdk-drag.odf-component .odf-element-container {
+      padding-bottom: 10px;
     }
   }
+}
+
+.custom-preview {
+  width: 80px;
+  height: 5px;
+}
+
+.custom-placeholder {
+  width: 100%;
+  height: 10px;
+  border: 2px dashed #000;
 }

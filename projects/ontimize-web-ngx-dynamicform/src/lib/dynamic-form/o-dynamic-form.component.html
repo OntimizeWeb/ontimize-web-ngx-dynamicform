@@ -1,28 +1,33 @@
-<div 
+<div fxLayout="column" fxLayoutGap="10px"
   [id]="uId" 
   cdkDropList
+  
   [cdkDropListData]="formDefComponents$ | async"
   (cdkDropListDropped)="onDragDrop($event)"
   [cdkDropListConnectedTo]="connectedDropListIds"
+  (cdkDropListEntered)="dropListEntered()"
+  (cdkDropListExited)="dropListExited()"
+  [class.hovering]="isHovering"
   >
-  <odf-component fxLayout
+  <!-- <div *ngFor="let component of componentsArray" 
+    cdkDrag
+    [cdkDragData]="component"
+   >
+
+  </div> -->
+  <odf-component #odfComponent fxLayout
     *ngFor="let component of formDefComponents$ | async" 
     [component]="component" 
-    [edit-mode]="editMode"
-  
-    [delete-component-emitter]="onDeleteComponent"
-    [edit-component-settings-emitter]="onEditComponentSettings"
-  
     (render)="onComponentRendered()" 
     (change)="$event.stopPropagation()"
     
-   
-
     cdkDrag
     [cdkDragDisabled]="!editMode"
     [cdkDragData]="component"
-    (cdkDropListDropped)="onDragDrop($event)"
-    (componentDropped)="onDragDrop($event)"
+    (cdkDragStarted)="dragStarted($event)"
+    (cdkDragEnded)="dragEnded($event)"
     >
+    <div class="custom-placeholder" *cdkDragPlaceholder></div>
+    <div class="custom-preview" *cdkDragPreview></div>
   </odf-component>
 </div>

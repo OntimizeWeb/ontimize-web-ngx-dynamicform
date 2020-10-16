@@ -1,24 +1,29 @@
 <o-row #ontimizeComponent fxLayout="column">
-  <div fxLayout="row"
+  <div fxLayout="row" fxLayoutGap="10px"
     [id]="uId" 
     cdkDropList
     [cdkDropListData]="component.getChildren()"
     (cdkDropListDropped)="onDragDropComponent($event)"
+    [cdkDropListConnectedTo]="connectedDropListIds"
+    (cdkDropListEntered)="dropListEntered()"
+    (cdkDropListExited)="dropListExited()"
+    [class.hovering]="isHovering"
   >
     <ng-template ngFor let-cmp [ngForOf]="component.getChildren()">
-      <odf-component fxFlex *ngIf="component.isContainerComponent()" 
+      <odf-component #odfComponent fxFlex 
+        *ngIf="component.isContainerComponent()"
         [component]="cmp" 
-        [edit-mode]="editMode"
-        (render)="onRender()" 
-        
-        [edit-component-settings-emitter]="onEditComponentSettings" 
-        [delete-component-emitter]="onDeleteComponent" 
+        (render)="onRender()"
+        (change)="$event.stopPropagation()"
         
         cdkDrag       
         [cdkDragDisabled]="!editMode"
         [cdkDragData]="cmp"
-        (cdkDropListDropped)="onDragDropComponent($event)"
+        (cdkDragStarted)="dragStarted($event)"
+        (cdkDragEnded)="dragEnded($event)"
         >
+        <div class="custom-placeholder" *cdkDragPlaceholder></div>
+        <div class="custom-preview" *cdkDragPreview></div>
       </odf-component>
     </ng-template>
   </div>

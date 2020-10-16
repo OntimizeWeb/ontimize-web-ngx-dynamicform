@@ -1,4 +1,5 @@
-<div fxFlex>
+<div fxFlex class="odf-element-container">
+  <ng-content></ng-content>
   <!-- <div  
     *ngFor="let comp of components; let i = index;" 
     fxLayout="column" class="odf-element-container" fxFill
@@ -9,13 +10,13 @@
       [class.editable]="editMode"
     >
       <odf-element-options
-        *ngIf="editMode"  
+        *ngIf="editMode"
         fxLayout
         [component]="comp">
-        <ng-content></ng-content>
+        
       </odf-element-options>
 
-      <odf-element
+      <odf-element #odfElement
         fxLayout="column"
         [component]="comp"
         [render]="render">

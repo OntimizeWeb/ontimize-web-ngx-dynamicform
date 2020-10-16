@@ -1,0 +1,18 @@
+.odf-element-options {
+  .odf-element-options-container {
+    z-index: 1;
+    background: #dadada;
+    cursor: pointer;
+
+    .odf-element-options-attr {
+      padding-left: 8px;
+    }
+
+    mat-icon {
+      font-size: 14px;
+      cursor: pointer;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+  }
+}

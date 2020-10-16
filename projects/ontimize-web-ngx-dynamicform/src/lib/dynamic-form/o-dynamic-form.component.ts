@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragStart, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import {
   Component,
   ElementRef,
@@ -9,6 +9,8 @@ import {
   Injector,
   OnInit,
   Optional,
+  QueryList,
+  ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -29,10 +31,11 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import * as uuid from 'uuid';
 
+import { BaseComponent } from '../components/base.component';
 import { BaseOptions } from '../interfaces/base-options.interface';
 import { DynamicFormDefinition } from '../interfaces/o-dynamic-form-definition.interface';
-import { ODynamicFormEvents } from '../services/o-dynamic-form-events.service';
 import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
+import { ODFComponentComponent } from './dynamic-form-component/o-dynamic-form-component.component';
 
 @Component({
   selector: 'o-dynamic-form',
@@ -53,7 +56,8 @@ import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-ev
     'queryOnRender : query-on-render',
     'registerInParentForm : register-in-parent-form',
     'autoBinding: automatic-binding',
-    'autoRegistering: automatic-registering'
+    'autoRegistering: automatic-registering',
+    'editableComponents: editable-components'
   ],
   outputs: [
     'render',
@@ -83,7 +87,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
   set editMode(value: boolean) {
     this._editMode = BooleanConverter(value);
-    this.generalEventsSevice.editModeChange.next(this._editMode);
+    this.generalEventsService.editModeChange.next(this._editMode);
   }
   public entity: string;
   public keys: string = '';
@@ -103,6 +107,12 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public autoBinding: boolean = true;
   @InputConverter()
   public autoRegistering: boolean = true;
+
+  set editableComponents(arg: string[]) {
+    if (this.generalEventsService) {
+      this.generalEventsService.editableComponentsChange.next(arg);
+    }
+  }
   /* end of inputs */
 
   /*parsed inputs */
@@ -140,15 +150,17 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   @HostBinding('style.flexDirection') get style_flexDirection() { return 'column'; }
 
   uId: string;
-  connectedDropListIds: string[];
-
+  _connectedDropListIds: string[];
+  isHovering: boolean = false;
+  protected dynamicChildrenSubscription: Subscription;
   protected subscriptions: Subscription = new Subscription();
+
+  @ViewChildren('odfComponent') dynamicChildren: QueryList<ODFComponentComponent<any>>;
 
   constructor(
     protected actRoute: ActivatedRoute,
     protected injector: Injector,
-    public events: ODynamicFormEvents,
-    protected generalEventsSevice: ODynamicFormGeneralEvents,
+    protected generalEventsService: ODynamicFormGeneralEvents,
     protected elRef: ElementRef,
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected parentForm: OFormComponent
   ) {
@@ -167,18 +179,25 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       }
     }));
 
-    this.subscriptions.add(this.generalEventsSevice.componentDropped.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.componentDropped.subscribe((arg) => {
       this.doDrag(arg.event, { parent: arg.parent });
     }));
 
-    this.subscriptions.add(this.generalEventsSevice.componentDeleted.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.componentDeleted.subscribe((arg) => {
       this.onDeleteComponent.emit(arg);
     }));
 
-    this.subscriptions.add(this.generalEventsSevice.editComponent.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.editComponent.subscribe((arg) => {
       this.onEditComponentSettings.emit(arg);
     }));
 
+    this.subscriptions.add(this.generalEventsService.dragStarted.subscribe((arg) => {
+      this.dragStarted(arg.event, arg.parent);
+    }));
+
+    this.subscriptions.add(this.generalEventsService.dragEnded.subscribe((arg) => {
+      this.dragEnded(arg.event, arg.parent);
+    }));
   }
 
   ngOnInit(): void {
@@ -209,6 +228,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
+  ngAfterViewInit(): void {
+    this.onFormInitStream.emit(true);
+  }
+
   ngOnDestroy(): void {
     this.unregisterFormListeners();
     if (this.subscriptions) {
@@ -227,10 +250,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       return this.elRef.nativeElement.attributes['attr'].value;
     }
     return this.oattr;
-  }
-
-  public ngAfterViewInit(): void {
-    this.onFormInitStream.emit(true);
   }
 
   public configureService(): void {
@@ -370,14 +389,16 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     return true;
   }
 
-  innerRenders: number = 0;
+  protected renderCount: number = 0;
+
   public onComponentRendered(): void {
-    this.innerRenders++;
-    // The form is done rendering.
-    if (this.innerRenders === this.innerFormDefinition.components.length && this.render) {
-      this.render.emit(this.queryOnRender);
-      this.setConnectedIds();
-      this.innerRenders = 0;
+    if (this.renderCount > this.innerFormDefinition.components.length) {
+      return;
+    }
+    this.renderCount++;
+    if (this.renderCount === this.innerFormDefinition.components.length) {
+      this.render.emit(true);
+      this.addDynamicChildrenListener();
     }
   }
 
@@ -409,11 +430,18 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
         console.error('set formDefinition error', definition);
       }
     }
+    this.renderCount = 0;
     this.innerFormDefinition = definitionJSON;
     if (this.innerFormDefinition) {
+      this.componentsArray = this.innerFormDefinition.components;
       this.formDefComponents$.next(this.innerFormDefinition.components);
+      if (this.innerFormDefinition.components.length === 0) {
+        this._connectedDropListIds = [this.uId];
+      }
     }
   }
+
+  componentsArray: any[] = [];
 
   get formDefinition(): any {
     return this.innerFormDefinition;
@@ -477,15 +505,18 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
           event.previousIndex,
           event.currentIndex
         );
-        const orderedAttrs = args.attrs || event.container.data.map(child => child.attr);
-        this.onMoveComponent.emit({
-          type: 'move',
-          parent: args.parent,
-          attrs: orderedAttrs
-        });
+        if (event.previousIndex !== event.currentIndex) {
+          const orderedAttrs = args.attrs || event.container.data.map(child => child.attr);
+          this.onMoveComponent.emit({
+            type: 'move',
+            parent: args.parent,
+            attrs: orderedAttrs
+          });
+        }
       } else {
-        const previousContainerComp = this.findComponentByUId(this.innerFormDefinition.components, event.previousContainer.id);
-        const containerComp = this.findComponentByUId(this.innerFormDefinition.components, event.container.id);
+        const componentsArray = this.dynamicChildren.toArray();
+        const previousContainerComp = this.findComponentByUId(componentsArray, event.previousContainer.id);
+        const containerComp = this.findComponentByUId(componentsArray, event.container.id);
         transferArrayItem(
           event.previousContainer.data,
           event.container.data,
@@ -496,7 +527,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
           type: 'transfer',
           previousContainer: previousContainerComp,
           container: containerComp,
-          previousIndex: event.previousIndex,
+          previousIndex: event.previousIndex - 1,
           currentIndex: event.currentIndex
         });
       }
@@ -504,50 +535,79 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.onDrop.emit();
   }
 
-  private findComponentByUId(components: BaseOptions<any>[], uId: string) {
-    return components.find(child => {
-      const comp = child as any;
-      if (comp.dynamicComponent && comp.dynamicComponent.uId === uId) {
-        return comp;
-      } else if (comp.children != null) {
-        this.findComponentByUId(comp.children, uId);
+  private findComponentByUId(components: ODFComponentComponent<any>[], uId: string) {
+    const result = components.filter(c => !c.isTemporalComponent).find(c => {
+      if (c.uId === uId) {
+        return c;
+      } else {
+        this.findComponentByUId(c.children, uId);
       }
-      return undefined;
+      return null;
+    });
+    return result ? result.component : null;
+  }
+
+  protected addDynamicChildrenListener() {
+    if (!this.editMode || !this.dynamicChildren || this.dynamicChildrenSubscription != null) {
+      return;
+    }
+    this.dynamicChildrenSubscription = this.dynamicChildren.changes.subscribe(() => {
+      if (this.innerFormDefinition
+        && this.innerFormDefinition.components.length === this.dynamicChildren.toArray().length) {
+        this.setConnectedDropListIds();
+        this.dynamicChildrenSubscription.unsubscribe();
+        this.dynamicChildrenSubscription = null;
+      }
     });
   }
 
+  get connectedDropListIds(): string[] {
+    return this._connectedDropListIds;
+  }
 
-  private setConnectedIds() {
-    const map = {};
+  public dropListEntered() {
+    this.isHovering = true;
+  }
 
-    const allUIds = [this.uId];
-    if (this.innerFormDefinition && this.innerFormDefinition.components) {
-      this.innerFormDefinition.components.forEach((c: any) => {
-        const childIds = this.getContainerIds(c);
-        if (c.dynamicComponent && c.dynamicComponent.uId) {
-          map[c.dynamicComponent.uId] = childIds;
-        }
-        allUIds.push(...childIds);
-      });
-    }
-    allUIds.reverse();
-    this.connectedDropListIds = allUIds;
-    if (this.innerFormDefinition && this.innerFormDefinition.components) {
-      this.innerFormDefinition.components.forEach((c: any) => {
-        if (c.dynamicComponent && map.hasOwnProperty(c.dynamicComponent.uId)) {
-          const compUIds = map[c.dynamicComponent.uId];
-          const otherIds = allUIds.filter(item => compUIds.indexOf(item) < 0);
-          c.dynamicComponent.connectedDropListIds = otherIds;
-        }
-      });
+  public dropListExited() {
+    this.isHovering = false;
+  }
+
+  public dragStarted(event: CdkDragStart<any>, parent?: BaseComponent<any>) {
+
+    const childArray = parent ? parent.getChildren() : this.innerFormDefinition.components;
+    if (!childArray.find(item => item.temp)) {
+      const index = childArray.findIndex(child => child.attr === event.source.data.attr);
+      const newChildData = Object.assign({}, event.source.data, { temp: true });
+      if (parent) {
+        parent.addChildInPosition(newChildData, index);
+      } else {
+        this.innerFormDefinition.components.splice(index, 0, newChildData);
+      }
     }
   }
 
-  private getContainerIds(c: any): string[] {
-    const result = (c.dynamicComponent && c.dynamicComponent.uId) ? [c.dynamicComponent.uId] : [];
-    if (c.children) {
-      c.children.forEach(child => result.push(...this.getContainerIds(child)));
+  public dragEnded(event: CdkDragStart<any>, parent?: BaseComponent<any>) {
+    if (parent) {
+      const index = parent.getChildren().findIndex(child => child.temp);
+      parent.removeChildInPosition(index);
+    } else {
+      const index = this.innerFormDefinition.components.findIndex((child: any) => child.temp);
+      this.innerFormDefinition.components.splice(index, 1);
     }
-    return result;
   }
+
+  public setConnectedDropListIds() {
+    const result = [this.uId];
+    this.dynamicChildren.toArray().forEach(child => {
+      child.setConnectedIds();
+      result.push(...child.getConnectedIds());
+    });
+    this.generalEventsService.allDroplistsIds = result;
+    this.dynamicChildren.toArray().forEach(child => child.setConnectedDropListIds());
+
+    result.reverse();
+    this._connectedDropListIds = result;
+  }
+
 }

@@ -7,25 +7,27 @@ import { ODynamicFormGeneralEvents } from '../../services';
 @Component({
   selector: 'odf-element-options',
   templateUrl: './o-dynamic-form-element-options.component.html',
+  styleUrls: ['./o-dynamic-form-element-options.component.scss'],
   inputs: [
-    'component',
-    // 'editComponentSettingsEmitter : edit-component-settings-emitter',
-    // 'deleteComponentEmitter : delete-component-emitter'
+    'component'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.odf-element-options]': 'true'
+  }
 })
 export class ODFElementOptionsComponent {
-  protected generalEventsSevice: ODynamicFormGeneralEvents;
+  protected generalEventsService: ODynamicFormGeneralEvents;
   protected dialogService: DialogService;
 
   constructor(protected injector: Injector) {
-    this.generalEventsSevice = this.injector.get(ODynamicFormGeneralEvents);
+    this.generalEventsService = this.injector.get(ODynamicFormGeneralEvents);
     this.dialogService = this.injector.get(DialogService);
   }
   public component: BaseComponent<any>;
 
   public onEditOdfElement(): void {
-    this.generalEventsSevice.editComponent.emit({
+    this.generalEventsService.editComponent.emit({
       component: this.component
     });
   }
@@ -33,7 +35,7 @@ export class ODFElementOptionsComponent {
   public onDeleteOdfElement(): void {
     this.dialogService.confirm('CONFIRM', 'MESSAGES.CONFIRM_DELETE').then(res => {
       if (res === true) {
-        this.generalEventsSevice.componentDeleted.emit({
+        this.generalEventsService.componentDeleted.emit({
           component: this.component
         });
       }

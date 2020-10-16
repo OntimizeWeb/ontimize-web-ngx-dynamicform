@@ -8,6 +8,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { OFormComponent } from 'ontimize-web-ngx';
@@ -28,11 +29,11 @@ import { PercentFieldComponent } from '../../components/input/percent-input/odf-
 import { RealFieldComponent } from '../../components/input/real-input/odf-o-real-input';
 import { TextFieldComponent } from '../../components/input/text-input/odf-o-text-input';
 import { TextareaFieldComponent } from '../../components/input/textarea-input/odf-o-textarea-input';
+import { CustomDynamicComponent } from '../../components/o-custom-dynamic-component';
 import { ComboComponent } from '../../components/service/odf-o-combo';
 import { ListPickerComponent } from '../../components/service/odf-o-list-picker';
-import { BaseOptions } from '../../interfaces/base-options.interface';
-import { ODynamicFormEvents } from '../../services/o-dynamic-form-events.service';
 import { ODynamicFormGeneralEvents } from '../../services/o-dynamic-form-general-events.service';
+import { ODFElementComponent } from '../dynamic-form-element/o-dynamic-form-element.component';
 
 const paths = {
   'o-checkbox': CheckboxComponent,
@@ -63,11 +64,15 @@ const paths = {
   outputs: [
     'render'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class.odf-component]': 'true',
+    '[class.temporal]': 'component.temp'
+  }
 })
 export class ODFComponentComponent<T> implements OnInit, OnDestroy {
 
-  public component: BaseOptions<T>;
+  public component: any;//BaseOptions<T>;
   public editMode: boolean = false;
 
   public render: EventEmitter<any> = new EventEmitter();
@@ -76,18 +81,20 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
 
   protected subscriptions: Subscription = new Subscription();
 
+  @ViewChild('odfElement', { static: false })
+  public odfElementComponent: ODFElementComponent;
+
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
-    private events: ODynamicFormEvents,
-    protected generalEventsSevice: ODynamicFormGeneralEvents
+    protected generalEventsService: ODynamicFormGeneralEvents
   ) {
-    this.subscriptions.add(this.generalEventsSevice.editModeChange.subscribe(value => {
+    this.subscriptions.add(this.generalEventsService.editModeChange.subscribe(value => {
       this.editMode = value;
     }));
   }
- 
+
   ngOnInit(): void {
     // Add the initial component.
     this.addComponent();
@@ -99,14 +106,43 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
     }
   }
 
+  public getDynamicComponent(): CustomDynamicComponent {
+    return this.odfElementComponent.cmpRef.instance;
+  }
+
+  public setConnectedIds() {
+    this.getDynamicComponent().setConnectedIds();
+  }
+
+  public getConnectedIds(): string[] {
+    return this.getDynamicComponent().getConnectedIds();
+  }
+
+  public setConnectedDropListIds() {
+    this.getDynamicComponent().setConnectedDropListIds();
+  }
+
+  get isTemporalComponent(): boolean {
+    return this.getDynamicComponent().isTemporalComponent;
+  }
+
+  get uId(): string {
+    return this.getDynamicComponent().uId;
+  }
+
+  get children(): ODFComponentComponent<T>[] {
+    return this.getDynamicComponent().children;
+  }
+
   public async addComponent(): Promise<void> {
     const component = this.createComponent();
     if (component) {
       // Set the index and readOnly flag.
       component.index = 0;
       this.comp = component;
+    } else {
+      this.render.emit(true);
     }
-    this.render.emit(true);
     return component;
   }
 
@@ -114,7 +150,7 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
     let component;
     const DynamicComponent = paths[this.component['ontimize-directive']];
     if (DynamicComponent) {
-      component = new DynamicComponent(this.component, this.events, this.injector);
+      component = new DynamicComponent(this.component, this.injector);
     } else {
       console.warn('There is a wrong component definition (ontimize-directive ="%s" does not exists): %O', this.component['ontimize-directive'], this.component);
       return undefined;

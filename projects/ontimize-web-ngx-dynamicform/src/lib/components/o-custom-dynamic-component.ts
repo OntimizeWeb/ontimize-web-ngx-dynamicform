@@ -1,10 +1,12 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Injector } from '@angular/core';
-import { EventEmitter, Input, ViewChild } from '@angular/core';
+import { QueryList } from '@angular/core';
+import { ViewChildren } from '@angular/core';
+import { EventEmitter, Injector, Input, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as uuid from 'uuid';
-import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
+import { ODFComponentComponent } from '../dynamic-form/dynamic-form-component/o-dynamic-form-component.component';
 
+import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
 import { BaseComponent } from './base.component';
 
 export class CustomDynamicComponent {
@@ -21,19 +23,28 @@ export class CustomDynamicComponent {
   public renderCount: number = 0;
 
   public injector: Injector;
-  public generalEventsSevice: ODynamicFormGeneralEvents;
+  public generalEventsService: ODynamicFormGeneralEvents;
 
-  get numComponents(): number {
-    return this.component.getNumComponents();
+  public uId: string;
+
+  constructor() {
+    this.uId = uuid.v4();
   }
 
   public ngOnInit(): void {
     this.setOntimizeComponentInputs();
-    this.generalEventsSevice = this.injector.get(ODynamicFormGeneralEvents);
+    this.generalEventsService = this.injector.get(ODynamicFormGeneralEvents);
+    // this.component.settings.dynamicComponent = this;
   }
 
   public ngAfterViewInit(): void {
-    this.onRender();
+    if (!this.isTemporalComponent) {
+      this.onRender();
+    }
+  }
+
+  get numComponents(): number {
+    return this.component.getNumComponents();
   }
 
   public setOntimizeComponentInputs(): void {
@@ -59,25 +70,41 @@ export class CustomDynamicComponent {
       this.render.emit(true);
     }
   }
+
+  public getConnectedIds(): string[] {
+    return [];
+  }
+
+  public setConnectedIds() {
+  }
+
+  public setConnectedDropListIds() {
+  }
+
+  get isTemporalComponent(): boolean {
+    return (this.component && this.component.settings && this.component.settings.temp);
+  }
+
+  get children(): ODFComponentComponent<any>[] {
+    return [];
+  }
+
 }
 
 export class CustomContainerDynamicComponent extends CustomDynamicComponent {
   public editMode: boolean = false;
-  public connectedDropListIds: string[];
-  public uId: string;
   protected subscriptions: Subscription = new Subscription();
+  isHovering: boolean = false;
 
-  constructor() {
-    super();
-    this.uId = uuid.v4();
-  }
+  @ViewChildren('odfComponent') dynamicChildren: QueryList<ODFComponentComponent<any>>;
+  protected _connectedIds: string[] = [];
+  protected _connectedDropListIds: string[] = [];
 
   ngOnInit() {
     super.ngOnInit();
-    this.component.settings.dynamicComponent = this;
 
-    if (this.generalEventsSevice) {
-      this.subscriptions.add(this.generalEventsSevice.editModeChange.subscribe(value => {
+    if (this.generalEventsService) {
+      this.subscriptions.add(this.generalEventsService.editModeChange.subscribe(value => {
         this.editMode = value;
       }));
     }
@@ -89,9 +116,57 @@ export class CustomContainerDynamicComponent extends CustomDynamicComponent {
     }
   }
 
-  onDragDropComponent(event: CdkDragDrop<any>) {
-    if (this.generalEventsSevice) {
-      this.generalEventsSevice.componentDropped.emit({ event: event, parent: this.component });
+  get children(): ODFComponentComponent<any>[] {
+    return this.dynamicChildren.toArray();
+  }
+
+  public getConnectedIds(): string[] {
+    return this._connectedIds;
+  }
+
+  public setConnectedIds() {
+    const result = [this.uId];
+    this.dynamicChildren.toArray().forEach(child => {
+      child.setConnectedIds();
+      result.push(...child.getConnectedIds());
+    });
+    this._connectedIds = result;
+  }
+
+  public setConnectedDropListIds() {
+    this.dynamicChildren.toArray().forEach(child => child.setConnectedDropListIds());
+    const diff = this.generalEventsService.allDroplistsIds.filter(id => this._connectedIds.indexOf(id) === -1);
+    diff.reverse();
+    this._connectedDropListIds = diff;
+  }
+
+  get connectedDropListIds(): string[] {
+    return this._connectedDropListIds;
+  }
+
+  public onDragDropComponent(event: CdkDragDrop<any>) {
+    if (this.generalEventsService) {
+      this.generalEventsService.componentDropped.emit({ event: event, parent: this.component });
+    }
+  }
+
+  public dropListEntered() {
+    this.isHovering = true;
+  }
+
+  public dropListExited() {
+    this.isHovering = false;
+  }
+
+  public dragStarted(event: CdkDragDrop<any>) {
+    if (this.generalEventsService) {
+      this.generalEventsService.dragStarted.emit({ event: event, parent: this.component });
+    }
+  }
+
+  public dragEnded(event: CdkDragDrop<any>) {
+    if (this.generalEventsService) {
+      this.generalEventsService.dragEnded.emit({ event: event, parent: this.component });
     }
   }
 }
