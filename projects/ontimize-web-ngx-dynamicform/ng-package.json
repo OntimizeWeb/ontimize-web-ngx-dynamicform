@@ -4,6 +4,7 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
+      "uuid": "uuid",
       "ontimize-web-ngx-nvd3": "ontimizeWebNgxNvd3",
       "ontimize-web-ngx": "ontimizeWebNgx"
     }
