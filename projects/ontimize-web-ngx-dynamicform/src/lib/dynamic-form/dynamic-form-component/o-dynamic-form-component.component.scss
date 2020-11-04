@@ -1,4 +1,25 @@
 .odf-component {
+  position: relative;
+  border: 1px solid transparent;
+
+  &.editable {
+    
+    &.clicked {
+      border: 1px solid #99d1ff;
+    }
+
+    &.component-container {
+      &:not(.clicked) {
+        border: 1px solid #dadada;
+      }
+      o-column.margin-top-bottom,
+      o-row.margin-top-bottom {
+        margin: 0;
+        padding: 8px 0;
+      }
+    }
+  }
+
   &.temporal {
     opacity: 0.5;
     pointer-events: none;
@@ -10,15 +31,5 @@
   .odf-element-container {
     position: relative;
     cursor: inherit !important;
-
-    .component-container.editable {
-      border: 1px solid #dadada;
-
-      o-column.margin-top-bottom,
-      o-row.margin-top-bottom {
-        margin: 0;
-        padding: 8px 0;
-      }
-    }
   }
 }

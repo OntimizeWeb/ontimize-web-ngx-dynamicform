@@ -1,6 +1,11 @@
 .o-dynamic-form {
   display: block;
   height: 100%;
+  overflow: auto;
+
+  .main-droplist {
+    height: 100%;
+  }
 
   .hovering.cdk-drop-list-dragging {
     border: 2px dashed #000;
@@ -13,13 +18,30 @@
   > .cdk-drop-list {
     padding: 0;
   }
-  
+
   .cdk-drop-list {
     padding: 10px 0;
     width: 100%;
+  }
 
-    .cdk-drag.odf-component .odf-element-container {
-      padding-bottom: 10px;
+  li.app-menu-item {
+    height: 8px;
+    list-style-type: none;
+    button {
+      margin: 0;
+      background: none;
+      border: none;
+
+      &:focus {
+        outline: none;
+      }
+
+      .mat-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+        margin-right: 4px;
+      }
     }
   }
 }

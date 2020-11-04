@@ -1,11 +1,9 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { QueryList } from '@angular/core';
-import { ViewChildren } from '@angular/core';
-import { EventEmitter, Injector, Input, ViewChild } from '@angular/core';
+import { CdkDragDrop, CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
+import { EventEmitter, Injector, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as uuid from 'uuid';
-import { ODFComponentComponent } from '../dynamic-form/dynamic-form-component/o-dynamic-form-component.component';
 
+import { ODFComponentComponent } from '../dynamic-form/dynamic-form-component/o-dynamic-form-component.component';
 import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
 import { BaseComponent } from './base.component';
 
@@ -34,7 +32,6 @@ export class CustomDynamicComponent {
   public ngOnInit(): void {
     this.setOntimizeComponentInputs();
     this.generalEventsService = this.injector.get(ODynamicFormGeneralEvents);
-    // this.component.settings.dynamicComponent = this;
   }
 
   public ngAfterViewInit(): void {
@@ -104,7 +101,7 @@ export class CustomContainerDynamicComponent extends CustomDynamicComponent {
     super.ngOnInit();
 
     if (this.generalEventsService) {
-      this.subscriptions.add(this.generalEventsService.editModeChange.subscribe(value => {
+      this.subscriptions.add(this.generalEventsService.editModeChange$.subscribe(value => {
         this.editMode = value;
       }));
     }
@@ -135,7 +132,7 @@ export class CustomContainerDynamicComponent extends CustomDynamicComponent {
 
   public setConnectedDropListIds() {
     this.dynamicChildren.toArray().forEach(child => child.setConnectedDropListIds());
-    const diff = this.generalEventsService.allDroplistsIds.filter(id => this._connectedIds.indexOf(id) === -1);
+    const diff = this.generalEventsService.getAllDropListsIds().filter(id => this._connectedIds.indexOf(id) === -1);
     diff.reverse();
     this._connectedDropListIds = diff;
   }
@@ -146,7 +143,7 @@ export class CustomContainerDynamicComponent extends CustomDynamicComponent {
 
   public onDragDropComponent(event: CdkDragDrop<any>) {
     if (this.generalEventsService) {
-      this.generalEventsService.componentDropped.emit({ event: event, parent: this.component });
+      this.generalEventsService.dropComponent({ event: event, parent: this.component });
     }
   }
 
@@ -158,15 +155,15 @@ export class CustomContainerDynamicComponent extends CustomDynamicComponent {
     this.isHovering = false;
   }
 
-  public dragStarted(event: CdkDragDrop<any>) {
+  public dragStarted(event: CdkDragStart<any>) {
     if (this.generalEventsService) {
-      this.generalEventsService.dragStarted.emit({ event: event, parent: this.component });
+      this.generalEventsService.dragStart({ event: event, parent: this.component });
     }
   }
 
-  public dragEnded(event: CdkDragDrop<any>) {
+  public dragEnded(event: CdkDragEnd<any>) {
     if (this.generalEventsService) {
-      this.generalEventsService.dragEnded.emit({ event: event, parent: this.component });
+      this.generalEventsService.dragEnd({ event: event, parent: this.component });
     }
   }
 }

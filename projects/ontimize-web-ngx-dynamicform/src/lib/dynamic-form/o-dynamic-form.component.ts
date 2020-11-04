@@ -1,4 +1,4 @@
-import { CdkDragDrop, CdkDragStart, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnd, CdkDragStart, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import {
   Component,
   ElementRef,
@@ -32,7 +32,6 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import * as uuid from 'uuid';
 
 import { BaseComponent } from '../components/base.component';
-import { BaseOptions } from '../interfaces/base-options.interface';
 import { DynamicFormDefinition } from '../interfaces/o-dynamic-form-definition.interface';
 import { ODynamicFormGeneralEvents } from '../services/o-dynamic-form-general-events.service';
 import { ODFComponentComponent } from './dynamic-form-component/o-dynamic-form-component.component';
@@ -68,12 +67,10 @@ import { ODFComponentComponent } from './dynamic-form-component/o-dynamic-form-c
     'onEditComponentSettings',
     'onDeleteComponent',
     'onDynamicFormDataLoaded',
-    'onDrop'
+    'onDrop',
+    'onSelectComponent',
   ],
-  encapsulation: ViewEncapsulation.None,
-  host: {
-    '[class.o-dynamic-form]': 'true'
-  }
+  encapsulation: ViewEncapsulation.None
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 
@@ -87,7 +84,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   }
   set editMode(value: boolean) {
     this._editMode = BooleanConverter(value);
-    this.generalEventsService.editModeChange.next(this._editMode);
+    this.generalEventsService.setEditMode(this._editMode);
   }
   public entity: string;
   public keys: string = '';
@@ -110,7 +107,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   set editableComponents(arg: string[]) {
     if (this.generalEventsService) {
-      this.generalEventsService.editableComponentsChange.next(arg);
+      this.generalEventsService.setEditableComponents(arg);
     }
   }
   /* end of inputs */
@@ -132,10 +129,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public onValueChange: EventEmitter<OValueChangeEvent>;
   public onAddComponent: EventEmitter<any> = new EventEmitter();
   public onMoveComponent: EventEmitter<any> = new EventEmitter();
-  public onEditComponentSettings: EventEmitter<any> = new EventEmitter();
-  public onDeleteComponent: EventEmitter<any> = new EventEmitter();
+  public onEditComponentSettings: EventEmitter<string> = new EventEmitter();
+  public onDeleteComponent: EventEmitter<string> = new EventEmitter();
   public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
   public onDrop: EventEmitter<Object> = new EventEmitter<Object>();
+  public onSelectComponent: EventEmitter<string> = new EventEmitter<string>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
@@ -148,9 +146,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   protected _fControl: FormControl;
 
   @HostBinding('style.flexDirection') get style_flexDirection() { return 'column'; }
+  @HostBinding('class.o-dynamic-form') get dynamicFormClass() { return true; }
 
   uId: string;
-  _connectedDropListIds: string[];
+  _connectedDropListIds: string[] = [];
   isHovering: boolean = false;
   protected dynamicChildrenSubscription: Subscription;
   protected subscriptions: Subscription = new Subscription();
@@ -179,24 +178,30 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       }
     }));
 
-    this.subscriptions.add(this.generalEventsService.componentDropped.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.componentDropped$.subscribe((arg) => {
       this.doDrag(arg.event, { parent: arg.parent });
     }));
 
-    this.subscriptions.add(this.generalEventsService.componentDeleted.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.deleteComponentByAttr$.subscribe((arg: string) => {
       this.onDeleteComponent.emit(arg);
     }));
 
-    this.subscriptions.add(this.generalEventsService.editComponent.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.editComponentByAttr$.subscribe((arg: string) => {
       this.onEditComponentSettings.emit(arg);
     }));
 
-    this.subscriptions.add(this.generalEventsService.dragStarted.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.dragStarted$.subscribe((arg) => {
       this.dragStarted(arg.event, arg.parent);
     }));
 
-    this.subscriptions.add(this.generalEventsService.dragEnded.subscribe((arg) => {
+    this.subscriptions.add(this.generalEventsService.dragEnded$.subscribe((arg) => {
       this.dragEnded(arg.event, arg.parent);
+    }));
+
+    this.subscriptions.add(this.generalEventsService.componentClicked$.subscribe(attr => {
+      if (attr) {
+        this.onSelectComponent.emit(attr);
+      }
     }));
   }
 
@@ -491,13 +496,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
 
   private doDrag(event: CdkDragDrop<any>, args: any) {
     const comp = event.item.data;
-    if (comp.hasOwnProperty('directive')) {
-      delete comp['directive'];
+    if (comp.new) {
+      delete comp['new'];
       this.onAddComponent.emit({
         component: comp,
         parent: args.parent,
         index: event.currentIndex
       });
+      this.setActiveComponent(comp.configuredInputs.attr);
     } else {
       if (event.previousContainer.id === event.container.id) {
         moveItemInArray(
@@ -587,7 +593,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     }
   }
 
-  public dragEnded(event: CdkDragStart<any>, parent?: BaseComponent<any>) {
+  public dragEnded(event: CdkDragEnd<any>, parent?: BaseComponent<any>) {
     if (parent) {
       const index = parent.getChildren().findIndex(child => child.temp);
       parent.removeChildInPosition(index);
@@ -603,11 +609,15 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       child.setConnectedIds();
       result.push(...child.getConnectedIds());
     });
-    this.generalEventsService.allDroplistsIds = result;
+    this.generalEventsService.setAllDropListsIds(result);
     this.dynamicChildren.toArray().forEach(child => child.setConnectedDropListIds());
 
     result.reverse();
     this._connectedDropListIds = result;
+  }
+
+  public setActiveComponent(attr: string) {
+    this.generalEventsService.selectComponent(attr);
   }
 
 }

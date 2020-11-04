@@ -3,6 +3,8 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
+  HostBinding,
+  HostListener,
   Inject,
   Injector,
   OnDestroy,
@@ -64,11 +66,7 @@ const paths = {
   outputs: [
     'render'
   ],
-  encapsulation: ViewEncapsulation.None,
-  host: {
-    '[class.odf-component]': 'true',
-    '[class.temporal]': 'component.temp'
-  }
+  encapsulation: ViewEncapsulation.None
 })
 export class ODFComponentComponent<T> implements OnInit, OnDestroy {
 
@@ -84,13 +82,29 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
   @ViewChild('odfElement', { static: false })
   public odfElementComponent: ODFElementComponent;
 
+  protected clicked: boolean = false;
+  @HostListener('click', ['$event']) onClick(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.generalEventsService.selectComponent(this.component.attr);
+  }
+
+  @HostBinding('class.odf-component') get odfComponentClass() { return true; }
+  @HostBinding('class.temporal') get temporalClass() { return this.component.temp; }
+  @HostBinding('class.clicked') get clickedClass() { return this.clicked; }
+  @HostBinding('class.component-container') get componentContainerClass() { return this.comp.isContainerComponent(); }
+  @HostBinding('class.component') get componentClass() { return !this.comp.isContainerComponent(); }
+  @HostBinding('class.editable') get editableClass() { return this.editMode; }
+
+  protected isSelectorEditable: boolean = false;
+
   constructor(
     @Optional() @Inject(forwardRef(() => OFormComponent)) protected oForm: OFormComponent,
     protected elRef: ElementRef,
     protected injector: Injector,
     protected generalEventsService: ODynamicFormGeneralEvents
   ) {
-    this.subscriptions.add(this.generalEventsService.editModeChange.subscribe(value => {
+    this.subscriptions.add(this.generalEventsService.editModeChange$.subscribe(value => {
       this.editMode = value;
     }));
   }
@@ -98,6 +112,18 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Add the initial component.
     this.addComponent();
+
+    this.subscriptions.add(this.generalEventsService.editableComponentsChange$.subscribe(editableComponents => {
+      if (editableComponents != null) {
+        this.isSelectorEditable = editableComponents.indexOf(this.component['ontimize-directive']) !== -1;
+      }
+    }));
+
+    this.subscriptions.add(this.generalEventsService.componentClicked$.subscribe(attr => {
+      if (attr) {
+        this.clicked = (this.component.attr === attr);
+      }
+    }));
   }
 
   ngOnDestroy(): void {
@@ -106,32 +132,36 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
     }
   }
 
-  public getDynamicComponent(): CustomDynamicComponent {
+  get visibleOptions(): boolean {
+    return this.clicked && this.editMode && this.isSelectorEditable;
+  }
+
+  get dynamicComponent(): CustomDynamicComponent {
     return this.odfElementComponent.cmpRef.instance;
   }
 
   public setConnectedIds() {
-    this.getDynamicComponent().setConnectedIds();
+    this.dynamicComponent.setConnectedIds();
   }
 
   public getConnectedIds(): string[] {
-    return this.getDynamicComponent().getConnectedIds();
+    return this.dynamicComponent.getConnectedIds();
   }
 
   public setConnectedDropListIds() {
-    this.getDynamicComponent().setConnectedDropListIds();
+    this.dynamicComponent.setConnectedDropListIds();
   }
 
   get isTemporalComponent(): boolean {
-    return this.getDynamicComponent().isTemporalComponent;
+    return this.dynamicComponent.isTemporalComponent;
   }
 
   get uId(): string {
-    return this.getDynamicComponent().uId;
+    return this.dynamicComponent.uId;
   }
 
   get children(): ODFComponentComponent<T>[] {
-    return this.getDynamicComponent().children;
+    return this.dynamicComponent.children;
   }
 
   public async addComponent(): Promise<void> {

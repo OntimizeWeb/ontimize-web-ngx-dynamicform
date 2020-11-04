@@ -1,4 +1,4 @@
-import { Component, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, HostBinding, Injector, ViewEncapsulation } from '@angular/core';
 import { DialogService } from 'ontimize-web-ngx';
 
 import { BaseComponent } from '../../components/base.component';
@@ -11,14 +11,13 @@ import { ODynamicFormGeneralEvents } from '../../services';
   inputs: [
     'component'
   ],
-  encapsulation: ViewEncapsulation.None,
-  host: {
-    '[class.odf-element-options]': 'true'
-  }
+  encapsulation: ViewEncapsulation.None
 })
 export class ODFElementOptionsComponent {
   protected generalEventsService: ODynamicFormGeneralEvents;
   protected dialogService: DialogService;
+
+  @HostBinding('class.odf-element-options') get odfElementOptionsClass() { return true; }
 
   constructor(protected injector: Injector) {
     this.generalEventsService = this.injector.get(ODynamicFormGeneralEvents);
@@ -27,17 +26,13 @@ export class ODFElementOptionsComponent {
   public component: BaseComponent<any>;
 
   public onEditOdfElement(): void {
-    this.generalEventsService.editComponent.emit({
-      component: this.component
-    });
+    this.generalEventsService.editComponent(this.component.getComponentAttr());
   }
 
   public onDeleteOdfElement(): void {
     this.dialogService.confirm('CONFIRM', 'MESSAGES.CONFIRM_DELETE').then(res => {
       if (res === true) {
-        this.generalEventsService.componentDeleted.emit({
-          component: this.component
-        });
+        this.generalEventsService.deleteComponent(this.component.getComponentAttr());
       }
     });
   }

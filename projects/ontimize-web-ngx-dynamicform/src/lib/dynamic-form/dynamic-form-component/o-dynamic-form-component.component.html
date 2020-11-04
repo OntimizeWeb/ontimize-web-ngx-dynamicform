@@ -1,27 +1,15 @@
 <div fxFlex class="odf-element-container">
   <ng-content></ng-content>
-  <!-- <div  
-    *ngFor="let comp of components; let i = index;" 
-    fxLayout="column" class="odf-element-container" fxFill
-    > -->   
-    <div 
-      [class.component-container]="comp.isContainerComponent()"
-      [class.component]="!comp.isContainerComponent()"
-      [class.editable]="editMode"
-    >
-      <odf-element-options
-        *ngIf="editMode"
-        fxLayout
-        [component]="comp">
-        
-      </odf-element-options>
 
-      <odf-element #odfElement
-        fxLayout="column"
-        [component]="comp"
-        [render]="render">
-      </odf-element>
-    </div>
+  <odf-element-options
+    *ngIf="visibleOptions"
+    fxLayout
+    [component]="comp">
+  </odf-element-options>
 
-  <!-- </div> -->
+  <odf-element #odfElement
+    fxLayout="column"
+    [component]="comp"
+    [render]="render">
+  </odf-element>
 </div>
