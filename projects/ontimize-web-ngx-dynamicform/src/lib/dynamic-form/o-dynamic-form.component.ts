@@ -69,8 +69,10 @@ import { ODFComponentComponent } from './dynamic-form-component/o-dynamic-form-c
     'onDynamicFormDataLoaded',
     'onDrop',
     'onSelectComponent',
+    'onToggleComponentLayout'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [ODynamicFormGeneralEvents]
 })
 export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormDataTypeComponent {
 
@@ -134,6 +136,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
   public onDrop: EventEmitter<Object> = new EventEmitter<Object>();
   public onSelectComponent: EventEmitter<string> = new EventEmitter<string>();
+  public onToggleComponentLayout: EventEmitter<string> = new EventEmitter<string>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
@@ -202,6 +205,10 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       if (attr) {
         this.onSelectComponent.emit(attr);
       }
+    }));
+
+    this.subscriptions.add(this.generalEventsService.componentLayoutChanged$.subscribe(attr => {
+      this.onToggleComponentLayout.emit(attr);
     }));
   }
 

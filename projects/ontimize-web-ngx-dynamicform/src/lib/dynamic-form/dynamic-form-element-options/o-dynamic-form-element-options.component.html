@@ -1,5 +1,6 @@
 <div class="odf-element-options-container" fxFlex>
   <span fxFlex fxLayout="row" fxLayoutAlign="start center" class="odf-element-options-attr">{{ component.getComponentAttr() }}</span>
-  <!-- <mat-icon class="material-icons" (click)="onEditOdfElement()">settings</mat-icon> -->
-  <mat-icon class="material-icons" (click)="onDeleteOdfElement()">delete_outline</mat-icon>
+  <!-- <mat-icon class="material-icons" (click)="onEditOdfElement($event)">settings</mat-icon> -->
+  <mat-icon *ngIf="component.isContainerComponent()" (click)="toggleLayout($event)">crop_rotate</mat-icon>
+  <mat-icon class="material-icons" (click)="onDeleteOdfElement($event)">delete_outline</mat-icon>
 </div>

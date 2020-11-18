@@ -25,11 +25,15 @@ export class ODFElementOptionsComponent {
   }
   public component: BaseComponent<any>;
 
-  public onEditOdfElement(): void {
+  public onEditOdfElement(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.generalEventsService.editComponent(this.component.getComponentAttr());
   }
 
-  public onDeleteOdfElement(): void {
+  public onDeleteOdfElement(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.dialogService.confirm('CONFIRM', 'MESSAGES.CONFIRM_DELETE').then(res => {
       if (res === true) {
         this.generalEventsService.deleteComponent(this.component.getComponentAttr());
@@ -37,4 +41,9 @@ export class ODFElementOptionsComponent {
     });
   }
 
+  public toggleLayout(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.generalEventsService.changeComponentLayout(this.component.getComponentAttr());
+  }
 }

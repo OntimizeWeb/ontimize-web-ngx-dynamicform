@@ -24,11 +24,26 @@
     width: 100%;
   }
 
+  .cdk-drop-list[fxlayout="row"] {
+    li.app-menu-item {
+      align-self: center;
+    }
+  }
+
+  .cdk-drop-list[fxlayout="column"] {
+    li.app-menu-item {
+      margin-bottom: 4px !important;
+    }
+  }
+
   li.app-menu-item {
-    height: 8px;
     list-style-type: none;
+    height: 24px;
+    padding-top: 4px;
+    box-sizing: border-box;
+
     button {
-      margin: 0;
+      padding: 0;
       background: none;
       border: none;
 

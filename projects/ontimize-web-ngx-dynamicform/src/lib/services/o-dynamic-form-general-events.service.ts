@@ -19,9 +19,7 @@ export type DragDropType = {
   parent: BaseComponent<any>;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ODynamicFormGeneralEvents {
 
   private editComponentByAttr: Subject<string> = new Subject<string>();
@@ -29,12 +27,14 @@ export class ODynamicFormGeneralEvents {
   private componentDropped: Subject<DragDropType> = new Subject<DragDropType>();
   private dragStarted: Subject<DragStartEventType> = new Subject<DragStartEventType>();
   private dragEnded: Subject<DragEndEventType> = new Subject<DragEndEventType>();
+  private componentLayoutChanged: Subject<string> = new Subject<string>();
 
   editComponentByAttr$ = this.editComponentByAttr.asObservable();
   deleteComponentByAttr$ = this.deleteComponentByAttr.asObservable();
   componentDropped$ = this.componentDropped.asObservable();
   dragStarted$ = this.dragStarted.asObservable();
   dragEnded$ = this.dragEnded.asObservable();
+  componentLayoutChanged$ = this.componentLayoutChanged.asObservable();
 
   private editModeChange: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private editableComponentsChange: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(null);
@@ -84,5 +84,9 @@ export class ODynamicFormGeneralEvents {
 
   setEditableComponents(value: string[]) {
     this.editableComponentsChange.next(value);
+  }
+
+  changeComponentLayout(attr: string) {
+    this.componentLayoutChanged.next(attr);
   }
 }
