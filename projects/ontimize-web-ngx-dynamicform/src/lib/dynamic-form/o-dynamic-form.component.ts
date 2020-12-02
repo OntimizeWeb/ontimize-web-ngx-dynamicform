@@ -9,6 +9,7 @@ import {
   Injector,
   OnInit,
   Optional,
+  Output,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
@@ -64,12 +65,8 @@ import { ODFComponentComponent } from './dynamic-form-component/o-dynamic-form-c
     'change',
     'onAddComponent',
     'onMoveComponent',
-    'onEditComponentSettings',
-    'onDeleteComponent',
     'onDynamicFormDataLoaded',
-    'onDrop',
-    'onSelectComponent',
-    'onToggleComponentLayout'
+    'onDrop'
   ],
   encapsulation: ViewEncapsulation.None,
   providers: [ODynamicFormGeneralEvents]
@@ -131,12 +128,15 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   public onValueChange: EventEmitter<OValueChangeEvent>;
   public onAddComponent: EventEmitter<any> = new EventEmitter();
   public onMoveComponent: EventEmitter<any> = new EventEmitter();
-  public onEditComponentSettings: EventEmitter<string> = new EventEmitter();
-  public onDeleteComponent: EventEmitter<string> = new EventEmitter();
+
+  @Output() onDeleteComponent: Observable<string>;
+  @Output() onEditComponentSettings: Observable<string>;
+  @Output() onSelectComponent: Observable<string>;
+  @Output() onChangeComponentSelector: Observable<string>;
+  @Output() onAddPredefinedLayout: Observable<any>;
+
   public onDynamicFormDataLoaded: EventEmitter<Object> = new EventEmitter<Object>();
   public onDrop: EventEmitter<Object> = new EventEmitter<Object>();
-  public onSelectComponent: EventEmitter<string> = new EventEmitter<string>();
-  public onToggleComponentLayout: EventEmitter<string> = new EventEmitter<string>();
 
   protected onFormInitStream: EventEmitter<Object> = new EventEmitter<Object>();
   protected onUrlParamChangedStream: EventEmitter<Object> = new EventEmitter<Object>();
@@ -185,14 +185,6 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.doDrag(arg.event, { parent: arg.parent });
     }));
 
-    this.subscriptions.add(this.generalEventsService.deleteComponentByAttr$.subscribe((arg: string) => {
-      this.onDeleteComponent.emit(arg);
-    }));
-
-    this.subscriptions.add(this.generalEventsService.editComponentByAttr$.subscribe((arg: string) => {
-      this.onEditComponentSettings.emit(arg);
-    }));
-
     this.subscriptions.add(this.generalEventsService.dragStarted$.subscribe((arg) => {
       this.dragStarted(arg.event, arg.parent);
     }));
@@ -201,15 +193,11 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
       this.dragEnded(arg.event, arg.parent);
     }));
 
-    this.subscriptions.add(this.generalEventsService.componentClicked$.subscribe(attr => {
-      if (attr) {
-        this.onSelectComponent.emit(attr);
-      }
-    }));
-
-    this.subscriptions.add(this.generalEventsService.componentLayoutChanged$.subscribe(attr => {
-      this.onToggleComponentLayout.emit(attr);
-    }));
+    this.onEditComponentSettings = this.generalEventsService.editComponentByAttr$;
+    this.onDeleteComponent = this.generalEventsService.deleteComponentByAttr$;
+    this.onSelectComponent = this.generalEventsService.componentClicked$;
+    this.onChangeComponentSelector = this.generalEventsService.componentSelectorChanged$;
+    this.onAddPredefinedLayout = this.generalEventsService.addPredefinedLayout$;
   }
 
   ngOnInit(): void {
@@ -511,6 +499,14 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
         index: event.currentIndex
       });
       this.setActiveComponent(comp.configuredInputs.attr);
+    } else if (comp.action) {
+      this.generalEventsService.addPredefinedLayoutToComponent({
+        mode: 'new',
+        component: comp,
+        parent: args.parent,
+        index: event.currentIndex
+      });
+      // this.setActiveComponent(comp.configuredInputs.attr);
     } else {
       if (event.previousContainer.id === event.container.id) {
         moveItemInArray(

@@ -41,9 +41,18 @@ export class ODFElementOptionsComponent {
     });
   }
 
-  public toggleLayout(event: MouseEvent): void {
+  public addPredefinedLayout(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.generalEventsService.changeComponentLayout(this.component.getComponentAttr());
+    this.generalEventsService.addPredefinedLayoutToComponent({
+      mode: 'existingContainer',
+      attr: this.component.getComponentAttr()
+    });
+  }
+
+  public changeComponentSelector(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.generalEventsService.changeComponentSelector(this.component.getComponentAttr());
   }
 }

@@ -24,30 +24,36 @@ export class ODynamicFormGeneralEvents {
 
   private editComponentByAttr: Subject<string> = new Subject<string>();
   private deleteComponentByAttr: Subject<string> = new Subject<string>();
-  private componentDropped: Subject<DragDropType> = new Subject<DragDropType>();
-  private dragStarted: Subject<DragStartEventType> = new Subject<DragStartEventType>();
-  private dragEnded: Subject<DragEndEventType> = new Subject<DragEndEventType>();
-  private componentLayoutChanged: Subject<string> = new Subject<string>();
+  private componentClicked: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private componentSelectorChanged: Subject<any> = new Subject<any>();
+  private addPredefinedLayout: Subject<any> = new Subject<any>();
 
   editComponentByAttr$ = this.editComponentByAttr.asObservable();
   deleteComponentByAttr$ = this.deleteComponentByAttr.asObservable();
+  componentClicked$ = this.componentClicked.asObservable();
+  componentSelectorChanged$ = this.componentSelectorChanged.asObservable();
+  addPredefinedLayout$ = this.addPredefinedLayout.asObservable();
+
+  private componentDropped: Subject<DragDropType> = new Subject<DragDropType>();
+  private dragStarted: Subject<DragStartEventType> = new Subject<DragStartEventType>();
+  private dragEnded: Subject<DragEndEventType> = new Subject<DragEndEventType>();
+
   componentDropped$ = this.componentDropped.asObservable();
   dragStarted$ = this.dragStarted.asObservable();
   dragEnded$ = this.dragEnded.asObservable();
-  componentLayoutChanged$ = this.componentLayoutChanged.asObservable();
 
   private editModeChange: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private editableComponentsChange: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(null);
-  private componentClicked: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   editModeChange$ = this.editModeChange.asObservable();
   editableComponentsChange$ = this.editableComponentsChange.asObservable();
-  componentClicked$ = this.componentClicked.asObservable();
 
   private allDropListsIds: string[] = [];
 
   selectComponent(attr: string) {
-    this.componentClicked.next(attr);
+    if (attr) {
+      this.componentClicked.next(attr);
+    }
   }
 
   setAllDropListsIds(value: string[]) {
@@ -86,7 +92,11 @@ export class ODynamicFormGeneralEvents {
     this.editableComponentsChange.next(value);
   }
 
-  changeComponentLayout(attr: string) {
-    this.componentLayoutChanged.next(attr);
+  changeComponentSelector(attr: string) {
+    this.componentSelectorChanged.next(attr);
+  }
+
+  addPredefinedLayoutToComponent(arg: any) {
+    this.addPredefinedLayout.next(arg);
   }
 }
