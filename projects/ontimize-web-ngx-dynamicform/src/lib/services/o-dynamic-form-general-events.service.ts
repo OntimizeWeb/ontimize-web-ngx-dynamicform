@@ -25,12 +25,14 @@ export class ODynamicFormGeneralEvents {
   private editComponentByAttr: Subject<string> = new Subject<string>();
   private deleteComponentByAttr: Subject<string> = new Subject<string>();
   private componentClicked: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private componentHover: Subject<string> = new Subject<string>();
   private componentSelectorChanged: Subject<any> = new Subject<any>();
   private addPredefinedLayout: Subject<any> = new Subject<any>();
 
   editComponentByAttr$ = this.editComponentByAttr.asObservable();
   deleteComponentByAttr$ = this.deleteComponentByAttr.asObservable();
   componentClicked$ = this.componentClicked.asObservable();
+  componentHover$ = this.componentHover.asObservable();
   componentSelectorChanged$ = this.componentSelectorChanged.asObservable();
   addPredefinedLayout$ = this.addPredefinedLayout.asObservable();
 
@@ -54,6 +56,10 @@ export class ODynamicFormGeneralEvents {
     if (attr) {
       this.componentClicked.next(attr);
     }
+  }
+
+  hoverComponent(attr: string) {
+    this.componentHover.next(attr);
   }
 
   setAllDropListsIds(value: string[]) {

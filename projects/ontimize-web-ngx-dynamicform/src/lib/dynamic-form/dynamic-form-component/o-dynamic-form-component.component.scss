@@ -3,15 +3,20 @@
   border: 1px solid transparent;
 
   &.editable {
-    
     &.clicked {
-      border: 1px solid #99d1ff;
+      border: 1px solid #2195f2;
+    }
+
+    &:not(.clicked) {
+      &.hover {
+        border: 1px solid #99d1ff;
+      }
+      &.component-container {
+        border: 1px solid #dadada;
+      }
     }
 
     &.component-container {
-      &:not(.clicked) {
-        border: 1px solid #dadada;
-      }
       o-column.margin-top-bottom,
       o-row.margin-top-bottom {
         margin: 0;

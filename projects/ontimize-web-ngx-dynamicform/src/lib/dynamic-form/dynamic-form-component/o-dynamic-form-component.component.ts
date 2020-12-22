@@ -89,9 +89,15 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
     this.generalEventsService.selectComponent(this.component.attr);
   }
 
+  protected hover: boolean = false;
+  @HostListener('mouseenter', ['$event']) onHover(event: MouseEvent) {
+    this.generalEventsService.hoverComponent(this.component.attr);
+  }
+
   @HostBinding('class.odf-component') get odfComponentClass() { return true; }
   @HostBinding('class.temporal') get temporalClass() { return this.component.temp; }
   @HostBinding('class.clicked') get clickedClass() { return this.clicked; }
+  @HostBinding('class.hover') get hoverClass() { return this.hover; }
   @HostBinding('class.component-container') get componentContainerClass() { return this.comp.isContainerComponent(); }
   @HostBinding('class.component') get componentClass() { return !this.comp.isContainerComponent(); }
   @HostBinding('class.editable') get editableClass() { return this.editMode; }
@@ -122,6 +128,12 @@ export class ODFComponentComponent<T> implements OnInit, OnDestroy {
     this.subscriptions.add(this.generalEventsService.componentClicked$.subscribe(attr => {
       if (attr) {
         this.clicked = (this.component.attr === attr);
+      }
+    }));
+
+    this.subscriptions.add(this.generalEventsService.componentHover$.subscribe(attr => {
+      if (attr) {
+        this.hover = (this.component.attr === attr);
       }
     }));
   }

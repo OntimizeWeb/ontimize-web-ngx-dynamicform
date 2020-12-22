@@ -132,6 +132,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
   @Output() onDeleteComponent: Observable<string>;
   @Output() onEditComponentSettings: Observable<string>;
   @Output() onSelectComponent: Observable<string>;
+  @Output() onHoverComponent: Observable<string>;
   @Output() onChangeComponentSelector: Observable<string>;
   @Output() onAddPredefinedLayout: Observable<any>;
 
@@ -196,6 +197,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.onEditComponentSettings = this.generalEventsService.editComponentByAttr$;
     this.onDeleteComponent = this.generalEventsService.deleteComponentByAttr$;
     this.onSelectComponent = this.generalEventsService.componentClicked$;
+    this.onHoverComponent = this.generalEventsService.componentHover$;
     this.onChangeComponentSelector = this.generalEventsService.componentSelectorChanged$;
     this.onAddPredefinedLayout = this.generalEventsService.addPredefinedLayout$;
   }
@@ -623,4 +625,7 @@ export class ODynamicFormComponent implements OnInit, IFormDataComponent, IFormD
     this.generalEventsService.selectComponent(attr);
   }
 
+  public setHoverComponent(attr: string) {
+    this.generalEventsService.hoverComponent(attr);
+  }
 }
