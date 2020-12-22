@@ -1,6 +1,6 @@
 {
   "name": "ontimize-web-ngx-dynamicform",
-  "version": "8.0.0-SNAPSHOT-1",
+  "version": "8.0.0-SNAPSHOT-2",
   "description": "Dynamic form",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
@@ -28,6 +28,6 @@
   ],
   "dependencies": {},
   "peerDependencies": {
-    "ontimize-web-ngx": "8.0.1-SNAPSHOT-2"
+    "ontimize-web-ngx": "8.1.1"
   }
 }
